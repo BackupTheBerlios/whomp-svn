@@ -120,6 +120,31 @@
  
  /* -- REQUEST FUNCTIONS -- */
  
+ /* ++ NODE FUNCTIONS ++ */
+ 
+ /**
+  * Gets the requested node object
+  * 
+  * <p>Retrieves the node information from the database as an object.</p>
+  * 
+  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+  * @version 0.0.0
+  * @since 0.0.0
+  * @param array $node the requested node information
+  * @return object the node object
+  */
+ function whomp_get_node_object($node) {
+	 
+ } // end function
+ 
+ /**
+  * Loads the node object's classes
+  * 
+  * <p>Creates 
+  */
+ 
+ /* -- NODE FUNCTIONS -- */
+ 
  /* ++ EXCEPTION FUNCTIONS ++ */
  
  /**

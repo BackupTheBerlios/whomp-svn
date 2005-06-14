@@ -37,6 +37,7 @@
 	  * @author Schmalls / Joshua Thompson
 	  * @version 0.0.0
 	  * @since 0.0.0
+	  * @access public
 	  * @param array $options options for the cache
 	  * @todo implement this
 	  */
@@ -56,11 +57,12 @@
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
+	  * @access public
 	  * @param string $requested the requested page or block
 	  * @param boolean $exit whether or not we should exit if it is available
 	  * @todo implement this
 	  */
-	 function start($requested, $exit) {
+	 public function start($requested, $exit) {
 		 
 	 } // end function
 	 
@@ -74,9 +76,10 @@
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
+	  * @access public
 	  * @todo implement this
 	  */
-	 function end() {
+	 public function end() {
 		 
 	 } // end function
  } // end class

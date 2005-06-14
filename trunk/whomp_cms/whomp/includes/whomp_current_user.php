@@ -59,6 +59,7 @@
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
+	  * @access public
 	  * @global class access to the database
 	  */
 	 public function __construct() {
@@ -93,6 +94,7 @@
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
+	  * @access public
 	  * @return boolean whether the user is logged in or not
 	  */
 	 function isLoggedIn() {

@@ -93,6 +93,7 @@
 	  * @author Schmalls / Joshua Thompson
 	  * @version 0.0.0
 	  * @since 0.0.0
+	  * @access public
 	  * @param array $options options for the user
 	  */
 	 public function __construct($options = array()) {

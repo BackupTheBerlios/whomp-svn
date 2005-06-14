@@ -37,6 +37,15 @@
   */
  $_whomp_configuration = new Whomp_Configuration();
  
+ // check if debugging is enabled
+ if ($_whomp_configuration->debug_setting == 2) {
+	 error_reporting(E_STRICT);
+ } else if ($_whomp_configuration->debug_setting == 1) {
+	 error_reporting(E_ALL ^ E_NOTICE);
+ } else {
+	 error_reporting(0);
+ } // end if
+ 
  /**
   * The Whomp base directory
   * 
@@ -107,22 +116,27 @@
  /**
   * Require the {@link /whomp/includes/whomp_database.php Whomp_Database} class file
   */
- require_once($_whomp_base_path . '/includes/whomp_database.php');
+ require_once($_whomp_storage_path . '/includes/whomp_database.php');
  
  /**
   * Require the {@link /whomp/includes/whomp_language.php Whomp_Language} class file
   */
- require_once($_whomp_base_path . '/includes/whomp_language.php');
+ require_once($_whomp_storage_path . '/includes/whomp_language.php');
  
  /**
   * Require the {@link /whomp/includes/whomp_current_user.php Whomp_Current_User} class file
   */
- require_once($_whomp_base_path . '/includes/whomp_current_user.php');
+ require_once($_whomp_storage_path . '/includes/whomp_current_user.php');
  
  /**
   * Require the {@link /whomp/includes/whomp_xml.php Whomp_Xml} class file
   */
- require_once($_whomp_base_path . '/includes/whomp_xml.php');
+ require_once($_whomp_storage_path . '/includes/whomp_xml.php');
+ 
+ /**
+  * Require the {@link /whomp/includes/whomp_node.php Whomp_Node} class file
+  */
+ require_once($_whomp_storage_path . '/includes/whomp_node.php');
  
  // create the options array to pass to the Whomp_Database class
  $whomp_database_options = array('type' => $_whomp_configuration->database_type,
@@ -163,6 +177,16 @@
   * @global $_whomp_user
   */
  $_whomp_current_user = new Whomp_Current_User();
+ 
+ /**
+  * Access to the {@link Whomp_Node Whomp_Node} class
+  * 
+  * @global $_whomp_node
+  */
+ $_whomp_node = new Whomp_Node($_whomp_requested_page);
+ 
+ // render the page
+ $_whomp_node->renderPage();
  
  // ends caching
  $_whomp_cache->end();
