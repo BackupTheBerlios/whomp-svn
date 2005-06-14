@@ -42,7 +42,7 @@
 	 /**
 	  * Whomp_Node constructor
 	  * 
-	  * @author Schmalls / Joshua Thompson
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
@@ -113,7 +113,7 @@
 	 /**
 	  * Renders the page
 	  * 
-	  * @author Schmalls / Joshua Thompson
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
