@@ -40,6 +40,102 @@
 	 private $_node_class;
 	 
 	 /**
+	  * The node's id
+	  * 
+	  * @var int $id
+	  * @access public
+	  */
+	 public $id;
+	 
+	 /**
+	  * The node's name
+	  * 
+	  * @var string $name
+	  * @access public
+	  */
+	 public $name;
+	 
+	 /**
+	  * The node's type
+	  * 
+	  * @var string $type
+	  * @access public
+	  */
+	 public $type;
+	 
+	 /**
+	  * The node's last modification date
+	  * 
+	  * @var string $modified
+	  * @access public
+	  */
+	 public $modified;
+	 
+	 /**
+	  * The userid of who last modified the node
+	  * 
+	  * @var int $modified_by
+	  * @access public
+	  */
+	 public $modified_by;
+	 
+	 /**
+	  * The node's preferred template
+	  * 
+	  * @var string $template
+	  * @access public
+	  */
+	 public $template;
+	 
+	 /**
+	  * The node's preferred layout
+	  * 
+	  * @var string $layout
+	  * @access public
+	  */
+	 public $layout;
+	 
+	 /**
+	  * The node's parents
+	  * 
+	  * @var array $parents
+	  * @access public
+	  */
+	 public $parents;
+	 
+	 /**
+	  * The node's children
+	  * 
+	  * @var array $children
+	  * @access public
+	  */
+	 public $children;
+	 
+	 /**
+	  * The node's relatives
+	  * 
+	  * @var array $relatives
+	  * @access public
+	  */
+	 public $relatives;
+	 
+	 /**
+	  * The node's group permissions
+	  * 
+	  * @var array $group
+	  * @access private
+	  */
+	 private $_group;
+	 
+	 /**
+	  * The node's user permissions
+	  * 
+	  * @var array $user
+	  * @access private
+	  */
+	 private $_user;
+	 
+	 /**
 	  * Whomp_Node constructor
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -93,6 +189,26 @@
 		 foreach ($node_info as $key => $value) {
 			 $this->$key = $value;
 		 } // end foreach
+		 // create parents array
+		 $this->parents = explode(',', $this->parents);
+		 // create children array
+		 $this->children = explode(',', $this->children);
+		 // create relatives array
+		 $this->relatives = explode(',', $this->relatives);
+		 // create the group permissions array
+		 $group_permissions = explode("\n", $this->_group);
+		 $this->_group = array();
+		 foreach ($group_permissions as $group_permission) {
+			 $group_permission = explode(',', $group_permission);
+			 $this->_group[$group_permission[0]] = $group_permission[1];
+		 } // end foreach
+		 // create the user permissions array
+		 $user_permissions = explode("\n", $this->_user);
+		 $this->_user = array();
+		 foreach ($user_permissions as $user_permission) {
+			 $user_permission = explode(',', $user_permission);
+			 $this->_user[$user_permission[0]] = $user_permission[1];
+		 } // end foreach
 		 // check if the node class file exists
 		 try {
 			 if (is_file($_whomp_storage_path . '/node_types/' . $this->name . '/' . $this->name . '.php')) {
@@ -119,5 +235,80 @@
 	  * @access public
 	  */
 	 public function renderPage() {
+		 global $_whomp_storage_path;
 		 
+		 // check if the template file is needed
+		 if ($this->template != '') {
+			 // if so, check if the template file exists
+			 try {
+				 $template_string = $_whomp_storage_path . '/templates/' . $this->template . '/' . $this->layout . '.xsl';
+				 if (!is_file($template_string)) {
+					 // if not, throw exception
+					 throw new Exception('The template layout sheet was not found.');
+				 } // end if
+			 } catch (Exception $e) {
+				 whomp_output_exception($e, true);
+			 } // end try 
+		 } // end if 		 
 	 } // end function
+	 
+	 /**
+	  * Checks if the group has adequate permissions
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param int $groupid the group's id
+	  * @param int $level the permissions level
+	  * @return boolean whether the group has high enough permissions
+	  */
+	 public function checkGroup($groupid, $level) {
+		 
+		 // check if the group's permissions are defined
+		 if (array_key_exists($groupid, $this->_group)) {
+			 // if so, check if they have adequate permissions
+			 if ($this->_group[$groupid] >= $level) {
+				 // if so, return true
+				 return true;
+			 } else {
+				 // if not, return false
+				 return false;
+			 } // end if
+		 } else {
+			 // if not, return false
+			 return false;
+		 } // end if
+	 } // end function
+	 
+	 /**
+	  * Checks if the user has adequate permissions
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param int $userid the user's id
+	  * @param int $level the permissions level
+	  * @return boolean whether the user has high enough permissions
+	  */
+	 public function checkUser($userid, $level) {
+		 
+		 // check if the user's permissions are defined
+		 if (array_key_exists($userid, $this->_user)) {
+			 // if so, check if they have adequate permissions
+			 if ($this->_user[$userid] >= $level) {
+				 // if so, return true
+				 return true;
+			 } else {
+				 // if not, return false
+				 return false;
+			 } // end if
+		 } else {
+			 // if not, return false
+			 return false;
+		 } // end if
+	 } // end function
+	 
+ } // end class
+?>
