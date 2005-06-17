@@ -40,6 +40,14 @@
 	 private $_node_class;
 	 
 	 /**
+	  * The template class
+	  * 
+	  * @var class $_template_class
+	  * @access private
+	  */
+	 private $_template_class;
+	 
+	 /**
 	  * The node's id
 	  * 
 	  * @var int $id
@@ -80,20 +88,12 @@
 	 public $modified_by;
 	 
 	 /**
-	  * The node's preferred template
+	  * The node's preferred layouts
 	  * 
-	  * @var string $template
+	  * @var array $layouts
 	  * @access public
 	  */
-	 public $template;
-	 
-	 /**
-	  * The node's preferred layout
-	  * 
-	  * @var string $layout
-	  * @access public
-	  */
-	 public $layout;
+	 public $layouts;
 	 
 	 /**
 	  * The node's parents
@@ -189,6 +189,13 @@
 		 foreach ($node_info as $key => $value) {
 			 $this->$key = $value;
 		 } // end foreach
+		 // create layout array
+		 $layouts = explode("\n", $this->layouts);
+		 $this->layouts = array();
+		 foreach ($layouts as $layout) {
+			 $layout = explode(',', $layout);
+			 $this->layouts[$layout[0]] = array('template' => $layout[1], 'layout' => $layout[2]);
+		 } // end foreach
 		 // create parents array
 		 $this->parents = explode(',', $this->parents);
 		 // create children array
@@ -229,27 +236,46 @@
 	 /**
 	  * Renders the page
 	  * 
+	  * <p>This method finds the template engine class file and initializes 
+	  * the template class. It then uses the template class to insert the 
+	  * node's XML and XSL information. After it has been inserted, the 
+	  * template is transformed to the desired ouput format with XSL and 
+	  * then printed to the screen.</p> 
+	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
+	  * @throws Exception
 	  */
 	 public function renderPage() {
 		 global $_whomp_storage_path;
 		 
-		 // check if the template file is needed
-		 if ($this->template != '') {
+		 // check if the format is available
+		 if (array_key_exists($this->_format, $this->layouts)) {
 			 // if so, check if the template file exists
-			 try {
-				 $template_string = $_whomp_storage_path . '/templates/' . $this->template . '/' . $this->layout . '.xsl';
-				 if (!is_file($template_string)) {
-					 // if not, throw exception
-					 throw new Exception('The template layout sheet was not found.');
-				 } // end if
-			 } catch (Exception $e) {
-				 whomp_output_exception($e, true);
-			 } // end try 
-		 } // end if 		 
+			 if (is_file($_whomp_storage_path . '/templates/' . $this->layouts[$this->_format]['template'] . '/template.php')) {
+				 // if so, require it
+				 require_once($_whomp_storage_path . '/templates/' . $this->layouts[$this->_format]['template'] . '/' . $this->layouts[$this->_format]['template'] . '.php');
+				 // create the template class
+				 $class_string = $this->layouts[$this->_format]['template'];
+				 $this->_template_class = new $class_string($this->layouts[$this->_format]['layout'], $this->_format, $this->_node_class->formats);
+				 // place the node xml in the template xml
+				 $this->_template_class->insertNodeXml($this->_node_class->getNodeXml());
+				 // place the node xsl in the template xsl
+				 $this->_template_class->insertXslImport($this->_node_class->getNodeXslPath());
+				 // transform the xml to the desired format with xsl
+				 $this->_template_class->transform();
+				 // output the page
+				 $this->_template_class->render();
+			 } else {
+				 // if not, throw exception
+				 throw new Exception('The specified template could not be found. The file does not exist.');
+			 } // end if
+		 } else {
+			 // if not, throw exception
+			 throw new Exception('The specified file format does not exist.');
+		 } // end if		 
 	 } // end function
 	 
 	 /**

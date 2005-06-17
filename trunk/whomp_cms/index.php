@@ -185,8 +185,12 @@
   */
  $_whomp_node = new Whomp_Node($_whomp_requested_page);
  
- // render the page
- $_whomp_node->renderPage();
+ // try to render the page
+ try {
+	 $_whomp_node->renderPage();
+ } catch (Exception $e) {
+	 whomp_output_exception($e, true);
+ } // end try
  
  // ends caching
  $_whomp_cache->end();

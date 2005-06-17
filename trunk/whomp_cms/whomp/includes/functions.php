@@ -118,6 +118,58 @@
 				  'encodings' => $encodings);
  } // end function
  
+ /**
+  * Gets the best content type
+  * 
+  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+  * @version 0.0.0
+  * @since 0.0.0
+  * @access protected
+  * @throws Exception
+  * @param string $format the requested format
+  * @param array $formats the formats as keys and the content type as values
+  * @global array the user's accept headers
+  * @return string the selected content type
+  */
+ protected function whomp_get_content_type($format, $formats) {
+	 global $_whomp_accept_headers;
+	 
+	 // check if format was supplied
+	 if ($format != '') {
+		 // if so, see if it is a known format
+		 if (array_key_exists($format, $formats)) {
+			 // if so, set the content type accordingly
+			 return $formats($format); 
+		 } else {
+			 // if not, check if it is a known content type
+			 if (in_array($format, $formats)) {
+				 // if so, set it to the content type
+				 return $format;
+			 } else {
+				 // if not, throw exception
+				 throw new Exception('Unknown content type: ' . $format);
+			 } // end if
+		 } // end if
+	 } else {
+		 // if not, use the user's accept headers
+		 foreach ($_whomp_accept_headers['formats'] as $format) {
+			 // see if it is a known format
+			 if (array_key_exists($format, $formats)) {
+				 // if so, set the content type accordingly
+				 return $formats($format); 
+			 } else {
+				 // if not, check if it is a known content type
+				 if (in_array($format, $formats)) {
+					 // if so, set it to the content type
+					 return $format;
+				 } // end if
+			 } // end if
+		 } // end foreach
+		 // if it is not found, throw an exception
+		 throw new Exception('No acceptable format was found.');
+	 } // end if
+ } // end function
+ 
  /* -- REQUEST FUNCTIONS -- */
  
  /* ++ NODE FUNCTIONS ++ */
@@ -144,6 +196,29 @@
   */
  
  /* -- NODE FUNCTIONS -- */
+ 
+ /* ++ FILE FUNCTIONS ++ */
+ 
+ /**
+  * Get's the contents of an included file
+  * 
+  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+  * @version 0.0.0
+  * @since 0.0.0
+  * @param string $file the file to include
+  * @return string the contents of the file after it is evaluated
+  */
+ function whomp_include_file_string($file) {
+	 
+	 // start output buffering to capture output
+	 ob_start();
+	 // include the file
+	 include($file);
+	 // return the string and end output buffering
+	 return ob_get_clean();
+ } // end function
+ 
+ /* -- FILE FUNCTIONS -- */
  
  /* ++ EXCEPTION FUNCTIONS ++ */
  
