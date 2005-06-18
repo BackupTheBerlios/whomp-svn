@@ -24,18 +24,21 @@
   * Get the requested page and format
   * 
   * <p>It returns an array in the following form:<br />
-  * Array {<br /> 
-  * 	'page' => the page requested<br />
-  * 	'format' => the format requested<br />
-  * }</p>
+  * <ul>Array ( 
+  * 	<li>'page' => the page requested</li>
+  * 	<li>'format' => the format requested</li>
+  * 	<li>'node' => the node requested</li>
+  * )</ul>
+  * </p>
   * 
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
   * @return array the requested node and format
-  * @todo implement this function
+  * @global class access to the configuration options
   */
  function whomp_get_requested_page() {
+	 global $_whomp_configuration;
 	 
 	 // create requested file and format string
 	 $requested = $_SERVER['REQUEST_URI'];
@@ -58,8 +61,18 @@
 	 // get the requested page without the format
 	 $page = str_replace('.' . $format, '', $requested);
 	 
+	 // get the node
+	 $node = explode('/', $page);
+	 $the_node = array_pop($node);
+	 if (empty($the_node)) {
+		 $the_node = array_pop($node);
+	 } // end if
+	 if ($the_node === null) {
+		 $the_node = $_whomp_configuration->node_default_node;
+	 } // end if
+	 
 	 // return the array
-	 return array('page' => $page, 'format' => $format);
+	 return array('page' => $page, 'format' => $format, 'node' => $the_node);
  } // end function
  
  /**
@@ -182,18 +195,36 @@
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
-  * @param array $node the requested node information
+  * @param string $node the requested node
   * @return object the node object
   */
- function whomp_get_node_object($node) {
+ function whomp_get_node_array($node) {
 	 
+	 // get the node information from the database
+	 try {
+		 $query = 'SELECT * FROM `#__nodes` WHERE `name` = \'' . $node . '\';';
+		 $_whomp_database->setQuery($query);
+		 $_whomp_database->query();
+		 $node_array = $_whomp_database->loadRow();
+	 } catch (Exception $e) {
+		 whomp_output_exception($e, true);
+	 } // end try
+	 // check if the node was found
+	 if (empty($node_array)) {
+		 // if not, set status to 404 and get error node
+		 header('Status: 404 Not Found');
+		 $node = $_whomp_configuration->node_error_node;
+		 try {
+			 $query = 'SELECT * FROM `#__nodes` WHERE `name` = \'' . $node . '\';';
+			 $_whomp_database->setQuery($query);
+			 $_whomp_database->query();
+			 $node_array = $_whomp_database->loadRow();
+		 } catch (Exception $e) {
+			 whomp_output_exception($e, true);
+		 } // end try
+	 } // end if
+	 return $node_array;
  } // end function
- 
- /**
-  * Loads the node object's classes
-  * 
-  * <p>Creates 
-  */
  
  /* -- NODE FUNCTIONS -- */
  

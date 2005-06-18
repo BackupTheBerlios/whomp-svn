@@ -29,23 +29,48 @@
   * @version 0.0.0
   * @since 0.0.0
   */
- class Whomp_Node {
-	 
-	 /**
-	  * The node class
-	  * 
-	  * @var class $_node_class
-	  * @access private
-	  */
-	 private $_node_class;
+ abstract class Whomp_Node {
 	 
 	 /**
 	  * The template class
 	  * 
 	  * @var class $_template_class
-	  * @access private
+	  * @access protected
 	  */
-	 private $_template_class;
+	 protected $_template_class;
+	 
+	 /**
+	  * The specified format
+	  * 
+	  * @var string $_format
+	  * @access protected
+	  */
+	 protected $_format;
+	 
+	 /**
+	  * The requested page
+	  * 
+	  * @var string $_page
+	  * @access protected
+	  */
+	 protected $_page;
+	 
+	 /**
+	  * The available layouts for the node type
+	  * 
+	  * <p>This should be an array with formats as keys and content-types as 
+	  * values. For example:
+	  * <ul>Array (
+	  * 	<li>'html' => 'text/html'</li>
+	  * 	<li>'xhtml+xml' => 'application/xhtml+xml'</li>
+	  * 	<li>'xhtml' => 'application/xhtml+xml'</li>
+	  * )</ul>
+	  * </p>
+	  * 
+	  * @var array $layouts
+	  * @access public
+	  */
+	 public $formats;
 	 
 	 /**
 	  * The node's id
@@ -90,6 +115,19 @@
 	 /**
 	  * The node's preferred layouts
 	  * 
+	  * <p>This should be an array with formats and/or content types as the 
+	  * keys and an array containing the template and layout information. 
+	  * For example:
+	  * <ul>Array (
+	  * 	<li>
+	  * 		<ul>'html' => Array ( 
+	  * 			<li>'template' => the template to use</li>
+	  * 			<li>'layout' => the layout to use</li>
+	  * 		</ul>
+	  * 	</li>
+	  * )</ul>
+	  * This information should be in the database.</p>
+	  * 
 	  * @var array $layouts
 	  * @access public
 	  */
@@ -123,17 +161,17 @@
 	  * The node's group permissions
 	  * 
 	  * @var array $group
-	  * @access private
+	  * @access protected
 	  */
-	 private $_group;
+	 protected $_group;
 	 
 	 /**
 	  * The node's user permissions
 	  * 
 	  * @var array $user
-	  * @access private
+	  * @access protected
 	  */
-	 private $_user;
+	 protected $_user;
 	 
 	 /**
 	  * Whomp_Node constructor
@@ -150,43 +188,8 @@
 	 public function __construct($options = array()) {
 		 global $_whomp_database, $_whomp_configuration, $_whomp_storage_path;
 		 
-		 // set the page and format
-		 $this->_page = $options['page'];
-		 $this->_format = $options['format'];
-		 // get the node
-		 $node = explode('/', $this->_page);
-		 $the_node = array_pop($node);
-		 if (empty($the_node)) {
-			 $the_node = array_pop($node);
-		 } // end if
-		 if ($the_node === null) {
-			 $the_node = $_whomp_configuration->node_default_node;
-		 } // end if
-		 // get the node information from the database
-		 try {
-			 $query = 'SELECT * FROM `#__nodes` WHERE `name` = \'' . $the_node . '\';';
-			 $_whomp_database->setQuery($query);
-			 $_whomp_database->query();
-			 $node_info = $_whomp_database->loadRow();
-		 } catch (Exception $e) {
-			 whomp_output_exception($e, true);
-		 } // end try
-		 // check if the node was found
-		 if (empty(node_info)) {
-			 // if not, set status to 404 and get error node
-			 header('Status: 404 Not Found');
-			 $the_node = $_whomp_configuration->node_error_node;
-			 try {
-				 $query = 'SELECT * FROM `#__nodes` WHERE `name` = \'' . $the_node . '\';';
-				 $_whomp_database->setQuery($query);
-				 $_whomp_database->query();
-				 $node_info = $_whomp_database->loadRow();
-			 } catch (Exception $e) {
-				 whomp_output_exception($e, true);
-			 } // end try
-		 } // end if
 		 // set the node information
-		 foreach ($node_info as $key => $value) {
+		 foreach ($options as $key => $value) {
 			 $this->$key = $value;
 		 } // end foreach
 		 // create layout array
@@ -216,21 +219,6 @@
 			 $user_permission = explode(',', $user_permission);
 			 $this->_user[$user_permission[0]] = $user_permission[1];
 		 } // end foreach
-		 // check if the node class file exists
-		 try {
-			 if (is_file($_whomp_storage_path . '/node_types/' . $this->name . '/' . $this->name . '.php')) {
-				 // if so, require it
-				 require_once($_whomp_storage_path . '/node_types/' . $this->name . '/' . $this->name . '.php');
-			 } else {
-				 // if not, throw exception
-				 throw new Exception('Exception opening ' . $this->name . ' class file. File does not exist.');
-			 } // end if
-		 } catch (Exception $e) {
-			 whomp_output_exception($e, true);
-		 } // end try
-		 // create the node class
-		 $class_string = $this->type;
-		 $this->_node_class = new $class_string($this->name);
 	 } // end function
 	 
 	 /**
@@ -259,11 +247,11 @@
 				 require_once($_whomp_storage_path . '/templates/' . $this->layouts[$this->_format]['template'] . '/' . $this->layouts[$this->_format]['template'] . '.php');
 				 // create the template class
 				 $class_string = $this->layouts[$this->_format]['template'];
-				 $this->_template_class = new $class_string($this->layouts[$this->_format]['layout'], $this->_format, $this->_node_class->formats);
+				 $this->_template_class = new $class_string($this->layouts[$this->_format]['layout'], $this->_format, $this->formats);
 				 // place the node xml in the template xml
-				 $this->_template_class->insertNodeXml($this->_node_class->getNodeXml());
+				 $this->_template_class->insertNodeXml($this->getNodeXml());
 				 // place the node xsl in the template xsl
-				 $this->_template_class->insertXslImport($this->_node_class->getNodeXslPath());
+				 $this->_template_class->insertXslImport($this->getNodeXslPath());
 				 // transform the xml to the desired format with xsl
 				 $this->_template_class->transform();
 				 // output the page
@@ -335,6 +323,26 @@
 			 return false;
 		 } // end if
 	 } // end function
+	 
+	 /**
+	  * Gets the node's XML representation
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  */
+	 abstract public function getNodeXML();
+	 
+	 /**
+	  * Gets the path to the node's XSL file
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  */
+	 abstract public function getNodeXslPath();
 	 
  } // end class
 ?>

@@ -64,7 +64,7 @@
 	  * 	<li>'html' => 'text/html'</li>
 	  * 	<li>'xhtml+xml' => 'application/xhtml+xml'</li>
 	  * 	<li>'xhtml' => 'application/xhtml+xml'</li>
-	  * </ul>
+	  * )</ul>
 	  * </p>
 	  * 
 	  * @var array $_formats

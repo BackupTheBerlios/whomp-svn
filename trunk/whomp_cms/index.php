@@ -179,11 +179,15 @@
  $_whomp_current_user = new Whomp_Current_User();
  
  /**
-  * Access to the {@link Whomp_Node Whomp_Node} class
+  * The requested node information from the database
   * 
   * @global $_whomp_node
   */
- $_whomp_node = new Whomp_Node($_whomp_requested_page);
+ $_whomp_node_array = whomp_get_node_array($_whomp_requested_page['node']);
+ 
+ // add page and format information to the node array
+ $_whomp_node_array['_page'] = $_whomp_requested_page['page'];
+ $_whomp_node_array['_format'] = $_whomp_requested_page['format'];
  
  // try to render the page
  try {
