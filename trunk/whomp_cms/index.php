@@ -84,10 +84,10 @@
  require_once($_whomp_storage_path . '/includes/whomp_cache.php');
  
  // create the options array to pass to the Whomp_Cache class
- $whomp_cache_options = array('cache_dir' => $_whomp_configuration->cache_dir,
- 							  'enable_caching' => $_whomp_configuration->cache_enable_caching,
-							  'lifetime' => $_whomp_configuration->cache_default_lifetime,
-							  'compress_output' => $_whomp_configuration->cache_compress_output);
+ $whomp_cache_options = array('_cache_dir' => $_whomp_storage_path . $_whomp_configuration->cache_dir,
+ 							  '_enable_caching' => (boolean)$_whomp_configuration->cache_enable_caching,
+							  '_lifetime' => (integer)$_whomp_configuration->cache_default_lifetime,
+							  '_compress_output' => (boolean)$_whomp_configuration->cache_compress_output);
  
  /**
   * Access to the {@link Whomp_Cache Whomp_Cache} class
@@ -97,21 +97,21 @@
  $_whomp_cache = new Whomp_Cache($whomp_cache_options);
  
  /**
-  * The requested page and format
-  * 
-  * @global array $_whomp_requested_page
-  */
- $_whomp_requested_page = whomp_get_requested_page();
- 
- /**
   * The accept header information
   * 
   * @global array $_whomp_accept
   */
  $_whomp_accept_headers = whomp_get_accept_headers();
  
+ /**
+  * The requested page and format
+  * 
+  * @global array $_whomp_requested_page
+  */
+ $_whomp_requested_page = whomp_get_requested_page();
+ 
  // starts caching or outputs page and quits if it is available
- $_whomp_cache->start($_whomp_requested_node, true, true);
+ $_whomp_cache->start($_whomp_requested_node, true);
  
  /**
   * Require the {@link /whomp/includes/whomp_database.php Whomp_Database} class file
@@ -183,19 +183,15 @@
   * 
   * @global $_whomp_node
   */
- $_whomp_node_array = whomp_get_node_array($_whomp_requested_page['node']);
- 
- // add page and format information to the node array
- $_whomp_node_array['_page'] = $_whomp_requested_page['page'];
- $_whomp_node_array['_format'] = $_whomp_requested_page['format'];
+ $_whomp_node_array = whomp_get_node_array($_whomp_requested_page);
  
  // try to render the page
  try {
-	 $_whomp_node->renderPage();
+	 $whomp_unique_suffix = whomp_render_page($_whomp_node_array);
  } catch (Exception $e) {
 	 whomp_output_exception($e, true);
  } // end try
  
  // ends caching
- $_whomp_cache->end();
+ $_whomp_cache->end($whomp_unique_suffix);
 ?> 

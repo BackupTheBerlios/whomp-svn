@@ -77,7 +77,7 @@
 				 whomp_ouput_exception($e, true);
 			 } // end try
 			 // check if whomp_logout_time cookie is set
-			 if ((isset($_COOKIE['whomp_logout_time'])) && ($_COOKIE['whomp_logout_time'] < microtime($true))) {
+			 if ((isset($_COOKIE['whomp_logout_time'])) && ($_COOKIE['whomp_logout_time'] < microtime(true))) {
 				 // if not, set logged in to true
 				 $this->_logged_in = true;
 			 } // end if

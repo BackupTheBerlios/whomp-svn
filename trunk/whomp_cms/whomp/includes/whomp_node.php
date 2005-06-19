@@ -56,6 +56,14 @@
 	 protected $_page;
 	 
 	 /**
+	  * The node's language
+	  * 
+	  * @var string $language
+	  * @access public
+	  */
+	 public $language;
+	 
+	 /**
 	  * The available layouts for the node type
 	  * 
 	  * <p>This should be an array with formats as keys and content-types as 
@@ -235,6 +243,8 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @throws Exception
+	  * @global string the whomp storage path
+	  * @return string unique identifier suitable for sending to Whomp_Cache::end()
 	  */
 	 public function renderPage() {
 		 global $_whomp_storage_path;
@@ -255,7 +265,7 @@
 				 // transform the xml to the desired format with xsl
 				 $this->_template_class->transform();
 				 // output the page
-				 $this->_template_class->render();
+				 return $this->_template_class->render();
 			 } else {
 				 // if not, throw exception
 				 throw new Exception('The specified template could not be found. The file does not exist.');
@@ -263,7 +273,7 @@
 		 } else {
 			 // if not, throw exception
 			 throw new Exception('The specified file format does not exist.');
-		 } // end if		 
+		 } // end if	 
 	 } // end function
 	 
 	 /**
@@ -332,7 +342,7 @@
 	  * @since 0.0.0
 	  * @access public
 	  */
-	 abstract public function getNodeXML();
+	 abstract public function getNodeXml();
 	 
 	 /**
 	  * Gets the path to the node's XSL file

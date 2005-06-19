@@ -197,6 +197,8 @@
 		 header('Content-Type: ' . $this->_content_type . '; charset=' . $this->_charset);
 		 // display the document
 		 echo $this->_template_transformed;
+		 // return unique identifier
+		 return $this->_content_type . '_' . $this->_charset;
 	 } // end function
 	 
  } // end class
