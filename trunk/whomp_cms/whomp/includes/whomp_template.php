@@ -189,7 +189,7 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @param string $format the output format
+	  * @return array information about the page suitable for sending to Whomp_Cache::end()
 	  */
 	 public function render() {
 		 
@@ -198,7 +198,8 @@
 		 // display the document
 		 echo $this->_template_transformed;
 		 // return unique identifier
-		 return $this->_content_type . '_' . $this->_charset;
+		 return array('content_type' => $this->_content_type,
+		 			  'charset' => $this->_charset);
 	 } // end function
 	 
  } // end class

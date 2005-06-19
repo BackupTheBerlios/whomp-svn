@@ -105,6 +105,14 @@
 	 public $type;
 	 
 	 /**
+	  * The node's language
+	  * 
+	  * @var string $language
+	  * @access public
+	  */
+	 public $language;
+	 
+	 /**
 	  * The node's last modification date
 	  * 
 	  * @var string $modified
@@ -182,6 +190,22 @@
 	 protected $_user;
 	 
 	 /**
+	  * Headers that should be sent with this node
+	  * 
+	  * @var array $_headers
+	  * @access protected
+	  */
+	 protected $_headers;
+	 
+	 /**
+	  * Whether this page should be shown if a user is logged in
+	  * 
+	  * @var boolean $_show_logged
+	  * @access protected
+	  */
+	 protected $_show_logged;
+	 
+	 /**
 	  * Whomp_Node constructor
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -244,7 +268,7 @@
 	  * @access public
 	  * @throws Exception
 	  * @global string the whomp storage path
-	  * @return string unique identifier suitable for sending to Whomp_Cache::end()
+	  * @return array information about the page suitable for sending to Whomp_Cache::end()
 	  */
 	 public function renderPage() {
 		 global $_whomp_storage_path;
@@ -265,7 +289,7 @@
 				 // transform the xml to the desired format with xsl
 				 $this->_template_class->transform();
 				 // output the page
-				 return $this->_template_class->render();
+				 $options = $this->_template_class->render();
 			 } else {
 				 // if not, throw exception
 				 throw new Exception('The specified template could not be found. The file does not exist.');
@@ -273,7 +297,11 @@
 		 } else {
 			 // if not, throw exception
 			 throw new Exception('The specified file format does not exist.');
-		 } // end if	 
+		 } // end if
+		 // add more information to the options array
+		 $options['language'] = $this->language;
+		 $options['page'] = $this->_page;
+		 return $options;	 
 	 } // end function
 	 
 	 /**

@@ -78,6 +78,9 @@
 	  * 				'show_logged' => whether the file should be shown if 
 	  * 								 the current user is logged in
 	  * 				'charset' => 'utf-8'
+	  * 				'headers' => Array (
+	  * 					0 => 'Cache-Control: no-store, no-cache, must-revalidate'
+	  * 				)
 	  * 			)
 	  * 		)
 	  * 	)
@@ -105,7 +108,9 @@
 	  * 		'language' => 'en'
 	  * 		'page' => '/home'
 	  * 		'cache' => true
-	  * 		'unique_suffix' => 'en_application/xhtml+xml_utf8'
+	  * 		'headers' => Array (
+	  * 			0 => 'Cache-Control: no-store, no-cache, must-revalidate'
+	  * 		)
 	  * 	)
 	  * )
 	  * </pre>
@@ -146,8 +151,14 @@
 			 // if not, set cached files to an empty array
 			 $this->_cached_files = array();
 		 } // end if
-		 // start the output buffer
-		 ob_start();
+		 // check if compression is enable
+		 if ($this->_compress_ouput) {
+			 // if so, start output buffering with output compression
+			 ob_start('ob_gzhandler');
+		 } else {
+			 // if not, start output buffering
+			 ob_start();
+		 } // end if
 	 } // end function
 	 
 	 /**
@@ -205,7 +216,8 @@
 							 if ((time() - $this->_cached_files[$language][$page][$content_type]['lifetime']) < (filemtime($filename))) {
 								 // if not, check if it should be served to a logged in user and if the user is not logged in
 								 if (($this->_cached_files[$language][$page][$content_type]['show_logged']) || (!isset($_COOKIE['whomp_logout_time']))) {
-									 // if so, set the content-type and charset
+									 // if so, set the status, content-type and charset
+									 header('Status: 304 Not Modified');
 									 header('Content-Type: ' . $content_type . '; charset=' . $this->_cached_files[$language][$page][$content_type]['charset']);
 									 // output the page
 									 echo file_get_contents($filename);
@@ -228,6 +240,8 @@
 				 } // end if
 			 } // end if
 		 } // end if
+		 // start the output buffer
+		 ob_start();
 	 } // end function
 	 
 	 /**
@@ -242,15 +256,34 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @param string $unique_suffix a unique suffix to append to the node name
+	  * @param array $options options for the page or block
 	  * @todo implement this
 	  */
-	 public function end($unique_suffix = '') {
+	 public function end($options = array()) {
 		 
 		 // check if caching is enabled
-		 if ($this->_enable_caching) {
-			 // if so, 
+		 if ($this->_enable_caching && $options['cache']) {
+			 // if so, create the filename
+			 $filename = md5($options['page'] . '_' .
+			 				 $options['language'] . '_' . 
+							 $options['content_type'] . '_' . 
+							 $options['charset']) . '.cache';
+			 // get the file contents
+			 $contents = ob_get_contents();
+			 // write the file and see if it was successful
+			 if (file_put_contents($this->_cache_dir . '/' . $filename, $contents) !== false) {
+				 // if so, update the cached files array
+				 $this->_cached_files[$options['langauge']]
+				 					 [$options['page']]
+									 [$options['content_type']] = array('filename' => $filename,
+				 														'lifetime' => $options['lifetime'],
+																		'show_logged' => $options['show_logged'],
+																		'charset' => $options['charset'],
+																		'headers' => $options['headers']);
+			 } // end if
 		 } // end if
+		 // stop the output buffer
+		 ob_end_flush();
 	 } // end function
  } // end class
 ?>

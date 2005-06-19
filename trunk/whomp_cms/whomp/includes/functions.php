@@ -290,6 +290,7 @@
   * @throws Exception
   * @param array $options the node information
   * @global string the whomp storage path
+  * @return array information about the page suitable for sending to Whomp_Cache::end()
   */
  function whomp_render_page($options) {
 	 global $_whomp_storage_path;
