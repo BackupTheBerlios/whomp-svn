@@ -28,8 +28,9 @@
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
+  * @access public
   */
- class Whomp_Cache {
+ public class Whomp_Cache {
 	 
 	 /**
 	  * The cache directory
@@ -257,7 +258,6 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @param array $options options for the page or block
-	  * @todo implement this
 	  */
 	 public function end($options = array()) {
 		 

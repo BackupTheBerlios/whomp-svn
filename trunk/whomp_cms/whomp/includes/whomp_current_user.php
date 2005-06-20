@@ -34,8 +34,10 @@
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
+  * @access public
+  * @todo implement login functions, etc
   */
- class Whomp_Current_User extends Whomp_User {
+ public class Whomp_Current_User extends Whomp_User {
 	 
 	 /**
 	  * md5 of the password

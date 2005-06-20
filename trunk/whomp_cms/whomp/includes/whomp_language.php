@@ -28,8 +28,10 @@
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
+  * @access public
+  * @todo finish implementing this
   */
- class Whomp_Language {
+ public class Whomp_Language {
 	 
 	 /**
 	  * Whomp_Language constructor

@@ -58,7 +58,7 @@
   * 
   * @global string $_whomp_storage_path
   */
- $_whomp_storage_path = $_whomp_base_path . $_whomp_configuration->base_dir;
+ $_whomp_storage_path = $_whomp_base_path . $_whomp_configuration->storage_dir;
  
  /**
   * The Whomp base url
@@ -68,9 +68,9 @@
  $_whomp_base_url = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
  
  // Check if we need to install
- if ($_whomp_configuration->installed == 0) {
+ if (!$_whomp_configuration->installed) {
 	 // if so, redirect to the installation file
-	 header('Location: ' . $_whomp_base_url . '/' . $_whomp_configuration->base_dir . '/includes/installation.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_url_path);
+	 header('Location: ' . $_whomp_base_url . '/' . $_whomp_configuration->storage_dir . '/includes/installation.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_url_path);
  } // end if
  
  /**
@@ -152,24 +152,25 @@
   * @global $_whomp_database
   */
  $_whomp_database = new Whomp_Database($whomp_database_options);
- 
+ /*
  // create languages array
- $whomp_languages_array = explode(',', str_replace(' ', '', $_whomp_configuration->lamguage_languages));
+ $whomp_languages_array = explode(',', str_replace(' ', '', $_whomp_configuration->language_languages));
  // check if default (en) is in the language array
  if (!in_array('en', $whomp_languages_array)) {
 	 // if not, add it
 	 $whomp_languages_array[] = 'en';
  } // end if
+ */
  // create the options array to pass to the Whomp_Language class
  $whomp_language_options = array('directory' => $_whomp_base_path . '/languages',
  								 'class_prefix' => 'Whomp_Language_',
-								 'languages' => $whomp_languages_array);
+								 'languages' => $whomp_configuration->language_languages);
  /**
   * Access to the {@link Whomp_Language Whomp_Language} class
   * 
   * @global $_whomp_language
   */
- $_whomp_langauge = new Whomp_Language($whomp_language_options);
+ $_whomp_language = new Whomp_Language($whomp_language_options);
  
  /**
   * Access to the {@link Whomp_Database Whomp_User} class

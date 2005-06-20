@@ -28,8 +28,9 @@
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
+  * @access public
   */
- abstract class Whomp_Node {
+ public abstract class Whomp_Node {
 	 
 	 /**
 	  * The template class
@@ -213,12 +214,8 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @param array $options options for the node
-	  * @global class access to the database
-	  * @global class access to the configuration options
-	  * @global string storage path
 	  */
 	 public function __construct($options = array()) {
-		 global $_whomp_database, $_whomp_configuration, $_whomp_storage_path;
 		 
 		 // set the node information
 		 foreach ($options as $key => $value) {

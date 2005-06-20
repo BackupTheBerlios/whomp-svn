@@ -133,7 +133,7 @@
 	 // create the accepted languages array
 	 $languages = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT_LANGUAGE']);
 	 // make the languages only include those that are available
-	 $languages = array_intersect_key($languages, $_whomp_configuration->languages_available);
+	 $languages = array_intersect_key($languages, $_whomp_configuration->language_languages);
 	 
 	 // create the accepted character sets array
 	 $charsets = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT_CHARSET']);
@@ -406,16 +406,7 @@ ERROR;
 	 // check if this should be logged or printed
 	 if ($_whomp_configuration->debug_log) {
 		 // if so, write to log file
-		 try {
-			 // create whomp file write options
-			 $file_write_options = array('file' => $_whomp_base_path . $_whomp_configuration->debug_log_file,
-			 							 'data' => $message,
-										 'append' => true);
-			 // append the debug log file
-			 whomp_file_write($file_write_options);
-		 } catch (Exception $e) {
-			 var_dump($e);
-		 } // end try
+		 file_put_contents($_whomp_base_path . $_whomp_configuration->debug_log_file, $message, FILE_APPEND);
 	 } // end if
 	 // check if we should exit
 	 if ($exit) {

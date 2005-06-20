@@ -28,6 +28,7 @@
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
+  * @access public
   */
  public abstract class Whomp_Template {
 	 
