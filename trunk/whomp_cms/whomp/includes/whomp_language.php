@@ -22,7 +22,11 @@
  /**
   * The Whomp language class
   * 
-  * <p>Implements multi-lingual capabilities in Whomp.</p>
+  * <p>Abstract class contains all of the English language definitions. This 
+  * class cannot be instantiated directly. Instead a subclass should be made 
+  * and named 'Whomp_Language_en' or instead of 'en' the language code. The 
+  * subclass should extend 'Whomp_Language' and define all of the properties 
+  * in the specified language.</p>
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -31,19 +35,22 @@
   * @access public
   * @todo finish implementing this
   */
- public class Whomp_Language {
+ abstract public class Whomp_Language {
 	 
 	 /**
-	  * Whomp_Language constructor
+	  * Returns the specified message
 	  * 
-	  * @author Schmalls / Joshua Thompson
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @param array $options options for the language
+	  * @param string $message the property to return
+	  * @return string the property's value
 	  */
-	 public function __construct($options) {
+	 final public function getMessage($message) {
 		 
+		 // return the message
+		 return $this->$message;
 	 } // end function
  } // end class
 ?>

@@ -119,9 +119,9 @@
  require_once($_whomp_storage_path . '/includes/whomp_database.php');
  
  /**
-  * Require the {@link /whomp/includes/whomp_language.php Whomp_Language} class file
+  * Require the Whomp_Language's child class file
   */
- require_once($_whomp_storage_path . '/includes/whomp_language.php');
+ require_once($_whomp_storage_path . '/includes/whomp_language_' . $_whomp_accept_headers['languages'][0] . '.php');
  
  /**
   * Require the {@link /whomp/includes/whomp_current_user.php Whomp_Current_User} class file
@@ -152,25 +152,16 @@
   * @global $_whomp_database
   */
  $_whomp_database = new Whomp_Database($whomp_database_options);
- /*
- // create languages array
- $whomp_languages_array = explode(',', str_replace(' ', '', $_whomp_configuration->language_languages));
- // check if default (en) is in the language array
- if (!in_array('en', $whomp_languages_array)) {
-	 // if not, add it
-	 $whomp_languages_array[] = 'en';
- } // end if
- */
- // create the options array to pass to the Whomp_Language class
- $whomp_language_options = array('directory' => $_whomp_base_path . '/languages',
- 								 'class_prefix' => 'Whomp_Language_',
-								 'languages' => $whomp_configuration->language_languages);
+ 
+ // create the language class string
+ $whomp_language_class_string = 'Whomp_Language_' . $_whomp_accept_headers['languages'][0];
+ 
  /**
-  * Access to the {@link Whomp_Language Whomp_Language} class
+  * Access to the {@link Whomp_Language Whomp_Language's} child class
   * 
   * @global $_whomp_language
   */
- $_whomp_language = new Whomp_Language($whomp_language_options);
+ $_whomp_language = new $whomp_language_class_string();
  
  /**
   * Access to the {@link Whomp_Database Whomp_User} class

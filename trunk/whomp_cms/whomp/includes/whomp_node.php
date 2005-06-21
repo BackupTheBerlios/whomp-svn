@@ -30,7 +30,7 @@
   * @since 0.0.0
   * @access public
   */
- public abstract class Whomp_Node {
+ abstract public class Whomp_Node {
 	 
 	 /**
 	  * The template class
