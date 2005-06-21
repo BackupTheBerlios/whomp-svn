@@ -273,9 +273,9 @@
 		 // check if the format is available
 		 if (array_key_exists($this->_format, $this->layouts)) {
 			 // if so, check if the template file exists
-			 if (is_file($_whomp_storage_path . '/templates/' . $this->layouts[$this->_format]['template'] . '/template.php')) {
+			 if (is_file($_whomp_storage_path . '/templates/' . strtolower($this->layouts[$this->_format]['template']) . '/' . strtolower($this->layouts[$this->_format]['template']) . '.php')) {
 				 // if so, require it
-				 require_once($_whomp_storage_path . '/templates/' . $this->layouts[$this->_format]['template'] . '/' . $this->layouts[$this->_format]['template'] . '.php');
+				 require_once($_whomp_storage_path . '/templates/' . strtolower($this->layouts[$this->_format]['template']) . '/' . strtolower($this->layouts[$this->_format]['template']) . '.php');
 				 // create the template class
 				 $class_string = $this->layouts[$this->_format]['template'];
 				 $this->_template_class = new $class_string($this->layouts[$this->_format]['layout'], $this->_format, $this->formats);

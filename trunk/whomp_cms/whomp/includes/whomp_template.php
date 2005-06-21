@@ -30,7 +30,7 @@
   * @since 0.0.0
   * @access public
   */
- public abstract class Whomp_Template {
+ abstract public class Whomp_Template {
 	 
 	 /**
 	  * The template XML DOMDocument
@@ -108,7 +108,7 @@
 	  * @throws Exception
 	  * @param string $layout the layout to use
 	  * @param string $format the output format
-	  * @param string $node_formats the formats that the node supports
+	  * @param array $node_formats the formats that the node supports
 	  */
 	 abstract public function __construct($layout, $format, $node_formats);
 	 
