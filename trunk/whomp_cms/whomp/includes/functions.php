@@ -226,7 +226,9 @@
 		 if (!empty($_whomp_accept_headers['languages'])) {
 			 // if so, go until we find a node in an acceptable language
 			 foreach ($_whomp_accept_headers['languages'] as $language) {
-				 $query = 'SELECT * FROM `#__' . $language . '_nodes` WHERE `name` = \'' . $options['node'] . '\';';
+				 $queryValues = array($language,
+				 					  $_whomp_database->escapeString($options['node']));
+				 $query = vsprintf('SELECT * FROM `#__%s_nodes` WHERE `name` = \'%s\';', $queryValues);
 				 $_whomp_database->setQuery($query);
 				 $_whomp_database->query();
 				 $node_array = $_whomp_database->loadRow();
@@ -254,7 +256,9 @@
 		 try {
 			 // go until we find an error node in an acceptable language
 			 foreach ($_whomp_accept_headers['languages'] as $language) {
-				 $query = 'SELECT * FROM `#__' . $language . '_nodes` WHERE `name` = \'' . $_whomp_configuration->node_error_node . '\';';
+				 $queryValues = array($language,
+				 					  $_whomp_database->escapeString($_whomp_configuration->node_error_node));
+				 $query = vsprintf('SELECT * FROM `#__%s_nodes` WHERE `name` = \'%s\';', $queryValues);
 				 $_whomp_database->setQuery($query);
 				 $_whomp_database->query();
 				 $node_array = $_whomp_database->loadRow();
@@ -296,9 +300,9 @@
 	 global $_whomp_storage_path;
 	 
 	 // check if the node type class file exists
-	 if (is_file($_whomp_storage_path . '/node_types/' . $options['type'] . '/' . $options['type'] . '.php')) {
+	 if (is_file($_whomp_storage_path . '/node_types/' . strtolower($options['type']) . '/' . strtolower($options['type']) . '.php')) {
 		 // if so, require it
-		 require_once($_whomp_storage_path . '/node_types/' . $options['type'] . '/' . $options['type'] . '.php');
+		 require_once($_whomp_storage_path . '/node_types/' . strtolower($options['type']) . '/' . strtolower($options['type']) . '.php');
 		 // create the node class
 		 $class_string = $options['type'];
 		 $node_class = new $class_string($options);

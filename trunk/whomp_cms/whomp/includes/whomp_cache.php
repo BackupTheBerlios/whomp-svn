@@ -195,11 +195,13 @@
 	  * @param string $requested the requested page or block
 	  * @param boolean $exit whether or not we should exit if it is available
 	  * @global array the accept headers
+	  * @return boolean whether the node was cached or not
 	  */
 	 public function start($requested, $exit) {
 		 global $_whomp_accept_headers;
 		 
 		 // check if caching is enabled
+		 $return = false;
 		 if ($this->_enable_caching) {
 			 // if so, see if the requested language is available
 			 $language = $_whomp_accept_headers['languages'][0];
@@ -222,6 +224,8 @@
 									 header('Content-Type: ' . $content_type . '; charset=' . $this->_cached_files[$language][$page][$content_type]['charset']);
 									 // output the page
 									 echo file_get_contents($filename);
+									 // set return to true
+									 $return = true;
 									 // check if we should exit
 									 if ($exit) {
 										 exit();
@@ -243,6 +247,8 @@
 		 } // end if
 		 // start the output buffer
 		 ob_start();
+		 // return return
+		 return $return;
 	 } // end function
 	 
 	 /**
