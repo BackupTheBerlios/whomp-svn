@@ -42,6 +42,7 @@
 	  * @param array $options options for the node
 	  * @global class access to the cache
 	  * @global class access to the database
+	  * @todo finish this
 	  */
 	 public function __construct($options = array()) {
 		 global $_whomp_database;
@@ -49,9 +50,9 @@
 		 // call the parent constructor
 		 parent::__construct($options);
 		 // get the node information from the database
-		 $queryValues = array($this->language,
-		 					  $_whomp_database->escapeString($this->id));
-		 $query = vsprintf('SELECT * FROM `#__%s_node_types_whomp_test_node` WHERE `id` = \'%d\';', $queryValues);
+		 $queryValues = array($this->id);
+		 $query = 'SELECT * FROM `#__' . $this->language . '_node_types_whomp_test_node` WHERE `id` = %d;';
+		 $_whomp_database->setQuery($query, $queryValues);
 	 } // end function
 	 
 	 /**

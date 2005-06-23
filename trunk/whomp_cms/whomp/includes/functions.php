@@ -226,10 +226,9 @@
 		 if (!empty($_whomp_accept_headers['languages'])) {
 			 // if so, go until we find a node in an acceptable language
 			 foreach ($_whomp_accept_headers['languages'] as $language) {
-				 $queryValues = array($language,
-				 					  $_whomp_database->escapeString($options['node']));
-				 $query = vsprintf('SELECT * FROM `#__%s_nodes` WHERE `name` = \'%s\';', $queryValues);
-				 $_whomp_database->setQuery($query);
+				 $queryValues = array($options['node']);
+				 $query = 'SELECT * FROM `#__' . $language . '_nodes` WHERE `name` = %s;', $queryValues);
+				 $_whomp_database->setQuery($query, $queryValues);
 				 $_whomp_database->query();
 				 $node_array = $_whomp_database->loadRow();
 				 // check if the node was available
@@ -256,10 +255,9 @@
 		 try {
 			 // go until we find an error node in an acceptable language
 			 foreach ($_whomp_accept_headers['languages'] as $language) {
-				 $queryValues = array($language,
-				 					  $_whomp_database->escapeString($_whomp_configuration->node_error_node));
-				 $query = vsprintf('SELECT * FROM `#__%s_nodes` WHERE `name` = \'%s\';', $queryValues);
-				 $_whomp_database->setQuery($query);
+				 $queryValues = array($_whomp_configuration->node_error_node));
+				 $query = vsprintf('SELECT * FROM `#__' . $language . '_nodes` WHERE `name` = %s;', $queryValues);
+				 $_whomp_database->setQuery($query, $queryValues);
 				 $_whomp_database->query();
 				 $node_array = $_whomp_database->loadRow();
 				 // check if the node was available

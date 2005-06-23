@@ -41,7 +41,9 @@
   * @version 0.0.0
   * @since 0.0.0
   * @access public
-  * @todo add table deletion and backup functionality using AXMLS
+  * @todo add table deletion and backup functions using AXMLS
+  * @todo add date handling functions
+  * @todo add blob and/or clob functions
   */
  public class Whomp_Database {
 	 
@@ -86,6 +88,14 @@
 	 protected $_count = 0;
 	 
 	 /**
+	  * Whether magic quotes is enabled or not
+	  * 
+	  * @var boolean $_magic_quotes
+	  * @access protected
+	  */
+	 protected $_magic_quotes = (boolean)get_magic_quotes_gpc();
+	 
+	 /**
 	  * Whomp_Database constructor
 	  * 
 	  * <p>The options array should be in the following form:
@@ -127,19 +137,44 @@
 	  * Sets the query
 	  * 
 	  * <p>Sets the database query after replacing the table prefix 
-	  * placeholder to the configured table prefix</p>
+	  * placeholder to the configured table prefix. It also inserts the 
+	  * query values into the query. The query and query values should be in 
+	  * a form suitable for the vsprintf function.<br />
+	  * Examples:<br />
+	  * <code>
+	  * $queryValues = array($id, $name);
+	  * $query = 'SELECT * FROM `#__example_table` WHERE `id` = %d AND `name` = %s;';
+	  * $_whomp_database->setQuery($query, $queryValues);
+	  * </code>
+	  * The previous example shows the use of query values, which are optional.
+	  * <code>
+	  * $query = 'SELECT * FROM `#__example_table`;';
+	  * $_whomp_database->setQuery($query);
+	  * </code>
+	  * The previous example shows a query without query values.
+	  * </p>
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @param string $query The database query to be set
-	  * @param string $prefix_placeholder The table prefix placeholder
+	  * @param string $query the database query to be set
+	  * @param array $queryValues values that need to be inserted into the query
+	  * @param string $prefix_placeholder the table prefix placeholder
 	  */
-	 public function setQuery($query, $prefix_placeholder = '#__') {
+	 public function setQuery($query, $queryValues = null, $prefix_placeholder = '#__') {
 		 
-		 // Translate the query and then set it
+		 // translate the query and then set it
 		 $this->_query = str_replace($prefix_placeholder, $this->_table_prefix, $query);
+		 // see if any query values were sent
+		 if ($queryValues !== null) {
+			 // if so, escape each string
+			 foreach ($queryValues as $key => $value) {
+				 $queryValues[$key] = $this->escapeString($value);
+			 } // end foreach
+			 // then update the query
+			 $this->_query = vsprintf($this->_query, $queryValues);
+		 } // end if
 	 } // end function
 	 
 	 /**
@@ -160,20 +195,55 @@
 	 /**
 	  * Queries the database
 	  * 
-	  * <p>It sets the results of the query to the internal result, and also 
-	  * returns it.</p>
+	  * <p>First it checks if a bind values array was provided and uses them 
+	  * if so. A multidimensional array can be sent as the bind values. 
+	  * After it executes the query it updates the internal counter and 
+	  * returns the database result.<br />
+	  * Examples:<br />
+	  * <code>
+	  * $query = 'INSERT INTO `#__example_table` (`name`, `email`) VALUES (' . $_whomp_database->param('name') . ', ' . $_whomp_database->param('email');';
+	  * $database->setQuery($query);
+	  * </code>
+	  * The previous example is the setup for the following two examples. 
+	  * This is so that the '#__' placeholder will be replaced.<br />
+	  * <code>
+	  * $bindValues = array('roger', 'roger@example.com');
+	  * $_whomp_database->query($bindValues);
+	  * </code>
+	  * The previous example uses the previously set query and some new bind 
+	  * parameters. The query will be prepared (if the database supports 
+	  * it), and the will be executed with the parameters inserted.<br />
+	  * <code>
+	  * $bindValues = array();
+	  * foreach ($people as $person) {
+	  * 	$bindValues[] = array($person['name'], $person['email']);
+	  * } // end foreach
+	  * $_whomp_database->query($bindValues);
+	  * </code>
+	  * The previous example will do the same as the first, except it will 
+	  * run the query for each of the sets of bind values stored in the 
+	  * array. This can be faster than running the query each time in a 
+	  * foreach loop especially if prepared statements are supported.</p>
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
+	  * @param string $bindValues the values to be bound to the query
 	  * @return ADORecordSet the database result
-	  * @todo implement variable binding ability
 	  */
-	 public function query() {
+	 public function query($bindValues = null) {
 		 
-		 // execute the query
-		 $this->_result = $this->_db->Execute($this->_query);
+		 // check if bind values were sent
+		 if ($bindValues !== null) {
+			 // if so, prepare the query
+			 $this->_query = $this->_db->Prepare($this->_query);
+			 // execute the query and bind values
+			 $this->_result = $this->_db->Execute($this->_query, $bindValues);
+		 } else {
+			 // if not, execute the query
+			 $this->_result = $this->_db->Execute($this->_query);
+		 } // end if
 		 // update the counter
 		 $this->_count++;
 		 // return the result
@@ -324,6 +394,9 @@
 	 /**
 	  * Generate tables from an XML string using AXMLS
 	  * 
+	  * <p>For more information on the XML files please visit the 
+	  * {@link http://adodb-xmlschema.sourceforge.net/docs/ AXMLS Documentation Site}.</p>
+	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
@@ -349,6 +422,40 @@
 		 } // end foreach
 		 // run the sql on the database
 		 $schema->ExecuteSchema($sql);
+	 } // end function
+	 
+	 /**
+	  * Escape a string with the database specified escape function
+	  * 
+	  * <p>This safeguards against sql injection.</p>
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param string $string the string to escape
+	  * @return string the escaped string
+	  */
+	 public function escapeString($string) {
+		 
+		 // return the escaped string
+		 return $this->_db->qstr($string, $this->_magic_quotes);
+	 } // end function
+	 
+	 /**
+	  * Returns the correctly formatted bind variable placeholder
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param string $name the bind variable's name
+	  * @return string the bind variable placeholder formatted for the database
+	  */
+	 public function param($name) {
+		 
+		 // return the placeholder
+		 return $this->_db->Param($name);
 	 } // end function
 	 
  } // end class
