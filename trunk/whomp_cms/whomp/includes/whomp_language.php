@@ -1,4 +1,5 @@
 <?php
+/* $Id$ */
 /**
  * /whomp/includes/whomp_language.php
  * 

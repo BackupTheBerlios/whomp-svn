@@ -1,4 +1,5 @@
 <?php
+/* $Id$ */
 /**
  * whomp_configuration.php
  * 

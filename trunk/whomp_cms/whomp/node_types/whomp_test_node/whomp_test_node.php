@@ -1,4 +1,5 @@
 <?php
+/* $Id$ */
 /**
  * /whomp/node_types/whomp_test_node.php
  * 

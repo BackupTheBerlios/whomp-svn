@@ -1,3 +1,4 @@
+<!-- $Id$ -->
 <?xml version="1.0" encoding="utf-8" ?>
 <xsl:stylesheet>
 	<xsl:output omit-xml-declaration="yes" />
