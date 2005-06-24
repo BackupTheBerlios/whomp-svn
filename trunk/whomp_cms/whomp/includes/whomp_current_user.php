@@ -3,8 +3,8 @@
 /**
  * /whomp/includes/whomp_current_user.php
  * 
- * <p>Whomp current user file. Includes the 
- * {@link Whomp_Current_User Whomp_Current_User} class.</p>
+ * Whomp current user file. Includes the 
+ * {@link Whomp_Current_User Whomp_Current_User} class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -28,8 +28,8 @@
  /**
   * The Whomp current user class
   * 
-  * <p>Implements methods for the current Whomp user. It extends the 
-  * {@link Whomp_User Whomp_User} class.</p>
+  * Implements methods for the current Whomp user. It extends the 
+  * {@link Whomp_User Whomp_User} class.
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>

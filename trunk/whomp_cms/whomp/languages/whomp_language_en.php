@@ -3,8 +3,8 @@
 /**
  * /whomp/languages/whomp_language_en.php
  * 
- * <p>Whomp en language file. Includes the 
- * {@link Whomp_Language_en Whomp_Language_en} class.</p>
+ * Whomp en language file. Includes the 
+ * {@link Whomp_Language_en Whomp_Language_en} class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -28,9 +28,9 @@
  /**
   * The Whomp en language class
   * 
-  * <p>This class can be intialized to use the English language for output. 
+  * This class can be intialized to use the English language for output. 
   * It has no methods or properties because the Whomp_Language class defines 
-  * all of the English properties.</p>
+  * all of the English properties.
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>

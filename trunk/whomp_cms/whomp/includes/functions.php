@@ -3,7 +3,7 @@
 /**
  * /whomp/includes/functions.php
  * 
- * <p>Includes Whomp user functions.</p>
+ * Includes Whomp user functions.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -24,15 +24,15 @@
  /**
   * Get the requested page and format
   * 
-  * <p>It returns an array in the following form:<br />
-  * <pre>Array ( 
+  * It returns an array in the following form:
+  * <pre>
+  * Array ( 
   * 	'page' => the page requested
   * 	'format' => the format requested
   * 	'node' => the node requested
   * 	'content_type' => the best content type available
   * )
   * </pre>
-  * </p>
   * 
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
@@ -208,7 +208,7 @@
  /**
   * Gets the requested node object
   * 
-  * <p>Retrieves the node information from the database as an object.</p>
+  * Retrieves the node information from the database as an array.
   * 
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
@@ -282,10 +282,10 @@
  /**
   * Renders the page with the specified node
   * 
-  * <p>This function finds the correct node type class file and loads the 
+  * This function finds the correct node type class file and loads the 
   * node type class with the node's parameters. Then it calls the node's 
   * renderPage function to render the page. It throws an Exception if there 
-  * are any errors.</p>
+  * are any errors.
   * 
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
@@ -316,16 +316,17 @@
  /**
   * Gets a node's XML data and XSL path and returns it in an array
   * 
-  * <p>First the node's information is retrieved from the database. Then the 
+  * First the node's information is retrieved from the database. Then the 
   * node's type class file is required and the class is loaded with the 
   * node's options. Then the getNodeXml and getNodeXslPath methods are 
   * called and the information is returned. The array is in the following 
   * format:
-  * <ul>Array(
-  * 	<li>'xml' => the xml as a string</li>
-  * 	<li>'xsl' => the path to the xsl file</li>
-  * </ul>
-  * </p>
+  * <pre>
+  * Array (
+  * 	'xml' => the xml as a string
+  * 	'xsl' => the path to the xsl file
+  * )
+  * </pre>
   * 
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
@@ -364,7 +365,7 @@
  /* ++ FILE FUNCTIONS ++ */
  
  /**
-  * Get's the contents of an included file
+  * Gets the contents of an included file
   * 
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
@@ -389,6 +390,11 @@
  /**
   * Ouputs the exception
   * 
+  * Checks to see if the exception should be logged and logs it if so. Then 
+  * checks if the message should be detailed, simple, or not displayed. Then 
+  * checks if the script should be exited or not and either exits with the 
+  * message or prints the message.
+  * 
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
@@ -410,6 +416,14 @@ ERROR;
 	 if ($_whomp_configuration->debug_log) {
 		 // if so, write to log file
 		 file_put_contents($_whomp_base_path . $_whomp_configuration->debug_log_file, $message, FILE_APPEND);
+	 } // end if
+	 // check if we should show a detailed, simple, or no message
+	 if ($_whomp_configuration->debug_setting == 1) {
+		 // show a simple message
+		 $message = '<p>' . $exception->getMessage() . '</p>';
+	 } else if ($_whomp_configuration->debug_setting == 0) {
+		 // do not display the message
+		 $message = '';
 	 } // end if
 	 // check if we should exit
 	 if ($exit) {

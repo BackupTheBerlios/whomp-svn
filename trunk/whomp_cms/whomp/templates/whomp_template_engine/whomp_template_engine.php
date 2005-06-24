@@ -3,8 +3,8 @@
 /**
  * /whomp/templates/whomp_template_engine.php
  * 
- * <p>Whomp template engine file. Includes the 
- * {@link Whomp_Template_Engine Whomp_Template_Engine} class.</p>
+ * Whomp template engine file. Includes the 
+ * {@link Whomp_Template_Engine Whomp_Template_Engine} class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -23,7 +23,7 @@
  /**
   * The Whomp template engine class
   * 
-  * <p>Template engine that expands the abstact Whomp_Template class.</p>
+  * Template engine that expands the abstact Whomp_Template class.
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>

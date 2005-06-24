@@ -3,8 +3,7 @@
 /**
  * /whomp/includes/whomp_user.php
  * 
- * <p>Whomp user file. Includes the 
- * {@link Whomp_User Whomp_User} class.</p>
+ * Whomp user file. Includes the {@link Whomp_User Whomp_User} class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -23,7 +22,7 @@
  /**
   * The Whomp user class
   * 
-  * <p>Implements user abilities in Whomp.</p>
+  * Implements user abilities in Whomp.
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>

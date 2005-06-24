@@ -3,8 +3,8 @@
 /**
  * /whomp/includes/whomp_template.php
  * 
- * <p>Whomp template file. Includes the 
- * {@link Whomp_Template Whomp_Template} class.</p>
+ * Whomp template file. Includes the 
+ * {@link Whomp_Template Whomp_Template} class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -23,7 +23,8 @@
  /**
   * The Whomp template class
   * 
-  * <p>Abstract class with template methods that templates can inherit, implement, and expand.</p>
+  * Abstract class with template methods that templates can inherit, 
+  * implement, and expand.
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -60,14 +61,15 @@
 	 /**
 	  * The acceptable output formats
 	  * 
-	  * <p>This should be an array with formats as keys and content-types as 
+	  * This should be an array with formats as keys and content-types as 
 	  * values. For example:
-	  * <ul>Array (
-	  * 	<li>'html' => 'text/html'</li>
-	  * 	<li>'xhtml+xml' => 'application/xhtml+xml'</li>
-	  * 	<li>'xhtml' => 'application/xhtml+xml'</li>
-	  * )</ul>
-	  * </p>
+	  * <pre>
+	  * Array (
+	  * 	'html' => 'text/html'
+	  * 	'xhtml+xml' => 'application/xhtml+xml'
+	  * 	'xhtml' => 'application/xhtml+xml'
+	  * )
+	  * </pre>
 	  * 
 	  * @var array $_formats
 	  * @access protected
@@ -93,14 +95,14 @@
 	 /**
 	  * Abstract Whomp_Template constructor
 	  * 
-	  * <p>The constructor should take the $layout and $format as parameters 
+	  * The constructor should take the $layout and $format as parameters 
 	  * and then initialize the $_template_xml and $_template_xsl variables.
 	  * It should throw an exception if the layout or ouput format does not 
 	  * exist. However, if the output format is an empty string, it should 
 	  * use the user's {@link $_whomp_accept_headers accept headers} to 
 	  * determine the most appropriate output format. This can be made 
 	  * easier using the 
-	  * {@link whomp_get_content_type whomp_get_content_type} function.</p>
+	  * {@link whomp_get_content_type whomp_get_content_type} function.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
@@ -185,7 +187,7 @@
 	 /**
 	  * Outputs the transformed XML file to the screen
 	  * 
-	  * <p>It also sets the correct header information.</p>
+	  * It also sets the correct header information.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0

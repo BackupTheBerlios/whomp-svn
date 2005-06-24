@@ -3,8 +3,8 @@
 /**
  * whomp_configuration.php
  * 
- * <p>Main configuration file for Whomp. Includes the 
- * {@link Whomp_Configuration Whomp_Configuration} class.</p>
+ * Main configuration file for Whomp. Includes the 
+ * {@link Whomp_Configuration Whomp_Configuration} class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -23,7 +23,7 @@
  /**
   * The Whomp configuration class
   * 
-  * <p>Contains configuration information for each aspect of Whomp.</p>
+  * Contains configuration information for each aspect of Whomp.
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -57,7 +57,7 @@
 	 /**
 	  * Debugging output setting
 	  * 
-	  * <p>0 is no output, 1 is php default, and 2 is all ouput.</p>
+	  * 0 is no output, 1 is php default, and 2 is all ouput.
 	  * 
 	  * @var int $debug_setting
 	  * @access public
@@ -175,13 +175,12 @@
 	 /**
 	  * The available site languages
 	  * 
-	  * <p>It is in the following form:
+	  * It is in the following form:
 	  * <pre>
 	  * Array (
 	  * 	language => preference (between 0.000 and 1.000 like q values)
 	  * )
 	  * </pre>
-	  * </p>
 	  * 
 	  * @var array $language_languages
 	  * @access public

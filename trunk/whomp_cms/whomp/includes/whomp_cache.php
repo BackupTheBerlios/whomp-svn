@@ -3,8 +3,7 @@
 /**
  * /whomp/includes/whomp_cache.php
  * 
- * <p>Whomp cache file. Includes the 
- * {@link Whomp_Cache Whomp_Cache} class.</p>
+ * Whomp cache file. Includes the {@link Whomp_Cache Whomp_Cache} class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -23,7 +22,7 @@
  /**
   * The Whomp cache class
   * 
-  * <p>Implements caching abilities in Whomp.</p>
+  * Implements caching abilities in Whomp.
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -68,7 +67,7 @@
 	 /**
 	  * The cached file information array
 	  * 
-	  * <p>This is an array of all cached files and their corresponding 
+	  * This is an array of all cached files and their corresponding 
 	  * information. The array is in the following form:
 	  * <pre>
 	  * Array (
@@ -88,7 +87,6 @@
 	  * 	)
 	  * )
 	  * </pre>
-	  * </p>
 	  * 
 	  * @var array $_cached_files
 	  * @access protected
@@ -98,7 +96,7 @@
 	 /**
 	  * A listing of all pages and blocks that have been started
 	  * 
-	  * <p>It is an array containing an array of information about each page 
+	  * It is an array containing an array of information about each page 
 	  * or block in the following format:
 	  * <pre>
 	  * Array (
@@ -116,7 +114,6 @@
 	  * 	)
 	  * )
 	  * </pre>
-	  * </p>
 	  * 
 	  * @var array $_buffer_stack
 	  * @access protected
@@ -126,10 +123,9 @@
 	 /**
 	  * Whomp_Cache constructor
 	  * 
-	  * <p>The constructor inistializes the cache options and also loads the 
-	  * cached file information array from a stored file if it exists. This 
-	  * is accomplished using unserialize. It then starts the output 
-	  * buffer.</p>
+	  * Initializes the cache options and also loads the cached file 
+	  * information array from a stored file if it exists. This is 
+	  * accomplished using unserialize. It then starts the output buffer.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
@@ -166,8 +162,8 @@
 	 /**
 	  * Whomp_Cache destructor
 	  * 
-	  * <p>The destructor writes the cached file information array to a file 
-	  * in serialized form.</p>
+	  * The destructor writes the cached file information array to a file 
+	  * in serialized form.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
@@ -185,9 +181,9 @@
 	 /**
 	  * Starts the cache
 	  * 
-	  * <p>If the node is available cached, it will output the page with the 
+	  * If the node is available cached, it will output the page with the 
 	  * correct header information. It also makes sure that the node is 
-	  * stored in the correct language and format for the user.</p>
+	  * stored in the correct language and format for the user.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
@@ -255,10 +251,10 @@
 	 /**
 	  * Stops the cache
 	  * 
-	  * <p>If caching is enabled, it will cache the page or block and write 
+	  * If caching is enabled, it will cache the page or block and write 
 	  * it to a file. Then it will stop output buffering and compress the 
 	  * page if it is configured to do so. It also updates the cached files 
-	  * array with the new information.</p>
+	  * array with the new information.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0

@@ -3,8 +3,7 @@
 /**
  * /whomp/includes/whomp_node.php
  * 
- * <p>Whomp node file. Includes the 
- * {@link Whomp_Node Whomp_Node} class.</p>
+ * Whomp node file. Includes the {@link Whomp_Node Whomp_Node} class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -23,7 +22,7 @@
  /**
   * The Whomp node class
   * 
-  * <p>Implements node objects for Whomp.</p>
+  * Implements node objects for Whomp.
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -68,14 +67,15 @@
 	 /**
 	  * The available layouts for the node type
 	  * 
-	  * <p>This should be an array with formats as keys and content-types as 
+	  * This should be an array with formats as keys and content-types as 
 	  * values. For example:
-	  * <ul>Array (
-	  * 	<li>'html' => 'text/html'</li>
-	  * 	<li>'xhtml+xml' => 'application/xhtml+xml'</li>
-	  * 	<li>'xhtml' => 'application/xhtml+xml'</li>
-	  * )</ul>
-	  * </p>
+	  * <pre>
+	  * Array (
+	  * 	'html' => 'text/html'
+	  * 	'xhtml+xml' => 'application/xhtml+xml'
+	  * 	'xhtml' => 'application/xhtml+xml'
+	  * )
+	  * </pre>
 	  * 
 	  * @var array $layouts
 	  * @access public
@@ -133,17 +133,16 @@
 	 /**
 	  * The node's preferred layouts
 	  * 
-	  * <p>This should be an array with formats and/or content types as the 
+	  * This should be an array with formats and/or content types as the 
 	  * keys and an array containing the template and layout information. 
 	  * For example:
-	  * <ul>Array (
-	  * 	<li>
-	  * 		<ul>'html' => Array ( 
-	  * 			<li>'template' => the template to use</li>
-	  * 			<li>'layout' => the layout to use</li>
-	  * 		</ul>
-	  * 	</li>
-	  * )</ul>
+	  * <pre>
+	  * Array (
+	  * 	'html' => Array ( 
+	  * 		'template' => the template to use
+	  * 		'layout' => the layout to use
+	  * )
+	  * </pre>
 	  * This information should be in the database.</p>
 	  * 
 	  * @var array $layouts
@@ -254,11 +253,11 @@
 	 /**
 	  * Renders the page
 	  * 
-	  * <p>This method finds the template engine class file and initializes 
+	  * This method finds the template engine class file and initializes 
 	  * the template class. It then uses the template class to insert the 
 	  * node's XML and XSL information. After it has been inserted, the 
 	  * template is transformed to the desired ouput format with XSL and 
-	  * then printed to the screen.</p> 
+	  * then printed to the screen.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0

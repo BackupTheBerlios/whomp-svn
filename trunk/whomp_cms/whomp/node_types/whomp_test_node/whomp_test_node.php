@@ -3,8 +3,8 @@
 /**
  * /whomp/node_types/whomp_test_node.php
  * 
- * <p>Whomp test node file. Includes the 
- * {@link Whomp_Test_Node Whomp_Test_Node} class.</p>
+ * Whomp test node file. Includes the {@link Whomp_Test_Node Whomp_Test_Node} 
+ * class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -23,7 +23,7 @@
  /**
   * The Whomp test node class
   * 
-  * <p>Implements a testing node for Whomp.</p>
+  * Implements a testing node for Whomp.
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>

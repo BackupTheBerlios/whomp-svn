@@ -3,7 +3,7 @@
 /**
  * index.php
  * 
- * <p>Main index file for Whomp.</p>
+ * Main index file for Whomp.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved

@@ -3,8 +3,8 @@
 /**
  * /whomp/includes/whomp_database.php
  * 
- * <p>Whomp database file. Includes the 
- * {@link Whomp_Database Whomp_Database} class.</p>
+ * Whomp database file. Includes the {@link Whomp_Database Whomp_Database} 
+ * class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -33,9 +33,9 @@
  /**
   * The Whomp database class
   * 
-  * <p>Implements database access for Whomp. It uses the 
+  * Implements database access for Whomp. It uses the 
   * {@link http://adodb.sourceforge.net ADOdb} library for database 
-  * abstraction.</p>
+  * abstraction.
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -99,7 +99,7 @@
 	 /**
 	  * Whomp_Database constructor
 	  * 
-	  * <p>The options array should be in the following form:
+	  * The options array should be in the following form:
 	  * <pre>
 	  * Array (
 	  * 	'type' => 'mysql'
@@ -110,7 +110,6 @@
 	  * 	'table_prefix' => 'whomp_'
 	  * )
 	  * </pre>
-	  * </p>
 	  * 
 	  * @author Schmalls / Joshua Thompson
 	  * @version 0.0.0
@@ -137,23 +136,25 @@
 	 /**
 	  * Sets the query
 	  * 
-	  * <p>Sets the database query after replacing the table prefix 
+	  * Sets the database query after replacing the table prefix 
 	  * placeholder to the configured table prefix. It also inserts the 
 	  * query values into the query. The query and query values should be in 
-	  * a form suitable for the vsprintf function.<br />
-	  * Examples:<br />
+	  * a form suitable for the vsprintf function.
+	  * 
+	  * Examples:
+	  * 
 	  * <code>
 	  * $queryValues = array($id, $name);
 	  * $query = 'SELECT * FROM `#__example_table` WHERE `id` = %d AND `name` = %s;';
 	  * $_whomp_database->setQuery($query, $queryValues);
 	  * </code>
 	  * The previous example shows the use of query values, which are optional.
+	  * 
 	  * <code>
 	  * $query = 'SELECT * FROM `#__example_table`;';
 	  * $_whomp_database->setQuery($query);
 	  * </code>
 	  * The previous example shows a query without query values.
-	  * </p>
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
@@ -196,24 +197,28 @@
 	 /**
 	  * Queries the database
 	  * 
-	  * <p>First it checks if a bind values array was provided and uses them 
+	  * First it checks if a bind values array was provided and uses them 
 	  * if so. A multidimensional array can be sent as the bind values. 
 	  * After it executes the query it updates the internal counter and 
-	  * returns the database result.<br />
-	  * Examples:<br />
+	  * returns the database result.
+	  * 
+	  * Examples:
+	  * 
 	  * <code>
 	  * $query = 'INSERT INTO `#__example_table` (`name`, `email`) VALUES (' . $_whomp_database->param('name') . ', ' . $_whomp_database->param('email');';
 	  * $database->setQuery($query);
 	  * </code>
 	  * The previous example is the setup for the following two examples. 
-	  * This is so that the '#__' placeholder will be replaced.<br />
+	  * This is so that the '#__' placeholder will be replaced.
+	  * 
 	  * <code>
 	  * $bindValues = array('roger', 'roger@example.com');
 	  * $_whomp_database->query($bindValues);
 	  * </code>
 	  * The previous example uses the previously set query and some new bind 
 	  * parameters. The query will be prepared (if the database supports 
-	  * it), and the will be executed with the parameters inserted.<br />
+	  * it), and the will be executed with the parameters inserted.
+	  * 
 	  * <code>
 	  * $bindValues = array();
 	  * foreach ($people as $person) {
@@ -224,7 +229,7 @@
 	  * The previous example will do the same as the first, except it will 
 	  * run the query for each of the sets of bind values stored in the 
 	  * array. This can be faster than running the query each time in a 
-	  * foreach loop especially if prepared statements are supported.</p>
+	  * foreach loop especially if prepared statements are supported.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
@@ -395,8 +400,8 @@
 	 /**
 	  * Generate tables from an XML string using AXMLS
 	  * 
-	  * <p>For more information on the XML files please visit the 
-	  * {@link http://adodb-xmlschema.sourceforge.net/docs/ AXMLS Documentation Site}.</p>
+	  * For more information on the XML files please visit the 
+	  * {@link http://adodb-xmlschema.sourceforge.net/docs/ AXMLS Documentation Site}.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
@@ -428,7 +433,7 @@
 	 /**
 	  * Escape a string with the database specified escape function
 	  * 
-	  * <p>This safeguards against sql injection.</p>
+	  * Safeguards against sql injection.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
