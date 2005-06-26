@@ -360,6 +360,46 @@
 	 return $return;
  } // end function
  
+ /**
+  * Returns the head information as a string
+  * 
+  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+  * @version 0.0.0
+  * @since 0.0.0
+  * @global array the head data
+  */
+ function whomp_get_head_data_string() {
+	 global $_whomp_head_data;
+	 
+	 // generate the output string
+	 ob_start();
+?>
+	<?php echo $_whomp_head_data['title']; ?>
+	<?php echo $_whomp_head_data['base']; ?>
+<?php
+	 foreach ($_whomp_head_data['link'] as $link) {
+?>
+	<?php echo $link; ?>
+<?php
+	 } // end foreach
+	 foreach ($_whomp_head_data['meta'] as $meta) {
+?>
+	<?php echo $meta; ?>
+<?php
+	 } // end foreach
+	 foreach ($_whomp_head_data['style'] as $style) {
+?>
+	<?php echo $style; ?>
+<?php
+	 } // end foreach
+	 foreach ($_whomp_head_data['script'] as $script) {
+?>
+	<?php echo $script; ?>
+<?php
+	 } // end foreach
+	 return ob_get_clean();
+ } // end function
+ 
  /* -- NODE FUNCTIONS -- */
  
  /* ++ FILE FUNCTIONS ++ */

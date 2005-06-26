@@ -71,7 +71,7 @@
  // Check if we need to install
  if (!$_whomp_configuration->installed) {
 	 // if so, redirect to the installation file
-	 header('Location: ' . $_whomp_base_url . '/' . $_whomp_configuration->storage_dir . '/installation/installation.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_url_path);
+	 header('Location: ' . $_whomp_base_url . '/' . $_whomp_configuration->storage_dir . '/installation/installer.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_url_path . '&storage_path=' . $_whomp_storage_path);
  } // end if
  
  /**
@@ -165,11 +165,23 @@
  $_whomp_language = new $whomp_language_class_string();
  
  /**
-  * Access to the {@link Whomp_Database Whomp_User} class
+  * Access to the {@link Whomp_Current_User Whomp_Current_User} class
   * 
   * @global class $_whomp_current_user
   */
  $_whomp_current_user = new Whomp_Current_User();
+ 
+ /**
+  * Information to be included in the head of a document
+  * 
+  * @global array $_whomp_head_data
+  */
+ $_whomp_head_data = array('base' => '<base href="' . $_whomp_base_url . '" />',
+ 						   'link' => array(),
+						   'meta' => array('generator' => '<meta name="generator" value="' . $_whomp_configuration->version_information . '" />'),
+						   'script' => array(),
+						   'style' => array(),
+						   'title' => '');
  
  // check if this is a node or a script
  if (preg_match('/^_/', $_whomp_requested_page['node']) == 1) {

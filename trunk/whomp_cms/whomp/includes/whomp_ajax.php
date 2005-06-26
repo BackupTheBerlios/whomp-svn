@@ -82,6 +82,15 @@
 	 protected $_functions = array();
 	 
 	 /**
+	  * Static variable to keep track of whether the base functions have 
+	  * been included or not
+	  * 
+	  * @var boolean $_included
+	  * @access protected
+	  */
+	 protected static $_included = false;
+	 
+	 /**
 	  * Whomp_Ajax constructor
 	  * 
 	  * Initializes the Ajax options. The options array should be formatted 
@@ -89,7 +98,7 @@
 	  * <pre>
 	  * Array (
 	  * 	'_callback' => the url to the request page (usually the current page url)
-	  * 	'_method' => 'get' or 'post'
+	  * 	'_method' => 'GET' or 'POST'
 	  * 	'_return_type' => 'text' or 'xml'
 	  * 	'_async' => either 'true' or 'false' (as a string)
 	  * )
@@ -373,9 +382,14 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
+	  * @global array access to the head data
 	  * @todo finish this (requires implementation of head information adding functionality elsewhere)
 	  */
 	 public function initialize() {
+		 global $_whomp_head_data;
+		 
+		 // add the javascript
+		 $_whomp_head_data['script'][] = $this->insertJavascript();
 	 } // end function
 	 
  } // end class
