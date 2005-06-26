@@ -71,7 +71,7 @@
  // Check if we need to install
  if (!$_whomp_configuration->installed) {
 	 // if so, redirect to the installation file
-	 header('Location: ' . $_whomp_base_url . '/' . $_whomp_configuration->storage_dir . '/includes/installation.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_url_path);
+	 header('Location: ' . $_whomp_base_url . '/' . $_whomp_configuration->storage_dir . '/installation/installation.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_url_path);
  } // end if
  
  /**
@@ -100,7 +100,7 @@
  /**
   * The accept header information
   * 
-  * @global array $_whomp_accept
+  * @global array $_whomp_accept_headers
   */
  $_whomp_accept_headers = whomp_get_accept_headers();
  
@@ -150,7 +150,7 @@
  /**
   * Access to the {@link Whomp_Database Whomp_Database} class
   * 
-  * @global $_whomp_database
+  * @global class $_whomp_database
   */
  $_whomp_database = new Whomp_Database($whomp_database_options);
  
@@ -160,31 +160,38 @@
  /**
   * Access to the {@link Whomp_Language Whomp_Language's} child class
   * 
-  * @global $_whomp_language
+  * @global class $_whomp_language
   */
  $_whomp_language = new $whomp_language_class_string();
  
  /**
   * Access to the {@link Whomp_Database Whomp_User} class
   * 
-  * @global $_whomp_user
+  * @global class $_whomp_current_user
   */
  $_whomp_current_user = new Whomp_Current_User();
  
- /**
-  * The requested node information from the database
-  * 
-  * @global $_whomp_node
-  */
- $_whomp_node_array = whomp_get_node_array($_whomp_requested_page);
- 
- // try to render the page
- try {
-	 $whomp_unique_suffix = whomp_render_page($_whomp_node_array);
- } catch (Exception $e) {
-	 whomp_output_exception($e, true);
- } // end try
- 
- // ends caching
+ // check if this is a node or a script
+ if (preg_match('/^_/', $_whomp_requested_page['node']) == 1) {
+	 // if so, require the script
+	 require_once($_whomp_storage_path . '/scripts/' . preg_replace('/^_/', '', $_whomp_requested_page['node']));
+ } else {
+	 // if not, get the node information 
+	 /**
+	  * The requested node information from the database
+	  * 
+	  * @global array $_whomp_node_array
+	  */
+	 $_whomp_node_array = whomp_get_node_array($_whomp_requested_page);
+	 
+	 // try to render the page
+	 try {
+		 $whomp_unique_suffix = whomp_render_page($_whomp_node_array);
+	 } catch (Exception $e) {
+		 whomp_output_exception($e, true);
+	 } // end try
+ } // end if
+	 
+ // end caching
  $_whomp_cache->end($whomp_unique_suffix);
 ?> 
