@@ -121,10 +121,10 @@ HTML;
 		 // check which page to get
 		 switch ($pagename) {
 			 case ('check') :
-			 	 $html = '<p><a onclick="Whomp_Installer_Html_getPageText(\'page2\'); return true;" href="' . $_whomp_storage_url . '/installation/installer.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_base_url . '&storage_path=' . $_whomp_storage_path . '&storage_url=' . $_whomp_storage_url . '&page=page2">something -&gt;</a></p>';
+			 	 $html = '<p><a onclick="Whomp_Installer_Html_getPageText(\'page2\'); return false;" href="' . $_whomp_storage_url . '/installation/index.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_base_url . '&storage_path=' . $_whomp_storage_path . '&storage_url=' . $_whomp_storage_url . '&page=page2">something -&gt;</a></p>';
 			 	 break;
 			 default :
-			 	 $html = '<p><a onclick="Whomp_Installer_Html_getPageText(\'check\'); return true;" href="' . $_whomp_storage_url . '/installation/installer.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_base_url . '&storage_path=' . $_whomp_storage_path . '&storage_url=' . $_whomp_storage_url . '">&lt;- back</a></p>';
+			 	 $html = '<p><a onclick="Whomp_Installer_Html_getPageText(\'check\'); return false;" href="' . $_whomp_storage_url . '/installation/index.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_base_url . '&storage_path=' . $_whomp_storage_path . '&storage_url=' . $_whomp_storage_url . '">&lt;- back</a></p>';
 		 } // end switch
 		 // return the html
 		 return $html;
