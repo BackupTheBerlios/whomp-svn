@@ -52,7 +52,7 @@
   * 
   * @global string $_whomp_base_path
   */
- $_whomp_base_path = str_replace('/index.php', '', $_SERVER['SCRIPT_FILENAME']);
+ $_whomp_base_path = preg_replace('/\/$/', '', str_replace('/index.php', '', $_SERVER['SCRIPT_FILENAME']));
  
  /**
   * The Whomp storage directory
@@ -66,12 +66,19 @@
   * 
   * @global string $_whomp_base_url
   */
- $_whomp_base_url = str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']);
+ $_whomp_base_url = preg_replace('/\/$/', '', str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']));
+ 
+ /**
+  * The Whomp storage url
+  * 
+  * @global string $_whomp_storage_url
+  */
+ $_whomp_storage_url = $_whomp_base_url . $_whomp_configuration->storage_dir;
  
  // Check if we need to install
  if (!$_whomp_configuration->installed) {
 	 // if so, redirect to the installation file
-	 header('Location: ' . $_whomp_base_url . '/' . $_whomp_configuration->storage_dir . '/installation/installer.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_url_path . '&storage_path=' . $_whomp_storage_path);
+	 header('Location: ' . $_whomp_storage_url . '/installation/index.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_base_url . '&storage_path=' . $_whomp_storage_path . '&storage_url=' . $_whomp_storage_url);
  } // end if
  
  /**
@@ -178,7 +185,7 @@
   */
  $_whomp_head_data = array('base' => '<base href="' . $_whomp_base_url . '" />',
  						   'link' => array(),
-						   'meta' => array('generator' => '<meta name="generator" value="' . $_whomp_configuration->version_information . '" />'),
+						   'meta' => array('generator' => '<meta name="generator" content="' . $_whomp_configuration->version_information . '" />'),
 						   'script' => array(),
 						   'style' => array(),
 						   'title' => '');

@@ -30,7 +30,7 @@
   * @access public
   * @todo finish this
   */
- public class Whomp_Installer_Html {
+ class Whomp_Installer_Html {
 	 
 	 /**
 	  * Outputs the current page
@@ -42,20 +42,29 @@
 	  * @since 0.0.0
 	  * @access public
 	  */
-	 public function startPage() {
+	 public function loadPage() {
 		 
 		 // format the head information
 		 $head = whomp_get_head_data_string();
 		 // check for page information
-		 $page = isset($_POST['page']) ? self::getPageHtml($_POST['page']) : self::getPageHtml('check');
+		 $page = isset($_GET['page']) ? self::getPage($_GET['page']) : self::getPage('check');
 		 // output the page
 		 echo <<<HTML
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
 	<head>
 {$head}
+	<script language="javascript" type="text/javascript">
+	function Whomp_Installer_Html_getPageText_callback(result) {
+		document.getElementById('main_area').innerHTML = result;
+	}
+	</script>
 	</head>
 	<body>
-{$page}
+		<div id="main_area">
+			{$page}
+		</div>
 	</body>
 </html>
 HTML;
@@ -76,7 +85,25 @@ HTML;
 	 public static function getPageXml($pagename) {
 		 
 		 // output the xml
-		 echo '<installer_page>' . self::getPageHtml($pagename) . '</installer_page>';
+		 echo '<?xml version="1.0" standalone="yes" ?><installer_page>' . self::getPage($pagename) . '</installer_page>';
+	 } // end function
+	 
+	 /**
+	  * Gets the current page information and outputs it as text
+	  * 
+	  * This function is static and should be used with the Whomp_Ajax class
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @static
+	  * @param string $pagename the page to retrieve
+	  */
+	 public static function getPageText($pagename) {
+		 
+		 // output the text
+		 echo self::getPage($pagename);
 	 } // end function
 	 
 	 /**
@@ -85,20 +112,19 @@ HTML;
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
-	  * @access private
+	  * @access public
 	  * @param string $pagename the page to retrieve
 	  */
-	 private statuc function getPageHtml($pagename) {
+	 public static function getPage($pagename) {
+		 global $_whomp_base_path, $_whomp_base_url, $_whomp_storage_path, $_whomp_storage_url;
 		 
 		 // check which page to get
 		 switch ($pagename) {
 			 case ('check') :
-			 	 ob_start()
-			 	 phpinfo();
-				 $html = ob_get_clean();
+			 	 $html = '<p><a onclick="Whomp_Installer_Html_getPageText(\'page2\'); return true;" href="' . $_whomp_storage_url . '/installation/installer.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_base_url . '&storage_path=' . $_whomp_storage_path . '&storage_url=' . $_whomp_storage_url . '&page=page2">something -&gt;</a></p>';
 			 	 break;
 			 default :
-			 	 $html = null;
+			 	 $html = '<p><a onclick="Whomp_Installer_Html_getPageText(\'check\'); return true;" href="' . $_whomp_storage_url . '/installation/installer.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_base_url . '&storage_path=' . $_whomp_storage_path . '&storage_url=' . $_whomp_storage_url . '">&lt;- back</a></p>';
 		 } // end switch
 		 // return the html
 		 return $html;

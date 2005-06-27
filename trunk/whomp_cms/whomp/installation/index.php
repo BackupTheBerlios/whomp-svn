@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /**
- * /whomp/includes/installer.php
+ * /whomp/includes/index.php
  * 
  * Main installation file for Whomp.
  * 
@@ -38,12 +38,19 @@
   * 
   * @global string $_whomp_storage_path
   */
- $_whomp_storage_path = (string)$_REQUEST['storage_url'];
+ $_whomp_storage_path = (string)$_REQUEST['storage_path'];
+ 
+ /**
+  * The whomp storage url
+  * 
+  * @global string $_whomp_storage_url
+  */
+ $_whomp_storage_url = (string)$_REQUEST['storage_url'];
  
  /**
   * Require the whomp configuration file
   */
- require_once($_whomp_base_path . '/configuration.php');
+ require_once($_whomp_base_path . '/whomp_configuration.php');
  
  /**
   * Access to the configuration options
@@ -53,7 +60,7 @@
  $_whomp_configuration = new Whomp_Configuration();
  
  // check if whomp is already installed
- if ($_whomp_configuration->installed = true) {
+ if ($_whomp_configuration->installed === true) {
 	 // if so, tell user to remove the installation directory and exit
 	 echo <<<HTML
 <html>
@@ -80,10 +87,10 @@ HTML;
   */
  $_whomp_head_data = array('base' => '<base href="' . $_whomp_base_url . '" />',
  						   'link' => array(),
-						   'meta' => array('generator' => '<meta name="generator" value="' . $_whomp_configuration->version_information . '" />'),
+						   'meta' => array('generator' => '<meta name="generator" content="' . $_whomp_configuration->version_information . '" />'),
 						   'script' => array(),
 						   'style' => array(),
-						   'title' => 'Whomp CMS Installer');
+						   'title' => '<title>Whomp CMS Installer</title>');
  
  /**
   * Require the installer html file
@@ -96,9 +103,9 @@ HTML;
  require_once($_whomp_storage_path . '/includes/whomp_ajax.php');
  
  // create the ajax options
- $whomp_ajax_options = array('_callback' => $_whomp_storage_url . '/installer.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_url_path . '&storage_path=' . $_whomp_storage_path,
+ $whomp_ajax_options = array('_callback' => $_whomp_storage_url . '/installation/installer.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_url_path . '&storage_path=' . $_whomp_storage_path,
  							 '_method' => 'POST',
-							 '_return_type' => 'xml',
+							 '_return_type' => 'text',
 							 '_async' => 'true');
 							 
  /**
@@ -112,7 +119,7 @@ HTML;
  $_whomp_installer_ajax->checkRequest();
  
  // register the getPage function
- $_whomp_installer_ajax->registerFunction(array('Whomp_Installer_Html', 'getPageXml'));
+ $_whomp_installer_ajax->registerFunction(array('Whomp_Installer_Html', 'getPageText'));
  
  // initialize ajax
  $_whomp_installer_ajax->initialize();

@@ -40,7 +40,7 @@
 	  * @var string $storage_dir
 	  * @access public
 	  */
-	 public $storage_dir;
+	 public $storage_dir = '/whomp';
 	 
 	 /**
 	  * Whether whomp is currently installed or not
@@ -48,7 +48,7 @@
 	  * @var boolean $installed
 	  * @access public
 	  */
-	 public $installed;
+	 public $installed = false;
 	 
 	 /* -- BASIC -- */
 	 

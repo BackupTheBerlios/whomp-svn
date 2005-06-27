@@ -155,14 +155,13 @@
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
-  * @access protected
   * @throws Exception
   * @param string $format the requested format
   * @param array $formats the formats as keys and the content type as values
   * @global array the user's accept headers
   * @return string the selected content type
   */
- protected function whomp_get_content_type($format, $formats) {
+ function whomp_get_content_type($format, $formats) {
 	 global $_whomp_accept_headers;
 	 
 	 // check if format was supplied
@@ -228,7 +227,7 @@
 			 // if so, go until we find a node in an acceptable language
 			 foreach ($_whomp_accept_headers['languages'] as $language) {
 				 $queryValues = array($options['node']);
-				 $query = 'SELECT * FROM `#__' . $language . '_nodes` WHERE `name` = %s;', $queryValues);
+				 $query = 'SELECT * FROM `#__' . $language . '_nodes` WHERE `name` = %s;';
 				 $_whomp_database->setQuery($query, $queryValues);
 				 $_whomp_database->query();
 				 $node_array = $_whomp_database->loadRow();
@@ -256,8 +255,8 @@
 		 try {
 			 // go until we find an error node in an acceptable language
 			 foreach ($_whomp_accept_headers['languages'] as $language) {
-				 $queryValues = array($_whomp_configuration->node_error_node));
-				 $query = vsprintf('SELECT * FROM `#__' . $language . '_nodes` WHERE `name` = %s;', $queryValues);
+				 $queryValues = array($_whomp_configuration->node_error_node);
+				 $query = 'SELECT * FROM `#__' . $language . '_nodes` WHERE `name` = %s;';
 				 $_whomp_database->setQuery($query, $queryValues);
 				 $_whomp_database->query();
 				 $node_array = $_whomp_database->loadRow();
@@ -372,32 +371,27 @@
 	 global $_whomp_head_data;
 	 
 	 // generate the output string
-	 ob_start();
-?>
-	<?php echo $_whomp_head_data['title']; ?>
-	<?php echo $_whomp_head_data['base']; ?>
-<?php
-	 foreach ($_whomp_head_data['link'] as $link) {
-?>
-	<?php echo $link; ?>
-<?php
+	 // title
+	 $head = "\t" . $_whomp_head_data['title'];
+	 // base
+	 $head .= "\n\t" . $_whomp_head_data['base'];
+	 // link
+	 foreach ($_whomp_head_data['link'] as $link) { 
+		 $head .= "\n\t" . $link;
 	 } // end foreach
+	 // meta
 	 foreach ($_whomp_head_data['meta'] as $meta) {
-?>
-	<?php echo $meta; ?>
-<?php
+		 $head .= "\n\t" . $meta;
 	 } // end foreach
+	 // style
 	 foreach ($_whomp_head_data['style'] as $style) {
-?>
-	<?php echo $style; ?>
-<?php
+		 $head .= "\n\t" . $style;
 	 } // end foreach
+	 // script
 	 foreach ($_whomp_head_data['script'] as $script) {
-?>
-	<?php echo $script; ?>
-<?php
+		 $head .= "\n\t" . $script;
 	 } // end foreach
-	 return ob_get_clean();
+	 return $head;
  } // end function
  
  /* -- NODE FUNCTIONS -- */
@@ -468,7 +462,7 @@ ERROR;
 	 // check if we should exit
 	 if ($exit) {
 		 // if so, exit
-		 exit $message;
+		 exit($message);
 	 } else {
 		 // if not, print message
 		 echo $message; 

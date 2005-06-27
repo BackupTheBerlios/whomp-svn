@@ -31,7 +31,7 @@
   * @access public
   * @todo get this working
   */
- public class Whomp_Ajax {
+ class Whomp_Ajax {
 	 
 	 /**
 	  * The callback url
@@ -55,7 +55,7 @@
 	  * @var string $_return_type
 	  * @access protected
 	  */
-	 protected $_return_type = 'xml';
+	 protected $_return_type = 'text';
 	 
 	 /**
 	  * Whether async should be used or not
@@ -131,31 +131,45 @@
 	  * 
 	  * <samp>
 	  * function do_something() {
-	  * 	// do some stuff and then get http request
-	  * 	result = my_class_my_method(my_var); 	
+	  * 	my_var = document.getElementById('my_var').value;
+	  * 	My_Class_myMethod(my_var);
+	  * }
+	  * 
+	  * // callback function
+	  * function My_Class_myMethod_callback(result) {
+	  * 	document.getElementById('example').innerHtml = result;
+	  * }	
 	  * </samp>
 	  * In the previous example a function has been defined that should be 
-	  * called on an event (onclick, etc.). The function probably gets some 
+	  * called on an event (onclick, etc.). The function gets some 
 	  * information and stores it in 'my_var' to be sent to a php function. 
-	  * In this case we are calling a class and method: 'my_class' and 
-	  * 'my_method' respectively. They are a php class/method and this class 
-	  * has created a javascript function to call them. The function is 
+	  * In this case we are calling a class and method: 'My_Class' and 
+	  * 'myMethod' respectively. They are a php class/method and javascript 
+	  * function has been created automatically to call it. The function is 
 	  * named with the class name followed by an underscore and then the 
-	  * method name.
+	  * method name. The only difference from using this function from within
+	  * php is that the result is not returned when it is called. Instead the
+	  * result is sent to a callback function name 
+	  * 'My_Class_myMethod_callback' which is simply the same name as the 
+	  * function we called but with the '_callback' appended to the name. 
+	  * This callback function should be implemented in javascript and 
+	  * should take the result as its only argument. The result will either 
+	  * be the response text or the dom xml object.
 	  * 
 	  * <samp>
 	  * function do_something_else() {
-	  * 	// do some stuff and then get http request
+	  * 	my_var1 = document.getElementById('my_var1').value;
+	  * 	my_var2 = document.getElementById('my_var2').value;
 	  * 	result = my_function(my_var1, my_var2);
+	  * }
+	  * 
+	  * // callback function 
+	  * my_function_callback(result) {
+	  * 	document.getElementById('example').innerHtml = result;
 	  * }
 	  * </samp>
 	  * The previous example shows an event function that uses a function 
 	  * instead of a class/method combination.
-	  * 
-	  * Both of the previous examples allow arguments to be passed to the 
-	  * javascript function just like the php function. The result should be 
-	  * either a dom xml document if xml was specified or plain text if text 
-	  * was specified. The xml or text can then be processed with javascript.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
@@ -184,10 +198,15 @@
 	  * @access protected
 	  */
 	 protected function insertJavascript() {
+		 
+		 // get the javascript
+		 ob_start();
 ?>
-	<script language="javascript"  type="text/javascript">
+<script language="javascript"  type="text/javascript">
 	var whomp_ajax_url = "<?php echo $this->_callback; ?>";
+	var whomp_ajax_callback;
 	var whomp_ajax_working = false;
+	var whomp_ajax_http;
 	// gets the http object
 	function whomp_ajax_get_http_object() {
 		var xmlhttp;
@@ -216,19 +235,20 @@
 		return xmlhttp;
 	}
 
-	function whomp_ajax_call_function(function, args) {
+	function whomp_ajax_call_function(function_string, args, callback) {
 		var post_data;
-		var http;
 		var url = whomp_ajax_url;
+
+		whomp_ajax_callback = callback;
 <?php
 		 // check if this is a get request
 		 if ($this->_method == 'GET') {
 			 // if so, output get javascript
 ?>
 		if (url.indexOf("?") == -1) {
-			url = url + "?" + function;
+			url = url + "?" + function_string;
 		} else {
-			url = url + "&" + function;
+			url = url + "&" + function_string;
 		}
 		for (i = 0; i < args.length; i++) {
 			url = url + "&args[]=" + escape(args[i]);
@@ -238,64 +258,62 @@
 		 } else {
 			 // if not, output post javascript
 ?>
-		post_data = function;
+		post_data = function_string;
 		for (i = 0; i < args.length; i++) { 
 			post_data = post_data + "&args[]=" + escape(args[i]);
 		}
 <?php
 		 } // end if
 ?>
-		http = whomp_ajax_get_http_object();
-		http.open("<?php echo $this->_method; ?>", url, <?php echo $this->_async; ?>);
+		whomp_ajax_http = whomp_ajax_get_http_object();
+		whomp_ajax_http.open("<?php echo $this->_method; ?>", url, <?php echo $this->_async; ?>);
 <?php
 		 // check if this is a post request
 		 if ($this->_method == 'POST') {
 			 // if so, output post javascript
 ?>
-		http.setRequestHeader("Method", "POST" + url + " HTTP/1.1");
-		http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		whomp_ajax_http.setRequestHeader("Method", "POST" + url + " HTTP/1.1");
+		whomp_ajax_http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 <?php
 		 } // end if
 ?>
-		http.onreadystatechange = whomp_ajax_handle_response;
-		http.send(post_data);
-		delete http;
-		
+		whomp_ajax_http.onreadystatechange = whomp_ajax_handle_response;
+		whomp_ajax_http.send(post_data);
 	}
 	
 	function whomp_ajax_handle_response() {
-		var result;
+		var whomp_ajax_result;
 
-		if (http.readyState == 4) {
-			if (http.responseText.indexOf('invalid') == -1) {
+		if (whomp_ajax_http.readyState == 4) {
+			if (whomp_ajax_http.responseText.indexOf('invalid') == -1) {
 <?php
 		 // check if this is text or xml
 		 if ($this->_return_type == 'xml') {
 			 // if xml, return dom result
 ?>
-				result = http.responseXML;
+				whomp_ajax_result = whomp_ajax_http.responseXML;
 <?php
 		 } else if ($this->_return_type == 'text') {
 			 // if text, return response text
 ?>
-				result = http.responseText;
+				whomp_ajax_result = whomp_ajax_http.responseText;
 <?php
 		 } else {
 			 // if neither, throw an exception
 			 throw new Exception('Unknown return type: ' . $this->_return_type);
 		 } // end if
 ?>
+				whomp_ajax_callback(whomp_ajax_result);
 			}
 		}
-		return result;
 	}
 <?php
 		 // insert the class/method functions
-		 foreach ($this->_classes as $class) {
-			 foreach ($class as $method) {
+		 foreach ($this->_classes as $class => $value) {
+			 foreach ($value as $method) {
 ?>
 	function <?php echo $class . '_' . $method; ?>() {
-		whomp_ajax_call_function("function[]=<?php echo $class; ?>&function[]=<?php echo $method; ?>", <?php echo $class . '_' . $method; ?>.arguments);
+		whomp_ajax_call_function("function[]=<?php echo $class; ?>&function[]=<?php echo $method; ?>", <?php echo $class . '_' . $method; ?>.arguments, <?php echo $class . '_' . $method; ?>_callback);
 	}
 <?php
 			 } // end foreach
@@ -310,7 +328,8 @@
 		 } // end foreach
 ?>
 	</script>
-<?php		 
+<?php
+		 return ob_get_clean();
 	 } // end function
 	 
 	 /**
@@ -329,6 +348,8 @@
 	  */
 	 public function checkRequest() {
 		 
+		 // make sure we don't print unwanted information
+		 while (@ob_end_clean());
 		 // check if this is a post or get request
 		 if ($this->_method == 'POST') {
 			 // if post, get the post superglobal
@@ -341,7 +362,7 @@
 			 throw new Exception('Unknown request method: ' . $this->_method);
 		 } // end if
 		 // check if the function or class/method was provided
-		 if (in_array('function', $request)) {
+		 if (array_key_exists('function', $request)) {
 			 // if so, check if this is a get request
 			 if ($this->_method = 'GET') {
 				 // if so, fix get caching problems
@@ -361,12 +382,14 @@
 				 header('Content-Type: text/xml');
 			 } else if ($this->_return_type == 'text') {
 				 // if text, set header to text
-				 header('Content-Type: text');
+				 header('Content-Type: text/plain');
 			 } else {
 				 // if neither, throw exception
 				 throw new Exception('Unknown return type: ' . $this->_return_type);
 			 } // end if
-			 call_user_func_array($request['function'], $request['args']);			 
+			 call_user_func_array($request['function'], $request['args']);
+			 // exit
+			 exit;		 
 		 } else {
 			 // if not, return
 			 return;
@@ -383,7 +406,6 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @global array access to the head data
-	  * @todo finish this (requires implementation of head information adding functionality elsewhere)
 	  */
 	 public function initialize() {
 		 global $_whomp_head_data;

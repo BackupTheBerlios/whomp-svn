@@ -1,0 +1,19 @@
+# $Id$ #
+# -- Turn off directory Listing -- #
+Options -Indexes
+IndexIgnore *
+
+# -- Mod_Rewrite Method -- #
+<IfModule mod_rewrite.c>
+	RewriteEngine on
+	RewriteBase /
+	# Rewrite URLs of the form 'index.php/':
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule ^(.*)/$ index.php/$1/ [L]
+</IfModule>
+
+# -- Error Document Method -- #
+<IfModule !mod_rewrite.c>
+	ErrorDocument 404 /index.php
+</IfModule>
