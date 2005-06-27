@@ -81,6 +81,7 @@ HTML;
 	  * @access public
 	  * @static
 	  * @param string $pagename the page to retrieve
+	  * @todo see why this isn't working
 	  */
 	 public static function getPageXml($pagename) {
 		 
