@@ -121,6 +121,9 @@ HTML;
  // register the getPage function
  $_whomp_installer_ajax->registerFunction(array('Whomp_Installer_Html', 'getPageText'));
  
+  // register the getNav function
+ $_whomp_installer_ajax->registerFunction(array('Whomp_Installer_Html', 'getNavText'));
+ 
  // initialize ajax
  $_whomp_installer_ajax->initialize();
  
