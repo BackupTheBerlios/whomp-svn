@@ -1,6 +1,6 @@
 /* $Id$ */
 body{padding:30px;margin:0;font-size:13px;font-family:Arial, Helvetica, sans-serif;color:#666666}
-a{color:#999999;text-decoration:none;}
+a{color:#999;text-decoration:none;}
 a:hover{text-decoration:underline;}
 p{width:70%;color:#666666;font-size:13px;margin-bottom:20px;margin-top:5px}
 select{color:#666666;font-size:13px;}
@@ -11,12 +11,17 @@ h4{color:#444;text-decoration:none;font-size:14px;font-weight:bold;padding-right
 span{margin-left:30px;font-size:13px;color:#888;display:none}
 .light{background-color:#eeeeee;}
 .dark{background-color:#dddddd;}
-ul{list-style:none;width:70%;font-weight:bold;position:relative;padding:0;margin:0;}
-.settings li{padding-top:1px;padding-bottom:1px;}
+.settings{list-style:none;width:70%;font-weight:bold;position:relative;padding:0;margin:0;display:block;}
+.settings li{padding-top:10px;padding-bottom:10px;width:100%;display:block;}
 #copyright{margin-left:0px;display:inline;font-size:13px;color:#aaa;}
 #navlinks{list-style:none;padding:5px;}
+#navlinks li{color:#666;}
 #navcontainer{width:120px;position:absolute;-moz-border-radius:4px;float:right;margin-top:60px;background:#f5f5f5;border:1px solid #dddddd;right:30px;top:80px;padding:10px 30px 15px 30px;font-size:12px;color:#aaaaaa;border-width:0 1px 1px 0;}
 .good_setting{color:green;text-align:right;display:inline;float:right;position:absolute;right:5px;}
 .bad_setting{color:red;text-align:right;display:inline;float:right;position:absolute;right:5px;}
-.right{text-align:right;display:inline;float:right;position:absolute;right:5px;}
+.right{text-align:right;display:inline;float:right;position:relative;right:5px;padding:0;margin:0;}
 strong{color:green;}
+.license{background-color:#eee;width:70%;}
+.license p{width:100%;}
+.bottomnav{list-style:none;width:70%;font-weight:bold;position:relative;padding:0;margin:0;}
+.done{display:inline;color:#aaa;margin:0;font-size:12px;text-decoration:line-through;}

@@ -107,14 +107,6 @@
 	 public $type;
 	 
 	 /**
-	  * The node's language
-	  * 
-	  * @var string $language
-	  * @access public
-	  */
-	 public $language;
-	 
-	 /**
 	  * The node's last modification date
 	  * 
 	  * @var string $modified

@@ -1,6 +1,6 @@
 <?php
 /*
-V4.63 17 May 2005  (c) 2000-2005 John Lim (jlim@natsoft.com.my). All rights reserved.
+V4.64 20 June 2005  (c) 2000-2005 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -84,27 +84,25 @@ class ADODB_mysqli extends ADOConnection {
 		foreach($this->optionFlags as $arr) {	
 			mysqli_options($this->_connectionID,$arr[0],$arr[1]);
 		}
-		
- 	    if (mysqli_real_connect($this->_connectionID,
+
+		$ok = mysqli_real_connect($this->_connectionID,
  				    $argHostname,
  				    $argUsername,
  				    $argPassword,
  				    $argDatabasename,
 					$this->port,
 					$this->socket,
-					$this->clientFlags))
- 	      {
- 		if ($argDatabasename)  return $this->SelectDB($argDatabasename);
-		  
-		
- 		return true;
- 	   }
- 	    else {
+					$this->clientFlags);
+ 	     
+		if ($ok) {
+	 		if ($argDatabasename)  return $this->SelectDB($argDatabasename);
+ 			return true;
+ 	   } else {
 			if ($this->debug) 
 		  		ADOConnection::outp("Could't connect : "  . $this->ErrorMsg());
 			return false;
-	      }
-	  }
+	   }
+	}
 	
 	// returns true or false
 	// How to force a persistent connection
@@ -260,6 +258,7 @@ class ADODB_mysqli extends ADOConnection {
 		// save old fetch mode
 		global $ADODB_FETCH_MODE;
 		
+		$false = false;
 		$save = $ADODB_FETCH_MODE;
 		$ADODB_FETCH_MODE = ADODB_FETCH_NUM;
 		if ($this->fetchMode !== FALSE) {
@@ -276,7 +275,7 @@ class ADODB_mysqli extends ADOConnection {
 		$ADODB_FETCH_MODE = $save;
 		
 		if (!is_object($rs)) {
-		        return FALSE;
+		        return $false;
 		}
 		
 		$indexes = array ();
@@ -361,6 +360,14 @@ class ADODB_mysqli extends ADOConnection {
 			case 'A':
 				$s .= '%p';
 				break;
+			
+			case 'w':
+				$s .= '%w';
+				break;
+				
+			case 'l':
+				$s .= '%W';
+				break;
 				
 			default:
 				
@@ -417,8 +424,9 @@ class ADODB_mysqli extends ADOConnection {
 	
  	function &MetaColumns($table) 
 	{
+		$false = false;
 		if (!$this->metaColumnsSQL)
-			return false;
+			return $false;
 		
 		global $ADODB_FETCH_MODE;
 		$save = $ADODB_FETCH_MODE;
@@ -429,7 +437,7 @@ class ADODB_mysqli extends ADOConnection {
 		if (isset($savem)) $this->SetFetchMode($savem);
 		$ADODB_FETCH_MODE = $save;
 		if (!is_object($rs))
-			return false;
+			return $false;
 		
 		$retarr = array();
 		while (!$rs->EOF) {

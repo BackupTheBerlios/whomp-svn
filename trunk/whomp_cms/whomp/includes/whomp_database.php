@@ -46,7 +46,7 @@
   * @todo add date handling functions
   * @todo add blob and/or clob functions
   */
- public class Whomp_Database {
+ class Whomp_Database {
 	 
 	 /**
 	  * The database connector provided by ADOdb
@@ -94,7 +94,7 @@
 	  * @var boolean $_magic_quotes
 	  * @access protected
 	  */
-	 protected $_magic_quotes = (boolean)get_magic_quotes_gpc();
+	 protected $_magic_quotes;
 	 
 	 /**
 	  * Whomp_Database constructor
@@ -131,6 +131,8 @@
 		 $this->_table_prefix = $options['table_prefix'];
 		 // set the fetch mode to associative
 		 $this->_db->SetFetchMode(ADODB_FETCH_ASSOC);
+		 // set magic quotes
+		 $_magic_quotes = (boolean)get_magic_quotes_gpc();
 	 } // end function
 	 
 	 /**
@@ -415,19 +417,26 @@
 		 global $_whomp_storage_path;
 		 
 		 /**
+		  * Require the datadict library
+		  */
+		 require($_whomp_storage_path . '/includes/adodb/adodb-datadict.inc.php');
+		 /**
 		  * Require the AXMLS include file
 		  */
 		 require_once($_whomp_storage_path . '/includes/adodb/adodb-xmlschema.inc.php');
 		 // create new schema
 		 $schema = new adoSchema($this->_db);
 		 // parse the xml to sql
-		 $sql = $schema->ParseSchemaString($xml);
+		 $sql = $schema->ParseSchema($xml);
 		 // replace prefix placeholder with correct table prefix
 		 foreach ($sql as $key => $value) {
 			 $sql[$key] = str_replace($prefix_placeholder, $this->_table_prefix, $value);
 		 } // end foreach
 		 // run the sql on the database
-		 $schema->ExecuteSchema($sql);
+		 //$schema->ExecuteSchema($sql);
+		 echo '<pre>';
+		 print_r($sql);
+		 echo '</pre>';
 	 } // end function
 	 
 	 /**

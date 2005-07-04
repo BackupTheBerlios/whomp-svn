@@ -14,7 +14,7 @@
 /**
 	\mainpage 	
 	
-	 @version V4.63 17 May 2005  (c) 2000-2005 John Lim (jlim#natsoft.com.my). All rights reserved.
+	 @version V4.64 20 June 2005  (c) 2000-2005 John Lim (jlim#natsoft.com.my). All rights reserved.
 
 	Released under both BSD license and Lesser GPL library license. You can choose which license
 	you prefer.
@@ -172,7 +172,7 @@
 		/**
 		 * ADODB version as a string.
 		 */
-		$ADODB_vers = 'V4.63 17 May 2005  (c) 2000-2005 John Lim (jlim#natsoft.com.my). All rights reserved. Released BSD & LGPL.';
+		$ADODB_vers = 'V4.64 20 June 2005  (c) 2000-2005 John Lim (jlim#natsoft.com.my). All rights reserved. Released BSD & LGPL.';
 	
 		/**
 		 * Determines whether recordset->RecordCount() is used. 
@@ -1011,7 +1011,8 @@
 	 */
 	function ErrorMsg()
 	{
-		return '!! '.strtoupper($this->dataProvider.' '.$this->databaseType).': '.$this->_errorMsg;
+		if ($this->_errorMsg) return '!! '.strtoupper($this->dataProvider.' '.$this->databaseType).': '.$this->_errorMsg;
+		else return '';
 	}
 	
 	
@@ -1578,16 +1579,23 @@
 	 */
 	function &CacheExecute($secs2cache,$sql=false,$inputarr=false)
 	{
+
+			
 		if (!is_numeric($secs2cache)) {
 			$inputarr = $sql;
 			$sql = $secs2cache;
 			$secs2cache = $this->cacheSecs;
 		}
+		
+		if (is_array($sql)) {
+			$sqlparam = $sql;
+			$sql = $sql[0];
+		} else
+			$sqlparam = $sql;
+			
 		global $ADODB_INCLUDED_CSV;
 		if (empty($ADODB_INCLUDED_CSV)) include_once(ADODB_DIR.'/adodb-csvlib.inc.php');
 		
-		if (is_array($sql)) $sql = $sql[0];
-			
 		$md5file = $this->_gencachename($sql.serialize($inputarr),true);
 		$err = '';
 		
@@ -1608,7 +1616,7 @@
 				if ($this->debug !== -1) ADOConnection::outp( " $md5file cache failure: $err (see sql below)");
 			}
 			
-			$rs = &$this->Execute($sql,$inputarr);
+			$rs = &$this->Execute($sqlparam,$inputarr);
 
 			if ($rs) {
 				$eof = $rs->EOF;
@@ -1662,8 +1670,6 @@
 	 */
 	function& AutoExecute($table, $fields_values, $mode = 'INSERT', $where = FALSE, $forceUpdate=true, $magicq=false) 
 	{
-		//$flds = array_keys($fields_values);
-		//$fldstr = implode(', ',$flds);
 		$sql = 'SELECT * FROM '.$table;  
 		if ($where!==FALSE) $sql .= ' WHERE '.$where;
 		else if ($mode == 'UPDATE') {
@@ -1689,7 +1695,8 @@
 		}
 		$ret = false;
 		if ($sql) $ret = $this->Execute($sql);
-		return $ret ? true : false;
+		if ($ret) $ret = true;
+		return $ret;
 	}
 	
 	
@@ -1845,27 +1852,27 @@
 	function SetDateLocale($locale = 'En')
 	{
 		$this->locale = $locale;
-		switch ($locale)
+		switch (strtoupper($locale))
 		{
-			case 'En':
+			case 'EN':
 				$this->fmtDate="'Y-m-d'";
 				$this->fmtTimeStamp = "'Y-m-d H:i:s'";
 				break;
 				
-			case 'Us':
+			case 'US':
 				$this->fmtDate = "'m-d-Y'";
 				$this->fmtTimeStamp = "'m-d-Y H:i:s'";
 				break;
 				
-			case 'Nl':
-			case 'Fr':
-			case 'Ro':
-			case 'It':
+			case 'NL':
+			case 'FR':
+			case 'RO':
+			case 'IT':
 				$this->fmtDate="'d-m-Y'";
 				$this->fmtTimeStamp = "'d-m-Y H:i:s'";
 				break;
 				
-			case 'Ge':
+			case 'GE':
 				$this->fmtDate="'d.m.Y'";
 				$this->fmtTimeStamp = "'d.m.Y H:i:s'";
 				break;
@@ -2076,7 +2083,7 @@
      function &MetaIndexes($table, $primary = false, $owner = false)
      {
 	 		$false = false;
-            return false;
+            return $false;
      }
 
 	/**
@@ -2967,7 +2974,7 @@
 	{
 		$this->bind = array();
 		for ($i=0; $i < $this->_numOfFields; $i++) {
-			$o =& $this->FetchField($i);
+			$o = $this->FetchField($i);
 			if ($upper === 2) $this->bind[$o->name] = $i;
 			else $this->bind[($upper) ? strtoupper($o->name) : strtolower($o->name)] = $i;
 		}
@@ -3645,6 +3652,7 @@
 		if (strpos($db,'://')) {
 			$origdsn = $db;
 			$dsna = @parse_url($db);
+			
 			if (!$dsna) {
 				// special handling of oracle, which might not have host
 				$db = str_replace('@/','@adodb-fakehost/',$db);
@@ -3714,7 +3722,7 @@
 		if ($obj) {
 			if ($errorfn)  $obj->raiseErrorFn = $errorfn;
 			if (isset($dsna)) {
-			
+				if (isset($dsn['port'])) $obj->port = $dsn['port'];
 				foreach($opt as $k => $v) {
 					switch(strtolower($k)) {
 					case 'persist':
@@ -3730,8 +3738,9 @@
 					case 'charpage':	$obj->charPage = $v; break;
 					#mysql, mysqli
 					case 'clientflags': $obj->clientFlags = $v; break;
-					#mysqli
+					#mysql, mysqli, postgres
 					case 'port': $obj->port = $v; break;
+					#mysqli
 					case 'socket': $obj->socket = $v; break;
 					#oci8
 					case 'nls_date_format': $obj->NLS_DATE_FORMAT = $v; break;

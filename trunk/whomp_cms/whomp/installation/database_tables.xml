@@ -1,0 +1,121 @@
+<?xml version="1.0"?>
+<schema version="0.2">
+	<table name="#__users">
+		<descr>Whomp users table.</descr>
+		<field name="id" type="I">
+			<descr>The user's id.</descr>
+			<KEY/>
+			<AUTOINCREMENT/>
+		</field>
+		<field name="username" type="C" size="50">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="password" type="C" size="50">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="name" type="C" size="100">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="usertype" type="C" size="50">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="email" type="C">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="register_date" type="T">
+			<NOTNULL/>
+			<DEFAULT value="0000-00-00 00:00:00" />
+		</field>
+		<field name="last_visit_date" type="T">
+			<NOTNULL/>
+			<DEFAULT value="0000-00-00 00:00:00" />
+		</field>
+		<index name="username">
+			<descr>Put a unique index on the user name.</descr>
+			<col>username</col>
+			<UNIQUE/>
+		</index>
+	</table>
+	<table name="#__en_nodes">
+		<descr>Whomp english nodes.</descr>
+		<field name="id" type="I">
+			<descr>The user's id.</descr>
+			<KEY/>
+			<AUTOINCREMENT/>
+		</field>
+		<field name="name" type="C">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="type" type="C">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="modified" type="T">
+			<NOTNULL/>
+			<DEFAULT value="0000-00-00 00:00:00" />
+		</field>
+		<field name="modified_by" type="I">
+			<NOTNULL/>
+			<DEFAULT value="0" />
+		</field>
+		<field name="layouts" type="X">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="parents" type="X">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="children" type="X">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="relatives" type="X">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="_group" type="X">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="_user" type="X">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="_headers" type="X">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<field name="_show_logged" type="L">
+			<NOTNULL/>
+			<DEFAULT value="1" /> 
+		</field>
+		<index name="name">
+			<descr>Put a unique index on the node name.</descr>
+			<col>name</col>
+			<UNIQUE/>
+		</index>
+	</table>
+	<table name="#__node_types">
+		<descr>Whomp installed node types.</descr>
+		<field name="id" type="I">
+			<KEY/>
+			<AUTOINCREMENT/>
+		</field>
+		<field name="type" type="C">
+			<NOTNULL/>
+			<DEFAULT value="" />
+		</field>
+		<index name="type">
+			<descr>Put a unique index on the node type.</descr>
+			<col>type</col>
+			<UNIQUE/>
+		</index>
+	</table>
+</schema>

@@ -203,6 +203,7 @@
 		 ob_start();
 ?>
 <script language="javascript"  type="text/javascript">
+	/* <![CDATA[ */
 	var whomp_ajax_url = "<?php echo $this->_callback; ?>";
 	var whomp_ajax_callback;
 	var whomp_ajax_working = false;
@@ -327,6 +328,7 @@
 <?php
 		 } // end foreach
 ?>
+	/* ]]> */
 	</script>
 <?php
 		 return ob_get_clean();

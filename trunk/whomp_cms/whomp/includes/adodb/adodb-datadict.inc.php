@@ -1,7 +1,7 @@
 <?php
 
 /**
-  V4.63 17 May 2005  (c) 2000-2005 John Lim (jlim@natsoft.com.my). All rights reserved.
+  V4.64 20 June 2005  (c) 2000-2005 John Lim (jlim@natsoft.com.my). All rights reserved.
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
   the BSD license will take precedence.
@@ -569,7 +569,7 @@ class ADODB_DataDict {
 				} else {
 					$fdefault = $this->connection->sysDate;
 				}
-			} else if (strlen($fdefault) && !$fnoquote)
+			} else if ($fdefault !== false && !$fnoquote)
 				if ($ty == 'C' or $ty == 'X' or 
 					( substr($fdefault,0,1) != "'" && !is_numeric($fdefault)))
 					if (strlen($fdefault) != 1 && substr($fdefault,0,1) == ' ' && substr($fdefault,strlen($fdefault)-1) == ' ') 

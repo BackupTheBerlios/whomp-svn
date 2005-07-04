@@ -103,7 +103,7 @@ HTML;
  require_once($_whomp_storage_path . '/includes/whomp_ajax.php');
  
  // create the ajax options
- $whomp_ajax_options = array('_callback' => $_whomp_storage_url . '/installation/index.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_url_path . '&storage_path=' . $_whomp_storage_path,
+ $whomp_ajax_options = array('_callback' => $_whomp_storage_url . '/installation/index.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_url_path . '&storage_path=' . $_whomp_storage_path .'&storage_url=' . $_whomp_storage_url,
  							 '_method' => 'POST',
 							 '_return_type' => 'text',
 							 '_async' => 'true');

@@ -611,6 +611,7 @@ function _adodb_is_leap_year($year)
 	return true;
 }
 
+
 /**
  checks for leap year, returns true if it is. Has 2-digit year check
 */

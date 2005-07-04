@@ -1,7 +1,7 @@
 <?php
 /*
 
-  version V4.63 17 May 2005 (c) 2000-2005 John Lim. All rights reserved.
+  version V4.64 20 June 2005 (c) 2000-2005 John Lim. All rights reserved.
 
   Released under both BSD license and Lesser GPL library license. 
   Whenever there is any discrepancy between the two licenses, 
@@ -131,7 +131,10 @@ class ADODB_oci8 extends ADOConnection {
 			$rs->MoveNext();
 		}
 		$rs->Close();
-		return (empty($retarr)) ? $false : $retarr;
+		if (empty($retarr))
+			return  $false;
+		else 
+			return $retarr;
 	}
 	
 	function Time()
@@ -1306,6 +1309,39 @@ class ADORecordset_oci8 extends ADORecordSet {
 		return false;
 	}
 	
+	/*
+	# does not work as first record is retrieved in _initrs(), so is not included in GetArray()
+	function &GetArray($nRows = -1) 
+	{
+	global $ADODB_OCI8_GETARRAY;
+	
+		if (true ||  !empty($ADODB_OCI8_GETARRAY)) {
+			# does not support $ADODB_ANSI_PADDING_OFF
+	
+			//OCI_RETURN_NULLS and OCI_RETURN_LOBS is set by OCIfetchstatement
+			switch($this->adodbFetchMode) {
+			case ADODB_FETCH_NUM:
+			
+				$ncols = @OCIfetchstatement($this->_queryID, $results, 0, $nRows, OCI_FETCHSTATEMENT_BY_ROW+OCI_NUM);
+				$results = array_merge(array($this->fields),$results);
+				return $results;
+				
+			case ADODB_FETCH_ASSOC: 
+				if (ADODB_ASSOC_CASE != 2 || $this->databaseType != 'oci8') break;
+				
+				$ncols = @OCIfetchstatement($this->_queryID, $assoc, 0, $nRows, OCI_FETCHSTATEMENT_BY_ROW);
+				$results =& array_merge(array($this->fields),$assoc);
+				return $results;
+			
+			default:
+				break;
+			}
+		}
+			
+		$results =& ADORecordSet::GetArray($nRows);
+		return $results;
+		
+	} */
 	
 	/* Optimize SelectLimit() by using OCIFetch() instead of OCIFetchInto() */
 	function &GetArrayLimit($nrows,$offset=-1) 

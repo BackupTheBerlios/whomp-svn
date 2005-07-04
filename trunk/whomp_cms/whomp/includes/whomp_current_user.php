@@ -73,7 +73,7 @@
 			 // if so, get the user information from the database
 			 try {
 				 $queryValues = array($_COOKIE['whomp_id']);
-				 $query = 'SELECT * FROM `#__whomp_users` WHERE md5(`id`) = %s;';
+				 $query = 'SELECT * FROM `#__users` WHERE md5(`id`) = %s;';
 				 $_whomp_database->setQuery($query, $queryValues);
 				 $_whomp_database->query();
 				 $current_user_options = $_whomp_database->loadRow();
