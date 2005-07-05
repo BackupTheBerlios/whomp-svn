@@ -35,6 +35,30 @@
 	 /* ++ BASIC ++ */
 	 
 	 /**
+	  * The site's name
+	  * 
+	  * @var string $site_name
+	  * @access public
+	  */
+	 public $site_name = '';
+	 
+	 /**
+	  * The site's url
+	  * 
+	  * @var string $site_url
+	  * @access public
+	  */
+	 public $site_url = '';
+	 
+	 /**
+	  * The site's path
+	  * 
+	  * @var string $site_path
+	  * @access public
+	  */
+	 public $site_path = '';
+	 
+	 /**
 	  * The whomp file storage directory
 	  * 
 	  * @var string $storage_dir
@@ -217,5 +241,60 @@
 	 public $known_content_types = array();
 	 
 	 /* -- NODE -- */
+	 
+	 /**
+	  * The configuration file contents
+	  * 
+	  * For use with the editing functions
+	  * 
+	  * @var string $_configuration_file
+	  * @access protected
+	  */
+	 protected $_configuration_file;
+	 
+	 /**
+	  * Function to prepare for editing configuration options
+	  * 
+	  * @author Schmalls / Joshua Thompson
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @param string $file the location of the configuration file
+	  */
+	 public function startEdit($file) {
+		 
+		 $this->_configuration_file = file_get_contents($file);
+		 //echo '<pre>' . $this->_configuration_file . '</pre>';
+	 } // end function
+	 
+	 /**
+	  * Function to replace the values in the configuration file
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @param string $property the configuration class property
+	  * @param string $value the configuration class property value to set
+	  */
+	 public function set($property, $value) {
+		 
+		 // replace the property's value
+		 $search = '/public \$' . $property . ' = [^;]*;/i';
+		 $this->_configuration_file = preg_replace($search,'public $' . $property . ' = ' . $value . ';', $this->_configuration_file);
+	 } // end function
+	 
+	 /**
+	  * Finish editing the configuration file options
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param string $file the location of the configuration file
+	  */
+	 public function endEdit($file) {
+		 
+		 file_put_contents($file, $this->_configuration_file);
+		 //echo '<pre>' . $this->_configuration_file . '</pre>';
+	 } // end function
  } // end class
 ?>

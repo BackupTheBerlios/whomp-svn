@@ -70,27 +70,33 @@
 		Whomp_Installer_Html_getPageText(global_pagename, keys, values);
 	}
 	function getPageThree() {
-		var keys = 'site_name,site_url,database_type,database_name,database_user,database_password,database_prefix';
+		var keys = 'site_name,site_url,site_path,database_type,database_host,database_name,database_user,database_password,database_prefix';
 		var values = document.getElementById('site_name').value + ',' 
 						+ document.getElementById('site_url').value + ','
+						+ document.getElementById('site_path').value + ','
 						+ document.getElementById('database_type').value + ','
+						+ document.getElementById('database_host').value + ','
 						+ document.getElementById('database_name').value + ','
 						+ document.getElementById('database_user').value + ','
 						+ document.getElementById('database_password').value + ','
 						+ document.getElementById('database_prefix').value;
 		global_pagename = 'page3';
-		alert(keys + '\\n' + values);
 		Whomp_Installer_Html_getPageText(global_pagename, keys, values);
 	}
 	function getPageFour() {
-		var keys = 'admin_user,admin_name,admin_email,admin_password,admin_password_confirm';
-		var values = document.getElementById('admin_user').value + ',' 
+		var keys = 'database_type,database_host,database_name,database_user,database_password,database_prefix,admin_user,admin_name,admin_email,admin_password,admin_password_confirm';
+		var values = document.getElementById('database_type').value + ','
+						+ document.getElementById('database_host').value + ','
+						+ document.getElementById('database_name').value + ','
+						+ document.getElementById('database_user').value + ','
+						+ document.getElementById('database_password').value + ','
+						+ document.getElementById('database_prefix').value + ','
+						+ document.getElementById('admin_user').value + ',' 
 						+ document.getElementById('admin_name').value + ','
 						+ document.getElementById('admin_email').value + ','
 						+ document.getElementById('admin_password').value + ','
 						+ document.getElementById('admin_password_confirm').value;
 		global_pagename = 'page4';
-		alert(keys + '\\n' + values);
 		Whomp_Installer_Html_getPageText(global_pagename, keys, values);
 	}
 	function Whomp_Installer_Html_getPageText_callback(result) {
@@ -167,7 +173,7 @@ HTML;
 	  * @return string the (x)html page data
 	  */
 	 public static function getPage($pagename, $post_keys = null, $post_values = null) {
-		 global $_whomp_base_path, $_whomp_base_url, $_whomp_storage_path, $_whomp_storage_url;
+		 global $_whomp_base_path, $_whomp_base_url, $_whomp_storage_path, $_whomp_storage_url, $_whomp_configuration;
 		 
 		 // check if keys and values were sent
 		 if (($post_keys !== null) && ($post_values !== null)) {
@@ -287,7 +293,7 @@ HTML;
 <h3 class="title">Install Step 2: Site and Database Information</h3>
 <form action="{$_whomp_storage_url}/installation/index.php?base_path={$_whomp_base_path}&base_url={$_whomp_url_path}&storage_path={$_whomp_storage_path}&storage_url={$_whomp_storage_url}&page=page3" method="post">
 <h4 class="title">Site Details</h4>
-<p>Please enter the following details about your site.{$_whomp_storage_url}</p>
+<p>Please enter the following details about your site.</p>
 <ul class="settings">
 	<li class="light">
 		<span class="right"><input id="site_name" type="text" size="40" name="site_name" value="" /></span>
@@ -296,6 +302,10 @@ HTML;
 	<li class="dark">
 		<span class="right"><input id="site_url" type="text" size="40" name="site_url" value="{$_whomp_base_url}" /></span>
 		Site Url
+	</li>
+	<li class="light">
+		<span class="right"><input id="site_path" type="text" size="40" name="site_path" value="{$_whomp_base_path}" /></span>
+		Site Path
 	</li>
 </ul>
 <h4 class="title">Database Information</h4>
@@ -348,6 +358,18 @@ HTML;
 			 case ('page3') :
 			 	 // add the database tables
 			 	 $check = self::addDatabaseTables($post_array);
+				 // change the database options in the configuration file
+				 $_whomp_configuration->startEdit($_whomp_base_path . '/whomp_configuration.php');
+				 $_whomp_configuration->set('site_name', "'" . $post_array['site_name'] . "'");
+				 $_whomp_configuration->set('site_url', "'" . $post_array['site_url'] . "'");
+				 $_whomp_configuration->set('site_path', "'" . $post_array['site_path'] . "'");
+				 $_whomp_configuration->set('database_type', "'" . $post_array['database_type'] . "'");
+				 $_whomp_configuration->set('database_host', "'" . $post_array['database_host'] . "'");
+				 $_whomp_configuration->set('database_username', "'" . $post_array['database_user'] . "'");
+				 $_whomp_configuration->set('database_password', "'" . $post_array['database_password'] . "'");
+				 $_whomp_configuration->set('database_database', "'" . $post_array['database_name'] . "'");
+				 $_whomp_configuration->set('database_table_prefix', "'" . $post_array['database_prefix'] . "'");
+				 $_whomp_configuration->endEdit($_whomp_base_path . '/whomp_configuration.php');
 				 // check if the tables were added successfully
 				 if ($check !== false) {
 					 // if so, display page 3
@@ -384,6 +406,12 @@ HTML;
 		<noscript><input type="submit" name="Next Step" /></noscript>
 	</li>
 </ul>
+<input type="hidden" id="database_type" name="database_type" value="{$post_array['database_type']}" />
+<input type="hidden" id="database_host" name="database_host" value="{$post_array['database_host']}" />
+<input type="hidden" id="database_name" name="database_name" value="{$post_array['database_name']}" />
+<input type="hidden" id="database_user" name="database_user" value="{$post_array['database_user']}" />
+<input type="hidden" id="database_password" name="database_password" value="{$post_array['database_password']}" />
+<input type="hidden" id="database_prefix" name="database_prefix" value="{$post_array['database_prefix']}" />
 </form>
 HTML;
 				 } else {
@@ -392,6 +420,8 @@ HTML;
 				 } // end if
 				 break;
 			 case ('page4');
+			 	 // add the admin to the users table
+			 	 $check = self::addAdmin($post_array);
 			 	 $html = <<<HTML
 <h3 class="title">Install Step 4: Final Words</h3>
 HTML;
@@ -501,6 +531,7 @@ HTML;
 	  * @since 0.0.0
 	  * @access public
 	  * @static
+	  * @param array $post_array posted variables
 	  * @return boolean whether it was successful or not
 	  */
 	 public static function addDatabaseTables($post_array) {
@@ -515,18 +546,94 @@ HTML;
  								   'host' => $post_array['database_host'],
 								   'username' => $post_array['database_user'],
 								   'password' => $post_array['database_password'],
-								   'database' => $post_array['database_database'],
+								   'database' => $post_array['database_name'],
 								   'table_prefix' => $post_array['database_prefix']);
 		 // try to connect to the database
 		 try {
 			 $database = new Whomp_Database($database_options);
-			 // get the xml
-			 //$xml = file_get_contents($_whomp_storage_path . '/installation/database_tables.xml');
-			 $database->createTables($_whomp_storage_path . '/installation/database_tables.xml');
+			 // create the table options
+			 $tables = array('#__users' => array('fields' => '`id` I KEY AUTO,
+			 												  `username` C(50) NOTNULL DEFAULT \'\',
+			 												  `password` C(32) NOTNULL DEFAULT \'\',
+			 												  `name` C(100) NOTNULL DEFAULT \'\',
+			 												  `usertype` C(50) NOTNULL DEFAULT \'\',
+			 												  `email` C(255) NOTNULL DEFAULT \'\',
+			 												  `last_visit_date` T NOTNULL DEFAULT \'0000-00-00 00:00:00\',
+			 												  `register_date` T NOTNULL DEFAULT \'0000-00-00 00:00:00\'',
+												 'table_options' => array('mysql' => 'TYPE=MyISAM', 'REPLACE'),
+												 'index' => 'username',
+												 'index_fields' => '`username`',
+												 'index_options' => array('UNIQUE')),
+							 '#__en_nodes' => array('fields' => '`id` I KEY AUTO,
+							  									 `name` C(255) NOTNULL DEFAULT \'\',
+							  									 `type` C(255) NOTNULL DEFAULT \'\',
+							  									 `modified` T NOTNULL DEFAULT \'0000-00-00 00:00:00\',
+							  									 `modified_by` I NOTNULL DEFAULT \'0\',
+							  									 `layouts` X NOTNULL DEFAULT \'\',
+							  									 `parents` X NOTNULL DEFAULT \'\',
+							  									 `children` X NOTNULL DEFAULT \'\',
+							  									 `relatives` X NOTNULL DEFAULT \'\',
+							  									 `_group` X NOTNULL DEFAULT \'\',
+							  									 `_user` X NOTNULL DEFAULT \'\',
+							  									 `_headers` X NOTNULL DEFAULT \'\',
+							  									 `_show_logged` L NOTNULL DEFAULT \'1\'',
+													 'table_options' => array('mysql' => 'TYPE=MyISAM', 'REPLACE'),
+													 'index' => 'name',
+													 'index_fields' => '`name`',
+													 'index_options' => array('UNIQUE')),
+							 '#__node_types' => array ('fields' => '`id` I KEY AUTO,
+							 										`type` C(255) NOTNULL DEFAULT \'\'',
+													   'table_options' => array('mysql' => 'TYPE=MyISAM', 'REPLACE'),
+													   'index' => 'type',
+													   'index_fields' => '`type`',
+													   'index_options' => array('UNIQUE')));
+			 // create the tables
+			 $database->createTables($tables);
 		 } catch (Exception $e) {
-			 return false;
+			 whomp_output_exception($e);
 		 } // end try
 		 // return true
+		 return true;
+	 } // end function
+	 
+	 /**
+	  * Add the admin to the users table
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @static
+	  * @param array $post_array posted variables
+	  */
+	 public static function addAdmin($post_array) {
+		 global $_whomp_storage_path;
+		 
+		 /**
+		  * Require the Whomp_Database class file
+		  */
+		 require_once($_whomp_storage_path . '/includes/whomp_database.php');
+		 // create the database options array
+		 $database_options = array('type' => $post_array['database_type'],
+ 								   'host' => $post_array['database_host'],
+								   'username' => $post_array['database_user'],
+								   'password' => $post_array['database_password'],
+								   'database' => $post_array['database_name'],
+								   'table_prefix' => $post_array['database_prefix']);
+		 // try to connect to the database
+		 try {
+			 $database = new Whomp_Database($database_options);
+			 $record = array('username' => $post_array['admin_user'],
+			 				 'name' => $post_array['admin_name'],
+							 'email' => $post_array['admin_email'],
+							 'password' => md5($post_array['admin_password']),
+							 'usertype' => 'admin',
+							 'last_visit_date' => date('Y-m-d H:i:s'),
+							 'register_date' => date('Y-m-d H:i:s'));
+			 $database->insert('#__users', $record);
+		 } catch (Exception $e) {
+			 whomp_output_exception($e);
+		 } // end try
 		 return true;
 	 } // end function
 	 

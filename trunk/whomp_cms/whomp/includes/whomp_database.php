@@ -400,43 +400,97 @@
 	 } // end function
 	 
 	 /**
-	  * Generate tables from an XML string using AXMLS
+	  * Generate tables from the provided options
 	  * 
-	  * For more information on the XML files please visit the 
-	  * {@link http://adodb-xmlschema.sourceforge.net/docs/ AXMLS Documentation Site}.
+	  * The tables array contains options to create tables in the following 
+	  * format:
+	  * <pre>
+	  * Array (
+	  * 	tablename1 => array (
+	  * 					'fields' => '`id` I KEY AUTO, `name` C(50) NOTNULL DEFAULT \'example\'',
+	  * 					'table_options' => array('mysql' => 'TYPE=MyISAM'),
+	  * 					'index' => 'name',
+	  * 					'index_fields' => '`name`',
+	  * 					'index_options' => array('UNIQUE')),
+	  * 	tablename2 => array (
+	  * 		...
+	  * }
+	  * </pre>
+	  * 
+	  * The syntax of the different array options is compatible with the data 
+	  * dictionary options of adodb. For more information on syntax read the
+	  * {@link http://phplens.com/lens/adodb/docs-datadict.htm Data Dictionary Documentation}.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @param string $xml the table creation XML
-	  * @param string $prefix_placeholder The table prefix placeholder
-	  * @global string the whomp storage path
+	  * @param array $options the options
+	  * @param string $prefix_placeholder the table prefix placeholder
+	  * @return boolean whether it was successful or not
 	  */
-	 public function createTables($xml, $prefix_placeholder = '#__') {
-		 global $_whomp_storage_path;
+	 public function createTables($tables, $prefix_placeholder = '#__') {
 		 
-		 /**
-		  * Require the datadict library
-		  */
-		 require($_whomp_storage_path . '/includes/adodb/adodb-datadict.inc.php');
-		 /**
-		  * Require the AXMLS include file
-		  */
-		 require_once($_whomp_storage_path . '/includes/adodb/adodb-xmlschema.inc.php');
-		 // create new schema
-		 $schema = new adoSchema($this->_db);
-		 // parse the xml to sql
-		 $sql = $schema->ParseSchema($xml);
-		 // replace prefix placeholder with correct table prefix
-		 foreach ($sql as $key => $value) {
-			 $sql[$key] = str_replace($prefix_placeholder, $this->_table_prefix, $value);
-		 } // end foreach
-		 // run the sql on the database
-		 //$schema->ExecuteSchema($sql);
-		 echo '<pre>';
-		 print_r($sql);
-		 echo '</pre>';
+		 // create new datadictionary
+		 $data_dictionary = NewDataDictionary($this->_db);
+		 // create the sql array
+		 $sql_array = array();
+		 // check if tables is an array
+		 if (is_array($tables)) {
+			 // if so, generate the sql
+			 foreach ($tables as $table => $options) {
+				 // replace the table placeholder
+				 $table = str_replace($prefix_placeholder, $this->_table_prefix, $table);
+				 // check if fields were provided
+				 if (array_key_exists('fields', $options)) {
+					 // if so, check if the table options were provided
+					 if (array_key_exists('table_options', $options)) {
+						 $sql = $data_dictionary->CreateTableSQL($table, $options['fields'], $options['table_options']);
+					 } else {
+						 $sql = $data_dictionary->CreateTableSQL($table, $options['fields']);
+					 } // end if
+					 // check if sql is an array
+					 if (is_array($sql)) {
+						 // if so, combine it with the sql array
+						 $sql_array = array_merge($sql_array, $sql);
+					 } else if ($sql !== false) {
+						 $sql_array[] = $sql;
+					 } else {
+						 throw new Exception('Error creating table sql for ' . $table);
+					 } // end if
+				 } // end if
+				 // check if an index was provided
+				 if (array_key_exists('index', $options) && array_key_exists('index_fields', $options)) {
+					 // if so, check if index options were provided
+					 if (array_key_exists('index_options', $options)) {
+						 $sql = $data_dictionary->CreateIndexSQL($options['index'], $table, $options['index_fields'], $options['index_options']);
+					 } else {
+						 $sql = $data_dictionary->CreateIndexSQL($options['index'], $table, $options['index_fields']);
+					 } // end if
+					 // check if sql is an array
+					 if (is_array($sql)) {
+						 // if so, combine it with the sql array
+						 $sql_array = array_merge($sql_array, $sql);
+					 } else if ($sql !== false) {
+						 $sql_array[] = $sql;
+					 } else {
+						 throw new Exception('Error creating index sql for ' . $table);
+					 } // end if
+				 } // end if
+			 } // end foreach
+		 } // end if
+		 // create the tables
+		 $result = $data_dictionary->ExecuteSQLArray($sql_array);
+		 // check if there were errors
+		 if ($result == 0) {
+			 throw new Exception('Error running table creation sql.');
+		 } else if ($result == 1) {
+			 // errors return false
+			 return false;
+		 } else {
+			 // no errors return true
+			 return true;
+		 } // end if
 	 } // end function
 	 
 	 /**
@@ -471,6 +525,25 @@
 		 
 		 // return the placeholder
 		 return $this->_db->Param($name);
+	 } // end function
+	 
+	 /**
+	  * Insert
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param string $table the table to insert into
+	  * @param string $record the record to insert
+	  * @param string $prefix_placeholder the table prefix placeholder
+	  */
+	 public function insert($table, $record, $prefix_placeholder = '#__') {
+		 
+		 // change table prefix
+		 $table = str_replace($prefix_placeholder, $this->_table_prefix, $table);
+		 // insert
+		 $this->_db->AutoExecute($table, $record, 'INSERT');
 	 } // end function
 	 
  } // end class
