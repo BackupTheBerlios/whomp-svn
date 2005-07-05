@@ -32,7 +32,7 @@
   * @since 0.0.0
   * @access public
   */
- abstract public class Whomp_Template {
+ abstract class Whomp_Template {
 	 
 	 /**
 	  * The template XML DOMDocument

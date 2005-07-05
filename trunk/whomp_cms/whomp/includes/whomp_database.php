@@ -268,7 +268,7 @@
 	  * @param ADORecordSet $result database result to use
 	  * @return array the next row of the result
 	  */
-	 public function loadRow(ADORecordSet $result = null) {
+	 public function loadRow($result = null) {
 		 
 		 // check if a result was provided
 		 if ($result === null) {
@@ -289,7 +289,7 @@
 	  * @param ADORecordSet $result database result to use
 	  * @return array the result set
 	  */
-	 public function loadRowList(ADORecordSet $result = null) {
+	 public function loadRowList($result = null) {
 		 
 		 // check if a result was provided
 		 if ($result === null) {
@@ -310,7 +310,7 @@
 	  * @param ADORecordSet $result database result to use
 	  * @return object the next row of the result
 	  */
-	 public function loadObject(ADORecordSet $result = null) {
+	 public function loadObject($result = null) {
 		 
 		 // check if a result was provided
 		 if ($result === null) {
@@ -331,7 +331,7 @@
 	  * @param ADORecordSet $result database result to use
 	  * @return array the result set as an array of objects
 	  */
-	 public function loadObjectList(ADORecordSet $result = null) {
+	 public function loadObjectList($result = null) {
 		 
 		 // check if a result was provided
 		 if ($result === null) {
@@ -373,7 +373,7 @@
 	  * @param ADORecordSet $result database result to use
 	  * @return int the number of rows
 	  */
-	 public function numRows(ADORecordSet $result = null) {
+	 public function numRows($result = null) {
 		 
 		 // check if a result was provided
 		 if ($result === null) {

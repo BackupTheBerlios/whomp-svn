@@ -634,21 +634,21 @@ HTML;
 			 $database->createTables($tables);
 			 // insert the default and error node types
 			 $record = array('type' => 'whomp_node_frontpage');
-			 $database->insert('#__nodes', $record);
+			 $database->insert('#__node_types', $record);
 			 $record = array('type' => 'whomp_node_error');
-			 $database->insert('#__nodes', $record);
+			 $database->insert('#__node_types', $record);
 			 // insert the default node and error node
 			 $record = array('name' => 'default',
 			 				 'type' => 'whomp_node_frontpage',
 							 'modified' => date('Y-m-d H:i:s'));
-			 $database->insert('#__nodes', $record);
+			 $database->insert('#__en_nodes', $record);
 			 $record = array('id' => $database->insertId(),
 			 				 'content' => 'A test frontpage.');
 			 $database->insert('#__en_node_types_whomp_node_frontpage', $record);
 			 $record = array('name' => 'error',
 			 				 'type' => 'whomp_node_error',
 							 'modified' => date('Y-m-d H:i:s'));
-			 $database->insert('#__nodes', $record);
+			 $database->insert('#__en_nodes', $record);
 			 $record = array('id' => $database->insertId(),
 			 				 'error_message' => '404 Error: page not found.');
 			 $database->insert('#__en_node_types_whomp_node_error', $record);

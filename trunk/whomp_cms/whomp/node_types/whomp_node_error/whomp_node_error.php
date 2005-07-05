@@ -31,7 +31,7 @@
   * @since 0.0.0
   * @access public
   */
- public class Whomp_Node_Error extends Whomp_Node {
+ class Whomp_Node_Error extends Whomp_Node {
 	 
 	 /**
 	  * Whomp_Node_Error constructor

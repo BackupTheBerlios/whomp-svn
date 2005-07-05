@@ -33,6 +33,13 @@
  class Whomp_Configuration {
 	 
 	 /* ++ BASIC ++ */
+	 /**
+	  * Whomp version information
+	  * 
+	  * @var string $version_information
+	  * @access public
+	  */
+	 public $version_information = 'Whomp CMS version 0.0.0 http://whomp.schmalls.com';
 	 
 	 /**
 	  * The site's name
@@ -238,7 +245,10 @@
 	  * @access public
 	  * @todo fill this
 	  */
-	 public $known_content_types = array();
+	 public $known_content_types = array('html' => 'text/html',
+	 									 'xhtml+xml' => 'application/xhtml+xml',
+										 'xhtml' => 'application/xhtml+xml',
+										 'txt' => 'text/plain');
 	 
 	 /* -- NODE -- */
 	 

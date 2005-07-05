@@ -30,7 +30,7 @@
   * @since 0.0.0
   * @access public
   */
- public class Whomp_Cache {
+ class Whomp_Cache {
 	 
 	 /**
 	  * The cache directory
@@ -201,7 +201,8 @@
 		 $return = false;
 		 if ($this->_enable_caching) {
 			 // if so, see if the requested language is available
-			 $language = $_whomp_accept_headers['languages'][0];
+			 $languages = array_keys($_whomp_accept_headers['languages']);
+			 $language = $languages[0];
 			 if (in_array($language, $this->_cached_files)) {
 				 // if so, see if the page is available
 				 $page = $requested['page'];

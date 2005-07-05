@@ -23,7 +23,7 @@
  /**
   * Require the {@link /whomp/includes/whomp_user.php Whomp_User} class file
   */
- require_once($_whomp_base_path . '/includes/whomp_user.php');
+ require_once($_whomp_storage_path . '/includes/whomp_user.php');
  
  /**
   * The Whomp current user class
@@ -38,7 +38,7 @@
   * @access public
   * @todo implement login functions, etc
   */
- public class Whomp_Current_User extends Whomp_User {
+ class Whomp_Current_User extends Whomp_User {
 	 
 	 /**
 	  * md5 of the password

@@ -31,7 +31,7 @@
   * @since 0.0.0
   * @access public
   */
- public class Whomp_Test_Node extends Whomp_Node {
+ class Whomp_Test_Node extends Whomp_Node {
 	 
 	 /**
 	  * Whomp_Test_Node constructor

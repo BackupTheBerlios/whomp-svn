@@ -36,7 +36,7 @@
   * @access public
   * @todo finish implementing this
   */
- abstract public class Whomp_Language {
+ abstract class Whomp_Language {
 	 
 	 /**
 	  * Returns the specified message

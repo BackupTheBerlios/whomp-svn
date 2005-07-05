@@ -111,6 +111,42 @@
 	  */ 
 	 function whomp_get_accept_header_array($string) {
 		 
+		 if (!function_exists('array_intersect_key')) {
+			 /**
+			  * Compatibility function
+			  * 
+			  * @author Tom Buskens <ortega@php.net>
+			  */
+			 function array_intersect_key() {
+				 $args = func_get_args();
+				 if (count($args) < 2) {
+					 user_error('Wrong parameter count for array_intersect_key()', E_USER_WARNING);
+					 return;
+				 } // end if
+				 // Check arrays
+				 $array_count = count($args);
+				 for ($i = 0; $i !== $array_count; $i++) {
+					 if (!is_array($args[$i])) {
+						 user_error('array_intersect_key() Argument #' .
+						 ($i + 1) . ' is not an array', E_USER_WARNING);
+						 return;
+					 } // end if
+				 } // end for
+				 // Compare entries
+				 $result = array();
+				 foreach ($args[0] as $key1 => $value1) {
+					 for ($i = 1; $i !== $array_count; $i++) {
+						 foreach ($args[$i] as $key2 => $value2) {
+							 if ((string) $key1 === (string) $key2) {
+								 $result[$key1] = $value1;
+							 } // end if
+						 } // end foreach
+					 } // end for
+				 } // end foreach
+				 return $result;
+			 } // end function
+		 } // end if
+		 
 		 $array = array();
 		 foreach(explode(',', $string) as $item) {
 			 $item = explode(';q=', $item);
@@ -124,7 +160,7 @@
 			 } // end if
 		 } // end foreach
 		 // sort the array and return it
-		 asort($array, SORT_NUMERIC);
+		 arsort($array, SORT_NUMERIC);
 		 return $array;
 	 } // end function
 	 
@@ -182,17 +218,11 @@
 		 } // end if
 	 } else {
 		 // if not, use the user's accept headers
-		 foreach ($_whomp_accept_headers['formats'] as $format) {
+		 foreach ($_whomp_accept_headers['formats'] as $format => $qvalue) {
 			 // see if it is a known format
-			 if (array_key_exists($format, $formats)) {
+			 if (in_array($format, $formats)) {
 				 // if so, set the content type accordingly
-				 return $formats($format); 
-			 } else {
-				 // if not, check if it is a known content type
-				 if (in_array($format, $formats)) {
-					 // if so, set it to the content type
-					 return $format;
-				 } // end if
+				 return $format; 
 			 } // end if
 		 } // end foreach
 		 // if it is not found, throw an exception
@@ -215,17 +245,19 @@
   * @param array $options the requested node options
   * @global class access to the database
   * @global array the accept headers
+  * @global class access to the configuration options
   * @return object the node object
   */
  function whomp_get_node_array($options) {
-	 global $_whomp_database, $_whomp_accept_headers;
+	 global $_whomp_database, $_whomp_accept_headers, $_whomp_configuration;
 	 
 	 // get the node information from the database
+	 $node_language = '';
 	 try {
 		 // check if any languages are available
 		 if (!empty($_whomp_accept_headers['languages'])) {
 			 // if so, go until we find a node in an acceptable language
-			 foreach ($_whomp_accept_headers['languages'] as $language) {
+			 foreach ($_whomp_accept_headers['languages'] as $language => $qvalue) {
 				 $queryValues = array($options['node']);
 				 $query = 'SELECT * FROM `#__' . $language . '_nodes` WHERE `name` = %s;';
 				 $_whomp_database->setQuery($query, $queryValues);
@@ -254,7 +286,7 @@
 		 header('Status: 404 Not Found');
 		 try {
 			 // go until we find an error node in an acceptable language
-			 foreach ($_whomp_accept_headers['languages'] as $language) {
+			 foreach ($_whomp_accept_headers['languages'] as $language => $qvalue) {
 				 $queryValues = array($_whomp_configuration->node_error_node);
 				 $query = 'SELECT * FROM `#__' . $language . '_nodes` WHERE `name` = %s;';
 				 $_whomp_database->setQuery($query, $queryValues);
@@ -436,9 +468,10 @@
   * @param string $message the message to display if debugging is disabled
   * @param boolean $exit whether the script should exit or not
   * @global class access to the configuration options
+  * @global string the whomp base path
   */
  function whomp_output_exception(Exception $exception, $exit = false) {
-	 global $_whomp_configuration;
+	 global $_whomp_configuration, $_whomp_base_path;
 	 
 	 // create debug message
 	 $message = <<<ERROR

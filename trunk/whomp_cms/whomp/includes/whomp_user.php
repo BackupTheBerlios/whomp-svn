@@ -30,7 +30,7 @@
   * @since 0.0.0
   * @access public
   */
- public class Whomp_User {
+ class Whomp_User {
 	 
 	 /**
 	  * The user's id

@@ -37,7 +37,7 @@
   * @global class $_whomp_configuration
   */
  $_whomp_configuration = new Whomp_Configuration();
- 
+ /*
  // check if debugging is enabled
  if ($_whomp_configuration->debug_setting == 2) {
 	 error_reporting(E_STRICT);
@@ -46,7 +46,8 @@
  } else {
 	 error_reporting(0);
  } // end if
- 
+ */
+ error_reporting(E_ALL);
  /**
   * The Whomp base directory
   * 
@@ -96,7 +97,7 @@
  							  '_enable_caching' => (boolean)$_whomp_configuration->cache_enable_caching,
 							  '_lifetime' => (integer)$_whomp_configuration->cache_default_lifetime,
 							  '_compress_output' => (boolean)$_whomp_configuration->cache_compress_output);
- 
+							  
  /**
   * Access to the {@link Whomp_Cache Whomp_Cache} class
   * 
@@ -119,17 +120,34 @@
  $_whomp_requested_page = whomp_get_requested_page();
  
  // starts caching or outputs page and quits if it is available
- $_whomp_cache->start($_whomp_requested_node, true);
+ $_whomp_cache->start($_whomp_requested_page, true);
  
  /**
   * Require the {@link /whomp/includes/whomp_database.php Whomp_Database} class file
   */
  require_once($_whomp_storage_path . '/includes/whomp_database.php');
  
- /**
-  * Require the Whomp_Language's child class file
-  */
- require_once($_whomp_storage_path . '/includes/whomp_language_' . $_whomp_accept_headers['languages'][0] . '.php');
+ // try to get the user's preferred language
+ try {
+	 $whomp_language = '';
+	 $language_included = false;
+	 foreach ($_whomp_accept_headers['languages'] as $language => $qvalue) {
+		 // check if the file exists
+		 if (is_file($_whomp_storage_path . '/languages/whomp_language_' . $language . '.php')) {
+			 /**
+			  * Require the Whomp_Language's child class file
+			  */
+			 require_once($_whomp_storage_path . '/languages/whomp_language_' . $language . '.php');
+			 $language_included = true;
+			 $whomp_language = $language;
+		 } // end if
+	 } // end foreach
+	 if ($language_included === false) {
+		 throw new Exception('No acceptable language found.');
+	 } // end if
+ } catch (Exception $e) {
+	 whomp_output_exception($e);
+ } // end try
  
  /**
   * Require the {@link /whomp/includes/whomp_current_user.php Whomp_Current_User} class file
@@ -139,7 +157,7 @@
  /**
   * Require the {@link /whomp/includes/whomp_xml.php Whomp_Xml} class file
   */
- require_once($_whomp_storage_path . '/includes/whomp_xml.php');
+ //require_once($_whomp_storage_path . '/includes/whomp_xml.php');
  
  /**
   * Require the {@link /whomp/includes/whomp_node.php Whomp_Node} class file
@@ -162,7 +180,7 @@
  $_whomp_database = new Whomp_Database($whomp_database_options);
  
  // create the language class string
- $whomp_language_class_string = 'Whomp_Language_' . $_whomp_accept_headers['languages'][0];
+ $whomp_language_class_string = 'Whomp_Language_' . $whomp_language;
  
  /**
   * Access to the {@link Whomp_Language Whomp_Language's} child class

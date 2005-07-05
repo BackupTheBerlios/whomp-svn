@@ -38,7 +38,7 @@
   * @since 0.0.0
   * @access public
   */
- public class Whomp_Language_en extends Whomp_Language {
+ class Whomp_Language_en extends Whomp_Language {
 	 
  } // end class
 ?>
