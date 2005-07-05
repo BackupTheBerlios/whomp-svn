@@ -7,7 +7,7 @@
  * {@link Whomp_Installer_Html Whomp_Installer_Html} class.
  * 
  * @package Whomp
- * @copyright ï¿½ 2005 Schmalls / Joshua Thompson / All Rights Reserved
+ * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
  * @license http://www.opensource.org/licenses/bsd-license.php The BSD License
  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
  * @version 0.0.0
@@ -64,12 +64,26 @@
 	/* <![CDATA[ */
 	var global_pagename;
 	function getPageTwo() {
+		if (!document.getElementById('agree').checked) {
+			alert('Please agree to the license to continue!');
+			return;
+		}
 		var keys = 'agree';
 		var values = 0 + document.getElementById('agree').checked;
 		global_pagename = 'page2';
 		Whomp_Installer_Html_getPageText(global_pagename, keys, values);
 	}
 	function getPageThree() {
+		if (document.getElementById('site_name').value == '' ||
+			document.getElementById('site_url').value == '' ||
+			document.getElementById('site_path').value == '' ||
+			document.getElementById('database_host').value == '' ||
+			document.getElementById('database_name').value == '' ||
+			document.getElementById('database_user').value == '' ||
+			document.getElementById('database_password').value == '') {
+			alert('Missing information!');
+			return;
+		}
 		var keys = 'site_name,site_url,site_path,database_type,database_host,database_name,database_user,database_password,database_prefix';
 		var values = document.getElementById('site_name').value + ',' 
 						+ document.getElementById('site_url').value + ','
@@ -84,7 +98,19 @@
 		Whomp_Installer_Html_getPageText(global_pagename, keys, values);
 	}
 	function getPageFour() {
-		var keys = 'database_type,database_host,database_name,database_user,database_password,database_prefix,admin_user,admin_name,admin_email,admin_password,admin_password_confirm';
+		if (document.getElementById('admin_user').value == '' ||
+			document.getElementById('admin_name').value == '' ||
+			document.getElementById('admin_email').value == '' ||
+			document.getElementById('admin_password').value == '' ||
+			document.getElementById('admin_password_confirm').value == '') {
+			alert('Missing information!');
+			return;
+		}
+		if (document.getElementById('admin_password').value != document.getElementById('admin_password_confirm').value) {
+			alert('Passwords do not match!');
+			return;
+		}
+		var keys = 'database_type,database_host,database_name,database_user,database_password,database_prefix,admin_user,admin_name,admin_email,admin_password';
 		var values = document.getElementById('database_type').value + ','
 						+ document.getElementById('database_host').value + ','
 						+ document.getElementById('database_name').value + ','
@@ -94,8 +120,7 @@
 						+ document.getElementById('admin_user').value + ',' 
 						+ document.getElementById('admin_name').value + ','
 						+ document.getElementById('admin_email').value + ','
-						+ document.getElementById('admin_password').value + ','
-						+ document.getElementById('admin_password_confirm').value;
+						+ document.getElementById('admin_password').value;
 		global_pagename = 'page4';
 		Whomp_Installer_Html_getPageText(global_pagename, keys, values);
 	}
@@ -178,9 +203,9 @@ HTML;
 		 // check if keys and values were sent
 		 if (($post_keys !== null) && ($post_values !== null)) {
 			 // if so, create the post values array
-			 $post_keys = explode(',', $post_keys);
-			 $post_values = explode(',', $post_values);
-			 $post_array = array_combine($post_keys, $post_values);
+			 $post_keys_array = explode(',', $post_keys);
+			 $post_values_array = explode(',', $post_values);
+			 $post_array = array_combine($post_keys_array, $post_values_array);
 		 } else {
 			 // if not, make the post global the post array
 			 $post_array = $_POST;
@@ -300,7 +325,7 @@ HTML;
 		Site Name
 	</li>
 	<li class="dark">
-		<span class="right"><input id="site_url" type="text" size="40" name="site_url" value="{$_whomp_base_url}" /></span>
+		<span class="right"><input id="site_url" type="text" size="40" name="site_url" value="http://{$_SERVER['SERVER_NAME']}{$_whomp_base_url}" /></span>
 		Site Url
 	</li>
 	<li class="light">
@@ -345,7 +370,7 @@ HTML;
 <ul class="bottomnav">
 	<li>
 		<a href="javascript:getPageThree();" class="right">Next Step -&gt;</a>
-		<input type="submit" name="Next Step" />
+		<noscript><input type="submit" name="Next Step" /></noscript>
 	</li>
 </ul>
 </form>
@@ -416,15 +441,27 @@ HTML;
 HTML;
 				 } else {
 					 // if not, display page 2
-					 return self::getPage('page2');
+					 return self::getPage('page2', $post_keys, $post_values);
 				 } // end if
 				 break;
 			 case ('page4');
 			 	 // add the admin to the users table
 			 	 $check = self::addAdmin($post_array);
-			 	 $html = <<<HTML
+				 // set the directory and file permissions
+				 self::setPermissions();
+				 // set installed to true
+				 $_whomp_configuration->startEdit($_whomp_base_path . '/whomp_configuration.php');
+				 $_whomp_configuration->set('installed', 'true');
+				 $_whomp_configuration->endEdit($_whomp_base_path . '/whomp_configuration.php');
+			 	 // check if the admin was added successfully
+			 	 if ($check !== false) {
+					 $html = <<<HTML
 <h3 class="title">Install Step 4: Final Words</h3>
+<p><a href="{$_whomp_base_url}">Click here</a> to go to your new site. Please delete the installation directory.</p>
 HTML;
+			 	 } else {
+					 return self::getPage('page3', $post_keys, $post_values);
+			 	 } // end if
 				 break;
 		 } // end switch
 		 // add copyright
@@ -586,9 +623,35 @@ HTML;
 													   'table_options' => array('mysql' => 'TYPE=MyISAM', 'REPLACE'),
 													   'index' => 'type',
 													   'index_fields' => '`type`',
-													   'index_options' => array('UNIQUE')));
+													   'index_options' => array('UNIQUE')),
+							 '#__en_node_types_whomp_node_frontpage' => array('fields' => '`id` I KEY,
+							 															   `content` XL NOTNULL DEFAULT \'\'',
+																			  'table_options' => array('mysql' => 'TYPE=MyISAM', 'REPLACE')),
+							 '#__en_node_types_whomp_node_error' => array('fields' => '`id` I KEY,
+							 														   `error_message` X NOTNULL DEFAULT \'\'',
+																		  'table_options' => array('mysql' => 'TYPE=MyISAM', 'REPLACE')));
 			 // create the tables
 			 $database->createTables($tables);
+			 // insert the default and error node types
+			 $record = array('type' => 'whomp_node_frontpage');
+			 $database->insert('#__nodes', $record);
+			 $record = array('type' => 'whomp_node_error');
+			 $database->insert('#__nodes', $record);
+			 // insert the default node and error node
+			 $record = array('name' => 'default',
+			 				 'type' => 'whomp_node_frontpage',
+							 'modified' => date('Y-m-d H:i:s'));
+			 $database->insert('#__nodes', $record);
+			 $record = array('id' => $database->insertId(),
+			 				 'content' => 'A test frontpage.');
+			 $database->insert('#__en_node_types_whomp_node_frontpage', $record);
+			 $record = array('name' => 'error',
+			 				 'type' => 'whomp_node_error',
+							 'modified' => date('Y-m-d H:i:s'));
+			 $database->insert('#__nodes', $record);
+			 $record = array('id' => $database->insertId(),
+			 				 'error_message' => '404 Error: page not found.');
+			 $database->insert('#__en_node_types_whomp_node_error', $record);
 		 } catch (Exception $e) {
 			 whomp_output_exception($e);
 		 } // end try
@@ -635,6 +698,66 @@ HTML;
 			 whomp_output_exception($e);
 		 } // end try
 		 return true;
+	 } // end function
+	 
+	 /**
+	  * Sets the correct filesystem permissions
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @static
+	  */
+	 public static function setPermissions() {
+		 global $_whomp_base_path, $_whomp_storage_path;
+		 
+		 // chmod whomp directory to 744
+		 self::chmod_R($_whomp_storage_path, 0744);
+		 // chmod other directories to 755
+		 self::chmod_R($_whomp_storage_path . '/node_types', 0755);
+		 self::chmod_R($_whomp_storage_path . '/templates', 0755);
+		 self::chmod_R($_whomp_storage_path . '/scripts', 0755);
+		 self::chmod_R($_whomp_storage_path . '/cache', 0755);
+		 // chmod configuration file to 644
+		 chmod($_whomp_base_path . '/whomp_configuration.php', 0644);
+		 // chmod main whomp file to 744
+		 chmod($_whomp_base_path . '/index.php', 0744);
+	 } // end function
+	 
+	 /**
+	  * Function to recursively set permissions
+	  * 
+	  * @author haasje at welmers dot net
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @static
+	  */
+	 private static function chmod_R($path, $filemode) {
+		 if (!is_dir($path)) {
+			 return chmod($path, $filemode);
+		 } // end if
+		 $dh = opendir($path);
+		 while ($file = readdir($dh)) {
+			 if(($file != '.') && ($file != '..')) {
+				 $fullpath = $path.'/'.$file;
+				 if(!is_dir($fullpath)) {
+					 if (!chmod($fullpath, $filemode)) {
+						 return false;
+					 } // end if
+				 } else {
+					 if (!self::chmod_R($fullpath, $filemode)) {
+						 return false;
+					 } // end if
+				 } // end if
+			 } // end if
+		 } // end while
+		 closedir($dh);
+		 if(chmod($path, $filemode)) {
+			 return true;
+		 } else {
+			 return false;
+		 } // end if
 	 } // end function
 	 
  } // end class

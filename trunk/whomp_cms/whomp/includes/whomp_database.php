@@ -528,14 +528,17 @@
 	 } // end function
 	 
 	 /**
-	  * Insert
+	  * Inserts the record into the specified table
+	  * 
+	  * The record should be an array with the column names as keys and the 
+	  * column values as values.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
 	  * @param string $table the table to insert into
-	  * @param string $record the record to insert
+	  * @param array $record the record to insert
 	  * @param string $prefix_placeholder the table prefix placeholder
 	  */
 	 public function insert($table, $record, $prefix_placeholder = '#__') {
@@ -544,6 +547,28 @@
 		 $table = str_replace($prefix_placeholder, $this->_table_prefix, $table);
 		 // insert
 		 $this->_db->AutoExecute($table, $record, 'INSERT');
+	 } // end function
+	 
+	 /**
+	  * Updates the record in the specified table
+	  * 
+	  * The record should be an array with the column names as keys and the 
+	  * column values as values.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param string $table the table to insert into
+	  * @param array $record the record to insert
+	  * @param string $prefix_placeholder the table prefix placeholder
+	  */
+	 public function update($table, $record, $where = false, $prefix_placeholder = '#__') {
+		 
+		 // change table prefix
+		 $table = str_replace($prefix_placeholder, $this->_table_prefix, $table);
+		 // insert
+		 $this->_db->AutoExecute($table, $record, 'UPDATE', $where);
 	 } // end function
 	 
  } // end class
