@@ -100,7 +100,7 @@ XML;
 		 global $_whomp_storage_path;
 		 
 		 // xhtml+xml is the only supported format
-		 return $_whomp_storage_path . '/node_types/whomp_node_error/xsl/xhtml.xsl';
+		 return $_whomp_storage_url . '/node_types/whomp_node_error/xsl/xhtml.xsl';
 	 } // end function 
  } // end class
 ?>

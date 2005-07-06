@@ -287,7 +287,7 @@
 				 // place the node xml in the template xml
 				 $this->_template_class->insertNodeXml($this->getNodeXml());
 				 // place the node xsl in the template xsl
-				 $this->_template_class->insertXslImport($this->getNodeXslPath());
+				 //$this->_template_class->insertXslImport($this->getNodeXslPath());
 				 // transform the xml to the desired format with xsl
 				 $this->_template_class->transform();
 				 // output the page

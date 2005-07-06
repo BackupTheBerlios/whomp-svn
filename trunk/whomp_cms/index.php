@@ -160,7 +160,7 @@
 								 'password' => $_whomp_configuration->database_password,
 								 'database' => $_whomp_configuration->database_database,
 								 'table_prefix' => $_whomp_configuration->database_table_prefix,
-								 'debug' => true); 
+								 'debug' => false); 
  
  /**
   * Access to the {@link Whomp_Database Whomp_Database} class
@@ -212,12 +212,17 @@
 	 $_whomp_node_array = whomp_get_node_array($_whomp_requested_page);
 	 // try to render the page
 	 try {
-		 $whomp_unique_suffix = whomp_render_page($_whomp_node_array);
+		 $whomp_end_cache_options = whomp_render_page($_whomp_node_array);
 	 } catch (Exception $e) {
 		 whomp_output_exception($e, true);
 	 } // end try
  } // end if
-	 
+ 
+ // enable caching of this page
+ $whomp_end_cache_options['cache'] = true;
+ $whomp_end_cache_options['lifetime'] = 3600;
+ $whomp_end_cache_options['show_logged'] = true;
+ $whomp_end_cache_options['headers'] = '';
  // end caching
- $_whomp_cache->end($whomp_unique_suffix);
+ $_whomp_cache->end($whomp_end_cache_options);
 ?> 

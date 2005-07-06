@@ -277,7 +277,7 @@
 			 // write the file and see if it was successful
 			 if (file_put_contents($this->_cache_dir . '/' . $filename, $contents) !== false) {
 				 // if so, update the cached files array
-				 $this->_cached_files[$options['langauge']]
+				 $this->_cached_files[$options['language']]
 				 					 [$options['page']]
 									 [$options['content_type']] = array('filename' => $filename,
 				 														'lifetime' => $options['lifetime'],
