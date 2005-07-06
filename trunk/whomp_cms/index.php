@@ -40,7 +40,7 @@
  
  // check if debugging is enabled
  if ($_whomp_configuration->debug_setting == 2) {
-	 error_reporting(E_STRICT);
+	 error_reporting(E_ALL);
  } else if ($_whomp_configuration->debug_setting == 1) {
 	 error_reporting(E_ALL ^ E_NOTICE);
  } else {
@@ -159,7 +159,8 @@
 								 'username' => $_whomp_configuration->database_username,
 								 'password' => $_whomp_configuration->database_password,
 								 'database' => $_whomp_configuration->database_database,
-								 'table_prefix' => $_whomp_configuration->database_table_prefix); 
+								 'table_prefix' => $_whomp_configuration->database_table_prefix,
+								 'debug' => true); 
  
  /**
   * Access to the {@link Whomp_Database Whomp_Database} class
@@ -209,15 +210,10 @@
 	  * @global array $_whomp_node_array
 	  */
 	 $_whomp_node_array = whomp_get_node_array($_whomp_requested_page);
-	 
 	 // try to render the page
 	 try {
 		 $whomp_unique_suffix = whomp_render_page($_whomp_node_array);
 	 } catch (Exception $e) {
-		 echo '<pre>';
-		 print_r($_whomp_node_array);
-		 print_r($_whomp_requested_page);
-		 echo '</pre>';
 		 whomp_output_exception($e, true);
 	 } // end try
  } // end if

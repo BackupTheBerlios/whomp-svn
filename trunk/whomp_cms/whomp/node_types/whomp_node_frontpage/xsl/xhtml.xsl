@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- $Id$ -->
+<!-- $Id: xhtml.xsl 16 2005-06-23 16:04:44Z schmalls $ -->
 <xsl:stylesheet>
 	<xsl:output omit-xml-declaration="yes" />
 	<xsl:template match="whomp_test_node">

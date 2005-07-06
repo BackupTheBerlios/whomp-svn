@@ -261,10 +261,8 @@
 				 $queryValues = array($options['node']);
 				 $query = 'SELECT * FROM `#__' . $language . '_nodes` WHERE `name` = %s;';
 				 $_whomp_database->setQuery($query, $queryValues);
-				 echo '<pre>' . $_whomp_database->getQuery() . '</pre>';
 				 $_whomp_database->query();
 				 $node_array = $_whomp_database->loadRow();
-				 echo '<pre>' . $node_array . '</pre>';
 				 // check if the node was available
 				 if (!empty($node_array)) {
 					 // if so, set language and break

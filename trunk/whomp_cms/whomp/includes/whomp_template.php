@@ -173,6 +173,9 @@
 	 public function transform() {
 		 
 		 // create the XSLT processor and import the stylesheet
+		 echo '<pre>';
+		 echo $this->_template_xsl->saveXML();
+		 echo '</pre>';
 		 $processor = new XSLTProcessor();
 		 $processor->importStyleSheet($this->_template_xsl);
 		 // transform the XML file

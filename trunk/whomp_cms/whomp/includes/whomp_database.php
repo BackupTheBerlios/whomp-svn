@@ -133,9 +133,11 @@
 		 $this->_db->SetFetchMode(ADODB_FETCH_ASSOC);
 		 // set magic quotes
 		 $_magic_quotes = (boolean)get_magic_quotes_gpc();
-		 echo '<pre>';
-		 print_r($options);
-		 echo '</pre>';
+		 // check if debug option was enabled
+		 if (array_key_exists('debug', $options) && $options['debug'] === true) {
+			 // if so, enable debugging
+			 $this->_db->debug = true;
+		 } // end if
 	 } // end function
 	 
 	 /**
@@ -279,9 +281,6 @@
 			 $result = $this->_result;
 		 } // end if
 		 // return the row
-		 echo '<pre>';
-		 print_r($this);
-		 echo '</pre>';
 		 return $result->FetchRow();
 	 } // end function
 	 
