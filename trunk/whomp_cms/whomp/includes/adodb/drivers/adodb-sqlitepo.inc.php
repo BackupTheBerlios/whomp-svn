@@ -22,7 +22,7 @@ if (!defined('ADODB_DIR')) die();
 include_once(ADODB_DIR.'/drivers/adodb-sqlite.inc.php');
 
 class ADODB_sqlitepo extends ADODB_sqlite {
-   var $databaseType = 'sqlitepo';
+   public $databaseType = 'sqlitepo';
 
    function ADODB_sqlitepo()
    {
@@ -36,7 +36,7 @@ class ADODB_sqlitepo extends ADODB_sqlite {
 
 class ADORecordset_sqlitepo extends ADORecordset_sqlite {
 
-   var $databaseType = 'sqlitepo';
+   public $databaseType = 'sqlitepo';
 
    function ADORecordset_sqlitepo($queryID,$mode=false)
    {

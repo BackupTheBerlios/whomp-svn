@@ -15,12 +15,12 @@ if (!defined('ADODB_DIR')) die();
 
 class ADODB2_postgres extends ADODB_DataDict {
 	
-	var $databaseType = 'postgres';
-	var $seqField = false;
-	var $seqPrefix = 'SEQ_';
-	var $addCol = ' ADD COLUMN';
-	var $quote = '"';
-	var $renameTable = 'ALTER TABLE %s RENAME TO %s'; // at least since 7.1
+	public $databaseType = 'postgres';
+	public $seqField = false;
+	public $seqPrefix = 'SEQ_';
+	public $addCol = ' ADD COLUMN';
+	public $quote = '"';
+	public $renameTable = 'ALTER TABLE %s RENAME TO %s'; // at least since 7.1
 	
 	function MetaType($t,$len=-1,$fieldobj=false)
 	{

@@ -24,21 +24,21 @@ if (!defined('LDAP_ASSOC')) {
 }
 
 class ADODB_ldap extends ADOConnection {
-    var $databaseType = 'ldap';
-	var $dataProvider = 'ldap';
+    public $databaseType = 'ldap';
+	public $dataProvider = 'ldap';
 	
 	# Connection information
-    var $username = false;
-    var $password = false;
+    public $username = false;
+    public $password = false;
     
     # Used during searches
-    var $filter;
-    var $dn;
-	var $version;
-	var $port = 389;
+    public $filter;
+    public $dn;
+	public $version;
+	public $port = 389;
 
 	# Options configuration information
-	var $LDAP_CONNECT_OPTIONS;
+	public $LDAP_CONNECT_OPTIONS;
 
 	function ADODB_ldap() 
 	{		
@@ -269,9 +269,9 @@ class ADODB_ldap extends ADOConnection {
 
 class ADORecordSet_ldap extends ADORecordSet{	
 	
-	var $databaseType = "ldap";
-	var $canSeek = false;
-	var $_entryID; /* keeps track of the entry resource identifier */
+	public $databaseType = "ldap";
+	public $canSeek = false;
+	protected $_entryID; /* keeps track of the entry resource identifier */
 	
 	function ADORecordSet_ldap($queryID,$mode=false) 
 	{

@@ -19,17 +19,17 @@ V4.64 20 June 2005  (c) 2000-2005 John Lim (jlim@natsoft.com.my). All rights res
 if (!defined('ADODB_DIR')) die();
 
 class ADODB_sqlite extends ADOConnection {
-	var $databaseType = "sqlite";
-	var $replaceQuote = "''"; // string to use to replace quotes
-	var $concat_operator='||';
-	var $_errorNo = 0;
-	var $hasLimit = true;	
-	var $hasInsertID = true; 		/// supports autoincrement ID?
-	var $hasAffectedRows = true; 	/// supports affected rows for update/delete?
-	var $metaTablesSQL = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
-	var $sysDate = "adodb_date('Y-m-d')";
-	var $sysTimeStamp = "adodb_date('Y-m-d H:i:s')";
-	var $fmtTimeStamp = "'Y-m-d H:i:s'";
+	public $databaseType = "sqlite";
+	public $replaceQuote = "''"; // string to use to replace quotes
+	public $concat_operator='||';
+	public $_errorNo = 0;
+	public $hasLimit = true;	
+	public $hasInsertID = true; 		/// supports autoincrement ID?
+	public $hasAffectedRows = true; 	/// supports affected rows for update/delete?
+	public $metaTablesSQL = "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name";
+	public $sysDate = "adodb_date('Y-m-d')";
+	public $sysTimeStamp = "adodb_date('Y-m-d H:i:s')";
+	public $fmtTimeStamp = "'Y-m-d H:i:s'";
 	
 	function ADODB_sqlite() 
 	{
@@ -183,7 +183,7 @@ class ADODB_sqlite extends ADOConnection {
 		
 		Will return false if unable to generate an ID after $MAXLOOPS attempts.
 	*/
-	var $_genSeqSQL = "create table %s (id integer)";
+	protected $_genSeqSQL = "create table %s (id integer)";
 	
 	function GenID($seq='adodbseq',$start=1)
 	{	
@@ -223,7 +223,7 @@ class ADODB_sqlite extends ADOConnection {
 		return $this->Execute("insert into $seqname values($start)");
 	}
 	
-	var $_dropSeqSQL = 'drop table %s';
+	protected $_dropSeqSQL = 'drop table %s';
 	function DropSequence($seqname)
 	{
 		if (empty($this->_dropSeqSQL)) return false;
@@ -290,8 +290,8 @@ class ADODB_sqlite extends ADOConnection {
 
 class ADORecordset_sqlite extends ADORecordSet {
 
-	var $databaseType = "sqlite";
-	var $bind = false;
+	public $databaseType = "sqlite";
+	public $bind = false;
 
 	function ADORecordset_sqlite($queryID,$mode=false)
 	{

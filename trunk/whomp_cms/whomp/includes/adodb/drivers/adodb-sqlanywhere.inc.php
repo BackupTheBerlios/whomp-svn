@@ -53,8 +53,8 @@ if (!defined('ADODB_SYBASE_SQLANYWHERE')){
  define('ADODB_SYBASE_SQLANYWHERE',1);
 
  class ADODB_sqlanywhere extends ADODB_odbc {
-  	var $databaseType = "sqlanywhere";	
-	var $hasInsertID = true;
+  	public $databaseType = "sqlanywhere";	
+	public $hasInsertID = true;
 	
 	function ADODB_sqlanywhere()
 	{
@@ -154,7 +154,7 @@ if (!defined('ADODB_SYBASE_SQLANYWHERE')){
 
  class  ADORecordSet_sqlanywhere extends ADORecordSet_odbc {	
 
-  var $databaseType = "sqlanywhere";		
+  public $databaseType = "sqlanywhere";		
 
  function ADORecordSet_sqlanywhere($id,$mode=false)
  {

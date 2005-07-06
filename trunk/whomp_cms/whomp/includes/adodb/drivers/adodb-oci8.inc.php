@@ -53,38 +53,38 @@ function oci_lob_desc($type) {
 }
 
 class ADODB_oci8 extends ADOConnection {
-	var $databaseType = 'oci8';
-	var $dataProvider = 'oci8';
-	var $replaceQuote = "''"; // string to use to replace quotes
-	var $concat_operator='||';
-	var $sysDate = "TRUNC(SYSDATE)";
-	var $sysTimeStamp = 'SYSDATE';
-	var $metaDatabasesSQL = "SELECT USERNAME FROM ALL_USERS WHERE USERNAME NOT IN ('SYS','SYSTEM','DBSNMP','OUTLN') ORDER BY 1";
-	var $_stmt;
-	var $_commit = OCI_COMMIT_ON_SUCCESS;
-	var $_initdate = true; // init date to YYYY-MM-DD
-	var $metaTablesSQL = "select table_name,table_type from cat where table_type in ('TABLE','VIEW')";
-	var $metaColumnsSQL = "select cname,coltype,width, SCALE, PRECISION, NULLS, DEFAULTVAL from col where tname='%s' order by colno"; //changed by smondino@users.sourceforge. net
-	var $_bindInputArray = true;
-	var $hasGenID = true;
-	var $_genIDSQL = "SELECT (%s.nextval) FROM DUAL";
-	var $_genSeqSQL = "CREATE SEQUENCE %s START WITH %s";
-	var $_dropSeqSQL = "DROP SEQUENCE %s";
-	var $hasAffectedRows = true;
-	var $random = "abs(mod(DBMS_RANDOM.RANDOM,10000001)/10000000)";
-	var $noNullStrings = false;
-	var $connectSID = false;
-	var $_bind = false;
-	var $_hasOCIFetchStatement = false;
-	var $_getarray = false; // currently not working
-	var $leftOuter = '';  // oracle wierdness, $col = $value (+) for LEFT OUTER, $col (+)= $value for RIGHT OUTER
-	var $session_sharing_force_blob = false; // alter session on updateblob if set to true 
-	var $firstrows = true; // enable first rows optimization on SelectLimit()
-	var $selectOffsetAlg1 = 100; // when to use 1st algorithm of selectlimit.
-	var $NLS_DATE_FORMAT = 'YYYY-MM-DD';  // To include time, use 'RRRR-MM-DD HH24:MI:SS'
- 	var $useDBDateFormatForTextInput=false;
-	var $datetime = false; // MetaType('DATE') returns 'D' (datetime==false) or 'T' (datetime == true)
-	var $_refLOBs = array();
+	public $databaseType = 'oci8';
+	public $dataProvider = 'oci8';
+	public $replaceQuote = "''"; // string to use to replace quotes
+	public $concat_operator='||';
+	public $sysDate = "TRUNC(SYSDATE)";
+	public $sysTimeStamp = 'SYSDATE';
+	public $metaDatabasesSQL = "SELECT USERNAME FROM ALL_USERS WHERE USERNAME NOT IN ('SYS','SYSTEM','DBSNMP','OUTLN') ORDER BY 1";
+	protected $_stmt;
+	protected $_commit = OCI_COMMIT_ON_SUCCESS;
+	protected $_initdate = true; // init date to YYYY-MM-DD
+	public $metaTablesSQL = "select table_name,table_type from cat where table_type in ('TABLE','VIEW')";
+	public $metaColumnsSQL = "select cname,coltype,width, SCALE, PRECISION, NULLS, DEFAULTVAL from col where tname='%s' order by colno"; //changed by smondino@users.sourceforge. net
+	protected $_bindInputArray = true;
+	public $hasGenID = true;
+	protected $_genIDSQL = "SELECT (%s.nextval) FROM DUAL";
+	protected $_genSeqSQL = "CREATE SEQUENCE %s START WITH %s";
+	protected $_dropSeqSQL = "DROP SEQUENCE %s";
+	public $hasAffectedRows = true;
+	public $random = "abs(mod(DBMS_RANDOM.RANDOM,10000001)/10000000)";
+	public $noNullStrings = false;
+	public $connectSID = false;
+	protected $_bind = false;
+	protected $_hasOCIFetchStatement = false;
+	protected $_getarray = false; // currently not working
+	public $leftOuter = '';  // oracle wierdness, $col = $value (+) for LEFT OUTER, $col (+)= $value for RIGHT OUTER
+	public $session_sharing_force_blob = false; // alter session on updateblob if set to true 
+	public $firstrows = true; // enable first rows optimization on SelectLimit()
+	public $selectOffsetAlg1 = 100; // when to use 1st algorithm of selectlimit.
+	public $NLS_DATE_FORMAT = 'YYYY-MM-DD';  // To include time, use 'RRRR-MM-DD HH24:MI:SS'
+ 	public $useDBDateFormatForTextInput=false;
+	public $datetime = false; // MetaType('DATE') returns 'D' (datetime==false) or 'T' (datetime == true)
+	protected $_refLOBs = array();
 	
 	// var $ansiOuter = true; // if oracle9
     
@@ -1183,9 +1183,9 @@ SELECT /*+ RULE */ distinct b.column_name
 
 class ADORecordset_oci8 extends ADORecordSet {
 
-	var $databaseType = 'oci8';
-	var $bind=false;
-	var $_fieldobjs;
+	public $databaseType = 'oci8';
+	public $bind=false;
+	public $_fieldobjs;
 	
 	//var $_arr = false;
 		

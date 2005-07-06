@@ -110,10 +110,10 @@
 	  * @access public
 	  * @throws Exception
 	  * @param string $layout the layout to use
-	  * @param string $format the output format
+	  * @param string $content_type the output content type
 	  * @param array $node_formats the formats that the node supports
 	  */
-	 abstract public function __construct($layout, $format, $node_formats);
+	 abstract public function __construct($layout, $content_type, $node_formats);
 	 
 	 /**
 	  * Inserts the node XML into the correct location(s)
@@ -130,7 +130,7 @@
 		 
 		 // find the specified node
 		 $xpath = new DOMXpath($this->_template_xml);
-		 $node_list = $xpath('//node[@name = \'' . $node_name . '\']');
+		 $node_list = $xpath->query('//node[@name = \'' . $node_name . '\']');
 		 // check if the node was found
 		 if (count($node_list) != 0) {
 			 // if so, append the node XML

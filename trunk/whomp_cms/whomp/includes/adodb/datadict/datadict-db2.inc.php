@@ -14,8 +14,8 @@ if (!defined('ADODB_DIR')) die();
 
 class ADODB2_db2 extends ADODB_DataDict {
 	
-	var $databaseType = 'db2';
-	var $seqField = false;
+	public $databaseType = 'db2';
+	public $seqField = false;
 	
  	function ActualType($meta)
 	{

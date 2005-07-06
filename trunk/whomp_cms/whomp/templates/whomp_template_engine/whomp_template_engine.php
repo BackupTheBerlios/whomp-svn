@@ -21,6 +21,11 @@
  defined('_VALID_WHOMP') or exit('Direct access to this location is not allowed!');
  
  /**
+  * Require the {@link /whomp/includes/whomp_template.php Whomp_Template} class file
+  */
+ require_once($_whomp_storage_path . '/includes/whomp_template.php');
+ 
+ /**
   * The Whomp template engine class
   * 
   * Template engine that expands the abstact Whomp_Template class.
@@ -31,7 +36,7 @@
   * @since 0.0.0
   * @access public
   */
- public class Whomp_Template_Engine extends Whomp_Template {
+ class Whomp_Template_Engine extends Whomp_Template {
 	 
 	 /**
 	  * Whomp_Template_Engine constructor
@@ -42,11 +47,11 @@
 	  * @access public
 	  * @throws Exception
 	  * @param string $layout the layout to use
-	  * @param string $format the output format
+	  * @param string $content_type the output content type
 	  * @param array $node_formats the formats that the node supports
 	  * @todo implement other output formats
 	  */
-	 public function __construct($layout, $format, $node_formats) {
+	 public function __construct($layout, $content_type, $node_formats) {
 		 global $_whomp_storage_path;
 		 
 		 // currently only xhtml+xml supported

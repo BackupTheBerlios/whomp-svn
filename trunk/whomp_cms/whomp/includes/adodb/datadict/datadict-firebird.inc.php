@@ -12,10 +12,10 @@
 
 class ADODB2_firebird extends ADODB_DataDict {
 	
-	var $databaseType = 'firebird';
-	var $seqField = false;
-	var $seqPrefix = 'gen_';
-	var $blobSize = 40000;	
+	public $databaseType = 'firebird';
+	public $seqField = false;
+	public $seqPrefix = 'gen_';
+	public $blobSize = 40000;	
  	
  	function ActualType($meta)
 	{

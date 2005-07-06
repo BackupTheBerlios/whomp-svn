@@ -20,17 +20,17 @@ if (! defined("_ADODB_CSV_LAYER")) {
 include_once(ADODB_DIR.'/adodb-csvlib.inc.php');
  
 class ADODB_csv extends ADOConnection {
-	var $databaseType = 'csv';
-	var $databaseProvider = 'csv';
-	var $hasInsertID = true;
-	var $hasAffectedRows = true;	
-	var $fmtTimeStamp = "'Y-m-d H:i:s'";
-	var $_affectedrows=0;
-	var $_insertid=0;
-	var $_url;
-	var $replaceQuote = "''"; // string to use to replace quotes
-	var $hasTransactions = false;
-	var $_errorNo = false;
+	public $databaseType = 'csv';
+	public $databaseProvider = 'csv';
+	public $hasInsertID = true;
+	public $hasAffectedRows = true;	
+	public $fmtTimeStamp = "'Y-m-d H:i:s'";
+	protected $_affectedrows=0;
+	protected $_insertid=0;
+	protected $_url;
+	public $replaceQuote = "''"; // string to use to replace quotes
+	public $hasTransactions = false;
+	protected $_errorNo = false;
 	
 	function ADODB_csv() 
 	{		

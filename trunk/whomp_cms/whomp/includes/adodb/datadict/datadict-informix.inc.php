@@ -15,8 +15,8 @@ if (!defined('ADODB_DIR')) die();
 
 class ADODB2_informix extends ADODB_DataDict {
 	
-	var $databaseType = 'informix';
-	var $seqField = false;
+	public $databaseType = 'informix';
+	public $seqField = false;
 	
  	
 	function ActualType($meta)

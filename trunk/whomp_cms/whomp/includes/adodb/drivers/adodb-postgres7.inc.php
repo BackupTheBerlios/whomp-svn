@@ -17,10 +17,10 @@ if (!defined('ADODB_DIR')) die();
 include_once(ADODB_DIR."/drivers/adodb-postgres64.inc.php");
 
 class ADODB_postgres7 extends ADODB_postgres64 {
-	var $databaseType = 'postgres7';	
-	var $hasLimit = true;	// set to true for pgsql 6.5+ only. support pgsql/mysql SELECT * FROM TABLE LIMIT 10
-	var $ansiOuter = true;
-	var $charSet = true; //set to true for Postgres 7 and above - PG client supports encodings
+	public $databaseType = 'postgres7';	
+	public $hasLimit = true;	// set to true for pgsql 6.5+ only. support pgsql/mysql SELECT * FROM TABLE LIMIT 10
+	public $ansiOuter = true;
+	public $charSet = true; //set to true for Postgres 7 and above - PG client supports encodings
 	
 	function ADODB_postgres7() 
 	{
@@ -129,7 +129,7 @@ function MetaForeignKeys($table, $owner=false, $upper=false)
 
 class ADORecordSet_postgres7 extends ADORecordSet_postgres64{
 
-	var $databaseType = "postgres7";
+	public $databaseType = "postgres7";
 	
 	
 	function ADORecordSet_postgres7($queryID,$mode=false) 
@@ -160,7 +160,7 @@ class ADORecordSet_postgres7 extends ADORecordSet_postgres64{
 
 class ADORecordSet_assoc_postgres7 extends ADORecordSet_postgres64{
 
-	var $databaseType = "postgres7";
+	public $databaseType = "postgres7";
 	
 	
 	function ADORecordSet_assoc_postgres7($queryID,$mode=false) 

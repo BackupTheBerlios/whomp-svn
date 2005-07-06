@@ -21,6 +21,11 @@
  defined('_VALID_WHOMP') or exit('Direct access to this location is not allowed!');
  
  /**
+  * Require the {@link /whomp/includes/whomp_node.php Whomp_Node} class file
+  */
+ require_once($_whomp_storage_path . '/includes/whomp_node.php');
+ 
+ /**
   * The Whomp frontpage node class
   * 
   * Implements a frontpage node for Whomp.
@@ -69,7 +74,7 @@
 	  */
 	 public function getNodeXml() {
 		 
-		 return <<<XML
+		 $xml = <<<XML
 <?xml version="1.0" encoding="utf-8" ?>
 <whomp_test_node name="{$this->name}">
 	<title>Test frontpage</title>
@@ -78,6 +83,9 @@
 	</content>
 </whomp_test_node>
 XML;
+		 $dom = new DOMDocument();
+		 $dom->loadXml($xml);
+		 return $dom;
 	 } // end function
 	 
 	 /**

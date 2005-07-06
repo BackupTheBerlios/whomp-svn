@@ -71,37 +71,37 @@ global $ADODB_mssql_date_order;
 }
 
 class ADODB_mssql extends ADOConnection {
-	var $databaseType = "mssql";	
-	var $dataProvider = "mssql";
-	var $replaceQuote = "''"; // string to use to replace quotes
-	var $fmtDate = "'Y-m-d'";
-	var $fmtTimeStamp = "'Y-m-d h:i:sA'";
-	var $hasInsertID = true;
-	var $substr = "substring";
-	var $length = 'len';
-	var $hasAffectedRows = true;
-	var $metaDatabasesSQL = "select name from sysdatabases where name <> 'master'";
-	var $metaTablesSQL="select name,case when type='U' then 'T' else 'V' end from sysobjects where (type='U' or type='V') and (name not in ('sysallocations','syscolumns','syscomments','sysdepends','sysfilegroups','sysfiles','sysfiles1','sysforeignkeys','sysfulltextcatalogs','sysindexes','sysindexkeys','sysmembers','sysobjects','syspermissions','sysprotects','sysreferences','systypes','sysusers','sysalternates','sysconstraints','syssegments','REFERENTIAL_CONSTRAINTS','CHECK_CONSTRAINTS','CONSTRAINT_TABLE_USAGE','CONSTRAINT_COLUMN_USAGE','VIEWS','VIEW_TABLE_USAGE','VIEW_COLUMN_USAGE','SCHEMATA','TABLES','TABLE_CONSTRAINTS','TABLE_PRIVILEGES','COLUMNS','COLUMN_DOMAIN_USAGE','COLUMN_PRIVILEGES','DOMAINS','DOMAIN_CONSTRAINTS','KEY_COLUMN_USAGE','dtproperties'))";
-	var $metaColumnsSQL = # xtype==61 is datetime
+	public $databaseType = "mssql";	
+	public $dataProvider = "mssql";
+	public $replaceQuote = "''"; // string to use to replace quotes
+	public $fmtDate = "'Y-m-d'";
+	public $fmtTimeStamp = "'Y-m-d h:i:sA'";
+	public $hasInsertID = true;
+	public $substr = "substring";
+	public $length = 'len';
+	public $hasAffectedRows = true;
+	public $metaDatabasesSQL = "select name from sysdatabases where name <> 'master'";
+	public $metaTablesSQL="select name,case when type='U' then 'T' else 'V' end from sysobjects where (type='U' or type='V') and (name not in ('sysallocations','syscolumns','syscomments','sysdepends','sysfilegroups','sysfiles','sysfiles1','sysforeignkeys','sysfulltextcatalogs','sysindexes','sysindexkeys','sysmembers','sysobjects','syspermissions','sysprotects','sysreferences','systypes','sysusers','sysalternates','sysconstraints','syssegments','REFERENTIAL_CONSTRAINTS','CHECK_CONSTRAINTS','CONSTRAINT_TABLE_USAGE','CONSTRAINT_COLUMN_USAGE','VIEWS','VIEW_TABLE_USAGE','VIEW_COLUMN_USAGE','SCHEMATA','TABLES','TABLE_CONSTRAINTS','TABLE_PRIVILEGES','COLUMNS','COLUMN_DOMAIN_USAGE','COLUMN_PRIVILEGES','DOMAINS','DOMAIN_CONSTRAINTS','KEY_COLUMN_USAGE','dtproperties'))";
+	public $metaColumnsSQL = # xtype==61 is datetime
 "select c.name,t.name,c.length,
 	(case when c.xusertype=61 then 0 else c.xprec end),
 	(case when c.xusertype=61 then 0 else c.xscale end) 
 	from syscolumns c join systypes t on t.xusertype=c.xusertype join sysobjects o on o.id=c.id where o.name='%s'";
-	var $hasTop = 'top';		// support mssql SELECT TOP 10 * FROM TABLE
-	var $hasGenID = true;
-	var $sysDate = 'convert(datetime,convert(char,GetDate(),102),102)';
-	var $sysTimeStamp = 'GetDate()';
-	var $_has_mssql_init;
-	var $maxParameterLen = 4000;
-	var $arrayClass = 'ADORecordSet_array_mssql';
-	var $uniqueSort = true;
-	var $leftOuter = '*=';
-	var $rightOuter = '=*';
-	var $ansiOuter = true; // for mssql7 or later
-	var $poorAffectedRows = true;
-	var $identitySQL = 'select @@IDENTITY'; // 'select SCOPE_IDENTITY'; # for mssql 2000
-	var $uniqueOrderBy = true;
-	var $_bindInputArray = true;
+	public $hasTop = 'top';		// support mssql SELECT TOP 10 * FROM TABLE
+	public $hasGenID = true;
+	public $sysDate = 'convert(datetime,convert(char,GetDate(),102),102)';
+	public $sysTimeStamp = 'GetDate()';
+	public $_has_mssql_init;
+	public $maxParameterLen = 4000;
+	public $arrayClass = 'ADORecordSet_array_mssql';
+	public $uniqueSort = true;
+	public $leftOuter = '*=';
+	public $rightOuter = '=*';
+	public $ansiOuter = true; // for mssql7 or later
+	public $poorAffectedRows = true;
+	public $identitySQL = 'select @@IDENTITY'; // 'select SCOPE_IDENTITY'; # for mssql 2000
+	public $uniqueOrderBy = true;
+	protected $_bindInputArray = true;
 	
 	function ADODB_mssql() 
 	{		
@@ -156,7 +156,7 @@ class ADODB_mssql extends ADOConnection {
 		return $this->GetOne('select @@rowcount');
 	}
 
-	var $_dropSeqSQL = "drop table %s";
+	protected $_dropSeqSQL = "drop table %s";
 	
 	function CreateSequence($seq='adodbseq',$start=1)
 	{
@@ -722,9 +722,9 @@ order by constraint_name, referenced_table_name, keyno";
 
 class ADORecordset_mssql extends ADORecordSet {	
 
-	var $databaseType = "mssql";
-	var $canSeek = true;
-	var $hasFetchAssoc; // see http://phplens.com/lens/lensforum/msgs.php?id=6083
+	public $databaseType = "mssql";
+	public $canSeek = true;
+	public $hasFetchAssoc; // see http://phplens.com/lens/lensforum/msgs.php?id=6083
 	// _mths works only in non-localised system
 	
 	function ADORecordset_mssql($id,$mode=false)

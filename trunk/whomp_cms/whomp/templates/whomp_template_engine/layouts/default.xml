@@ -1,5 +1,5 @@
-<!-- $Id$ -->
 <?xml version="1.0" encoding="utf-8" ?>
+<!-- $Id$ -->
 <layout>
 	<header>
 		<title>Whomp CMS</title>
@@ -9,6 +9,6 @@
 		<node />
 	</content>
 	<footer>
-		<copyright>&copy; 2005 Schmalls / Joshua Thompson &lt;schmalls@gmail.com&gt All Rights Reserved.</copyright>
+		<copyright>&copy; 2005 Schmalls / Joshua Thompson &lt;schmalls@gmail.com&gt; All Rights Reserved.</copyright>
 	</footer>
 </layout>

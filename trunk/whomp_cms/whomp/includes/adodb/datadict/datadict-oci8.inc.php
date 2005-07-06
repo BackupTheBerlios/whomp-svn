@@ -15,12 +15,12 @@ if (!defined('ADODB_DIR')) die();
 
 class ADODB2_oci8 extends ADODB_DataDict {
 	
-	var $databaseType = 'oci8';
-	var $seqField = false;
-	var $seqPrefix = 'SEQ_';
-	var $dropTable = "DROP TABLE %s CASCADE CONSTRAINTS";
-	var $trigPrefix = 'TRIG_';
-	var $alterCol = ' MODIFY ';
+	public $databaseType = 'oci8';
+	public $seqField = false;
+	public $seqPrefix = 'SEQ_';
+	public $dropTable = "DROP TABLE %s CASCADE CONSTRAINTS";
+	public $trigPrefix = 'TRIG_';
+	public $alterCol = ' MODIFY ';
 	
 	function MetaType($t,$len=-1)
 	{

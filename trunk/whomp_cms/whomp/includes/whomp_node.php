@@ -41,12 +41,12 @@
 	 protected $_template_class;
 	 
 	 /**
-	  * The specified format
+	  * The specified content type
 	  * 
-	  * @var string $_format
+	  * @var string $_content_type
 	  * @access protected
 	  */
-	 protected $_format;
+	 protected $_content_type;
 	 
 	 /**
 	  * The requested page
@@ -79,6 +79,7 @@
 	  * 
 	  * @var array $layouts
 	  * @access public
+	  * @deprecated
 	  */
 	 public $formats;
 	 
@@ -214,12 +215,16 @@
 			 $this->$key = $value;
 		 } // end foreach
 		 // create layout array
-		 $layouts = explode("\n", $this->layouts);
-		 $this->layouts = array();
-		 foreach ($layouts as $layout) {
-			 $layout = explode(',', $layout);
-			 $this->layouts[$layout[0]] = array('template' => $layout[1], 'layout' => $layout[2]);
-		 } // end foreach
+		 if ($this->layouts != '') {
+			 $layouts = explode("\n", $this->layouts);
+			 $this->layouts = array();
+			 foreach ($layouts as $layout) {
+				 $layout = explode(',', $layout);
+				 $this->layouts[$layout[0]] = array('template' => $layout[1], 'layout' => $layout[2]);
+			 } // end foreach
+		 } else {
+			 $this->layouts = array();
+		 } // end if
 		 // create parents array
 		 $this->parents = explode(',', $this->parents);
 		 // create children array
@@ -227,19 +232,27 @@
 		 // create relatives array
 		 $this->relatives = explode(',', $this->relatives);
 		 // create the group permissions array
-		 $group_permissions = explode("\n", $this->_group);
-		 $this->_group = array();
-		 foreach ($group_permissions as $group_permission) {
-			 $group_permission = explode(',', $group_permission);
-			 $this->_group[$group_permission[0]] = $group_permission[1];
-		 } // end foreach
+		 if ($this->_group != '') {
+			 $group_permissions = explode("\n", $this->_group);
+			 $this->_group = array();
+			 foreach ($group_permissions as $group_permission) {
+				 $group_permission = explode(',', $group_permission);
+				 $this->_group[$group_permission[0]] = $group_permission[1];
+			 } // end foreach
+		 } else {
+			 $this->_group = array();
+		 } // end if
 		 // create the user permissions array
-		 $user_permissions = explode("\n", $this->_user);
-		 $this->_user = array();
-		 foreach ($user_permissions as $user_permission) {
-			 $user_permission = explode(',', $user_permission);
-			 $this->_user[$user_permission[0]] = $user_permission[1];
-		 } // end foreach
+		 if ($this->_user != '') {
+			 $user_permissions = explode("\n", $this->_user);
+			 $this->_user = array();
+			 foreach ($user_permissions as $user_permission) {
+				 $user_permission = explode(',', $user_permission);
+				 $this->_user[$user_permission[0]] = $user_permission[1];
+			 } // end foreach
+		 } else {
+			 $this->_user = array();
+		 } // end if
 	 } // end function
 	 
 	 /**
@@ -263,14 +276,14 @@
 		 global $_whomp_storage_path;
 		 
 		 // check if the format is available
-		 if (array_key_exists($this->_format, $this->layouts)) {
+		 if (array_key_exists($this->_content_type, $this->layouts)) {
 			 // if so, check if the template file exists
-			 if (is_file($_whomp_storage_path . '/templates/' . strtolower($this->layouts[$this->_format]['template']) . '/' . strtolower($this->layouts[$this->_format]['template']) . '.php')) {
+			 if (is_file($_whomp_storage_path . '/templates/' . strtolower($this->layouts[$this->_content_type]['template']) . '/' . strtolower($this->layouts[$this->_content_type]['template']) . '.php')) {
 				 // if so, require it
-				 require_once($_whomp_storage_path . '/templates/' . strtolower($this->layouts[$this->_format]['template']) . '/' . strtolower($this->layouts[$this->_format]['template']) . '.php');
+				 require_once($_whomp_storage_path . '/templates/' . strtolower($this->layouts[$this->_content_type]['template']) . '/' . strtolower($this->layouts[$this->_content_type]['template']) . '.php');
 				 // create the template class
-				 $class_string = $this->layouts[$this->_format]['template'];
-				 $this->_template_class = new $class_string($this->layouts[$this->_format]['layout'], $this->_format, $this->formats);
+				 $class_string = $this->layouts[$this->_content_type]['template'];
+				 $this->_template_class = new $class_string($this->layouts[$this->_content_type]['layout'], $this->_content_type, $this->formats);
 				 // place the node xml in the template xml
 				 $this->_template_class->insertNodeXml($this->getNodeXml());
 				 // place the node xsl in the template xsl

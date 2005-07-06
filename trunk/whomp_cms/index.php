@@ -37,7 +37,7 @@
   * @global class $_whomp_configuration
   */
  $_whomp_configuration = new Whomp_Configuration();
- /*
+ 
  // check if debugging is enabled
  if ($_whomp_configuration->debug_setting == 2) {
 	 error_reporting(E_STRICT);
@@ -46,8 +46,7 @@
  } else {
 	 error_reporting(0);
  } // end if
- */
- error_reporting(E_ALL);
+ 
  /**
   * The Whomp base directory
   * 
@@ -146,23 +145,13 @@
 		 throw new Exception('No acceptable language found.');
 	 } // end if
  } catch (Exception $e) {
-	 whomp_output_exception($e);
+	 whomp_output_exception($e, true);
  } // end try
  
  /**
   * Require the {@link /whomp/includes/whomp_current_user.php Whomp_Current_User} class file
   */
  require_once($_whomp_storage_path . '/includes/whomp_current_user.php');
- 
- /**
-  * Require the {@link /whomp/includes/whomp_xml.php Whomp_Xml} class file
-  */
- //require_once($_whomp_storage_path . '/includes/whomp_xml.php');
- 
- /**
-  * Require the {@link /whomp/includes/whomp_node.php Whomp_Node} class file
-  */
- require_once($_whomp_storage_path . '/includes/whomp_node.php');
  
  // create the options array to pass to the Whomp_Database class
  $whomp_database_options = array('type' => $_whomp_configuration->database_type,
@@ -225,6 +214,10 @@
 	 try {
 		 $whomp_unique_suffix = whomp_render_page($_whomp_node_array);
 	 } catch (Exception $e) {
+		 echo '<pre>';
+		 print_r($_whomp_node_array);
+		 print_r($_whomp_requested_page);
+		 echo '</pre>';
 		 whomp_output_exception($e, true);
 	 } // end try
  } // end if

@@ -19,25 +19,25 @@ if (! defined("_ADODB_MYSQL_LAYER")) {
  define("_ADODB_MYSQL_LAYER", 1 );
 
 class ADODB_mysql extends ADOConnection {
-	var $databaseType = 'mysql';
-	var $dataProvider = 'mysql';
-	var $hasInsertID = true;
-	var $hasAffectedRows = true;	
-	var $metaTablesSQL = "SHOW TABLES";	
-	var $metaColumnsSQL = "SHOW COLUMNS FROM %s";
-	var $fmtTimeStamp = "'Y-m-d H:i:s'";
-	var $hasLimit = true;
-	var $hasMoveFirst = true;
-	var $hasGenID = true;
-	var $isoDates = true; // accepts dates in ISO format
-	var $sysDate = 'CURDATE()';
-	var $sysTimeStamp = 'NOW()';
-	var $hasTransactions = false;
-	var $forceNewConnect = false;
-	var $poorAffectedRows = true;
-	var $clientFlags = 0;
-	var $substr = "substring";
-	var $nameQuote = '`';		/// string to use to quote identifiers and names
+	public $databaseType = 'mysql';
+	public $dataProvider = 'mysql';
+	public $hasInsertID = true;
+	public $hasAffectedRows = true;	
+	public $metaTablesSQL = "SHOW TABLES";	
+	public $metaColumnsSQL = "SHOW COLUMNS FROM %s";
+	public $fmtTimeStamp = "'Y-m-d H:i:s'";
+	public $hasLimit = true;
+	public $hasMoveFirst = true;
+	public $hasGenID = true;
+	public $isoDates = true; // accepts dates in ISO format
+	public $sysDate = 'CURDATE()';
+	public $sysTimeStamp = 'NOW()';
+	public $hasTransactions = false;
+	public $forceNewConnect = false;
+	public $poorAffectedRows = true;
+	public $clientFlags = 0;
+	public $substr = "substring";
+	public $nameQuote = '`';		/// string to use to quote identifiers and names
 	
 	function ADODB_mysql() 
 	{			
@@ -180,10 +180,10 @@ class ADODB_mysql extends ADOConnection {
   
  	// See http://www.mysql.com/doc/M/i/Miscellaneous_functions.html
 	// Reference on Last_Insert_ID on the recommended way to simulate sequences
- 	var $_genIDSQL = "update %s set id=LAST_INSERT_ID(id+1);";
-	var $_genSeqSQL = "create table %s (id int not null)";
-	var $_genSeq2SQL = "insert into %s values (%s)";
-	var $_dropSeqSQL = "drop table %s";
+ 	protected $_genIDSQL = "update %s set id=LAST_INSERT_ID(id+1);";
+	protected $_genSeqSQL = "create table %s (id int not null)";
+	protected $_genSeq2SQL = "insert into %s values (%s)";
+	protected $_dropSeqSQL = "drop table %s";
 	
 	function CreateSequence($seqname='adodbseq',$startID=1)
 	{
@@ -540,8 +540,8 @@ class ADODB_mysql extends ADOConnection {
 
 class ADORecordSet_mysql extends ADORecordSet{	
 	
-	var $databaseType = "mysql";
-	var $canSeek = true;
+	public $databaseType = "mysql";
+	public $canSeek = true;
 	
 	function ADORecordSet_mysql($queryID,$mode=false) 
 	{

@@ -23,10 +23,10 @@ if (!defined('ADODB_DIR')) die();
 include_once(ADODB_DIR.'/drivers/adodb-oci8.inc.php');
 
 class ADODB_oci8po extends ADODB_oci8 {
-	var $databaseType = 'oci8po';
-	var $dataProvider = 'oci8';
-	var $metaColumnsSQL = "select lower(cname),coltype,width, SCALE, PRECISION, NULLS, DEFAULTVAL from col where tname='%s' order by colno"; //changed by smondino@users.sourceforge. net
-	var $metaTablesSQL = "select lower(table_name),table_type from cat where table_type in ('TABLE','VIEW')";
+	public $databaseType = 'oci8po';
+	public $dataProvider = 'oci8';
+	public $metaColumnsSQL = "select lower(cname),coltype,width, SCALE, PRECISION, NULLS, DEFAULTVAL from col where tname='%s' order by colno"; //changed by smondino@users.sourceforge. net
+	public $metaTablesSQL = "select lower(table_name),table_type from cat where table_type in ('TABLE','VIEW')";
 	
 	function ADODB_oci8po()
 	{
@@ -76,7 +76,7 @@ class ADODB_oci8po extends ADODB_oci8 {
 
 class ADORecordset_oci8po extends ADORecordset_oci8 {
 
-	var $databaseType = 'oci8po';
+	public $databaseType = 'oci8po';
 	
 	function ADORecordset_oci8po($queryID,$mode=false)
 	{
