@@ -19,6 +19,46 @@
   */
  defined('_VALID_WHOMP') or exit('Direct access to this location is not allowed!');
  
+ /* ++ COMPATIBILITY FUNCTIONS ++ */
+ 
+ if (!function_exists('array_intersect_key')) {
+	 /**
+	  * Compatibility function
+	  * 
+	  * @author Tom Buskens <ortega@php.net>
+	  */
+	 function array_intersect_key() {
+		 $args = func_get_args();
+		 if (count($args) < 2) {
+			 user_error('Wrong parameter count for array_intersect_key()', E_USER_WARNING);
+			 return;
+		 } // end if
+		 // Check arrays
+		 $array_count = count($args);
+		 for ($i = 0; $i !== $array_count; $i++) {
+			 if (!is_array($args[$i])) {
+				 user_error('array_intersect_key() Argument #' .
+				 ($i + 1) . ' is not an array', E_USER_WARNING);
+				 return;
+			 } // end if
+		 } // end for
+		 // Compare entries
+		 $result = array();
+		 foreach ($args[0] as $key1 => $value1) {
+			 for ($i = 1; $i !== $array_count; $i++) {
+				 foreach ($args[$i] as $key2 => $value2) {
+					 if ((string) $key1 === (string) $key2) {
+						 $result[$key1] = $value1;
+					 } // end if
+				 } // end foreach
+			 } // end for
+		 } // end foreach
+		 return $result;
+	 } // end function
+ } // end if
+ 
+ /* -- COMPATIBILITY FUNCTIONS -- */
+ 
  /* ++ REQUEST FUNCTIONS ++ */
  
  /**
@@ -53,7 +93,7 @@
 	 // get the requested format
 	 $format = strrchr($requested, '.');
 	 // check if a format was supplied
-	 if (($format === false) || (strpos($format, '/') === false)) {
+	 if (($format === false) || (strpos($format, '/') !== false)) {
 		 // if not, set to empty string
 		 $format = '';
 	 } else {
@@ -76,7 +116,12 @@
 	 
 	 // try to get the content-type
 	 try {
-		 $content_type = whomp_get_content_type($format, $_whomp_configuration->known_content_types);
+		 if (array_key_exists($format, $_whomp_configuration->known_content_types)) {
+			 $content_type = $_whomp_configuration->known_content_types[$format];
+		 } else {
+			 throw new Exception('Unknown format: ' . $format);
+		 } // end if
+		 //$content_type = whomp_get_content_type($format, $_whomp_configuration->known_content_types);
 	 } catch (Exception $e) {
 		 whomp_output_exception($e, true);
 	 } // end try
@@ -111,52 +156,16 @@
 	  */ 
 	 function whomp_get_accept_header_array($string) {
 		 
-		 if (!function_exists('array_intersect_key')) {
-			 /**
-			  * Compatibility function
-			  * 
-			  * @author Tom Buskens <ortega@php.net>
-			  */
-			 function array_intersect_key() {
-				 $args = func_get_args();
-				 if (count($args) < 2) {
-					 user_error('Wrong parameter count for array_intersect_key()', E_USER_WARNING);
-					 return;
-				 } // end if
-				 // Check arrays
-				 $array_count = count($args);
-				 for ($i = 0; $i !== $array_count; $i++) {
-					 if (!is_array($args[$i])) {
-						 user_error('array_intersect_key() Argument #' .
-						 ($i + 1) . ' is not an array', E_USER_WARNING);
-						 return;
-					 } // end if
-				 } // end for
-				 // Compare entries
-				 $result = array();
-				 foreach ($args[0] as $key1 => $value1) {
-					 for ($i = 1; $i !== $array_count; $i++) {
-						 foreach ($args[$i] as $key2 => $value2) {
-							 if ((string) $key1 === (string) $key2) {
-								 $result[$key1] = $value1;
-							 } // end if
-						 } // end foreach
-					 } // end for
-				 } // end foreach
-				 return $result;
-			 } // end function
-		 } // end if
-		 
 		 $array = array();
 		 foreach(explode(',', $string) as $item) {
 			 $item = explode(';q=', $item);
 			 // check if q value was provided
 			 if (count($item) == 2) {
 				 // if so, add item and q value to array
-				 $array[$item[0]] = (float)$item[1];
+				 $array[trim($item[0])] = (float)trim($item[1]);
 			 } else if(!empty($item)) {
 				 // if not, add item and a q value of 1.0 to array
-				 $array[$item[0]] = (float)1.0;
+				 $array[trim($item[0])] = (float)1.0;
 			 } // end if
 		 } // end foreach
 		 // sort the array and return it
@@ -165,18 +174,34 @@
 	 } // end function
 	 
 	 // create the accepted formats array
-	 $formats = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT']);
+	 if (array_key_exists('HTTP_ACCEPT', $_SERVER)) {
+		 $formats = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT']);
+	 } else {
+		 $formats = array('*/*' => (float)1.0);
+	 } // end if
 	 
 	 // create the accepted languages array
-	 $languages = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT_LANGUAGE']);
-	 // make the languages only include those that are available
-	 $languages = array_intersect_key($languages, $_whomp_configuration->language_languages);
+	 if (array_key_exists('HTTP_ACCEPT_LANGUAGE', $_SERVER)) {
+		 $languages = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT_LANGUAGE']);
+		 // make the languages only include those that are available
+		 $languages = array_intersect_key($languages, $_whomp_configuration->language_languages);
+	 } else {
+		 $languages = array('*' => (float)1.0);
+	 } // end if
 	 
 	 // create the accepted character sets array
-	 $charsets = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT_CHARSET']);
+	 if (array_key_exists('HTTP_ACCEPT_CHARSET', $_SERVER)) {
+		 $charsets = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT_CHARSET']);
+	 } else {
+		 $charsets = array('*' => (float)1.0);
+	 } // end if
 	 
 	 // create the accepted encodings array
-	 $encodings = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT_ENCODING']);
+	 if (array_key_exists('HTTP_ACCEPT_ENCODING', $_SERVER)) {
+		 $encodings = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT_ENCODING']);
+	 } else {
+		 $encodings = array();
+	 } // end if
 	 
 	 // return the array
 	 return array('formats' => $formats, 
@@ -196,6 +221,7 @@
   * @param array $formats the formats as keys and the content type as values
   * @global array the user's accept headers
   * @return string the selected content type
+  * @deprecated
   */
  function whomp_get_content_type($format, $formats) {
 	 global $_whomp_accept_headers;
@@ -205,7 +231,7 @@
 		 // if so, see if it is a known format
 		 if (array_key_exists($format, $formats)) {
 			 // if so, set the content type accordingly
-			 return $formats($format); 
+			 return $formats[$format]; 
 		 } else {
 			 // if not, check if it is a known content type
 			 if (in_array($format, $formats)) {
@@ -219,10 +245,15 @@
 	 } else {
 		 // if not, use the user's accept headers
 		 foreach ($_whomp_accept_headers['formats'] as $format => $qvalue) {
-			 // see if it is a known format
-			 if (in_array($format, $formats)) {
-				 // if so, set the content type accordingly
-				 return $format; 
+			 // see if it is */*
+			 if ($format == '*/*') {
+				 return reset($formats);
+			 } else {
+				 // see if it is a known format
+				 if (in_array($format, $formats)) {
+					 // if so, set the content type accordingly
+					 return $format; 
+				 } // end if
 			 } // end if
 		 } // end foreach
 		 // if it is not found, throw an exception

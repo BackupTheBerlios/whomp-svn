@@ -50,7 +50,7 @@
 	  * @todo finish this
 	  */
 	 public function __construct($options = array()) {
-		 global $_whomp_database;
+		 global $_whomp_database, $_whomp_cache;
 		 
 		 // call the parent constructor
 		 parent::__construct($options);
@@ -62,6 +62,8 @@
 		 $result = $_whomp_database->loadRow();
 		 // set the content
 		 $this->error_message = $result['error_message'];
+		 // turn off caching
+		 $_whomp_cache->noCache();
 	 } // end function
 	 
 	 /**

@@ -55,13 +55,14 @@
 	 public function __construct($layout, $content_type, $node_formats, $node_xsl_path) {
 		 global $_whomp_storage_path;
 		 
-		 // currently only xhtml+xml supported
-		 $this->_content_type = 'application/xhtml+xml';
+		 // set the content type
+		 if ($content_type == '*/*') {
+			 $content_type = 'text/html';
+		 } // end if
+		 $this->_content_type = $content_type;
 		 // currently only the default layout is supported
 		 $this->_template_xml = new DOMDocument('1.0', $this->_charset);
 		 $this->_template_xml->load($_whomp_storage_path . '/templates/whomp_template_engine/layouts/default.xml');
-		 // turn short open tags off
-		 print_r(ini_get('short_open_tag'));
 		 // load the xsl
 		 $this->_template_xsl = new DOMDocument('1.0', $this->_charset);
 		 $this->_template_xsl->loadXML(whomp_include_file_string($_whomp_storage_path . '/templates/whomp_template_engine/xsl/xhtml.xsl', array('node_xsl_path' => $node_xsl_path)));

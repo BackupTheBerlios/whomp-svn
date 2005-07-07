@@ -135,6 +135,9 @@
 	 $whomp_language = '';
 	 $language_included = false;
 	 foreach ($_whomp_accept_headers['languages'] as $language => $qvalue) {
+		 if ($language == '*') {
+			 $language = 'en';
+		 } // end if
 		 // check if the file exists
 		 if (is_file($_whomp_storage_path . '/languages/whomp_language_' . $language . '.php')) {
 			 /**

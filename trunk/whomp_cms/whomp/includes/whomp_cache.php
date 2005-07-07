@@ -140,9 +140,9 @@
 			 $this->$key = $value;
 		 } // end if
 		 // checked if the cached files file exists
-		 if (is_file($this->_cache_dir . '.cached_files')) {
+		 if (is_file($this->_cache_dir . '/.cached_files')) {
 			 // if so, get it's contents
-			 $serialized = file_get_contents($this->_cache_dir . '.cached_files');
+			 $serialized = file_get_contents($this->_cache_dir . '/.cached_files');
 			 // unserialize the contents, and set it to the cached files array
 			 $this->_cached_files = unserialize($serialized);
 		 } else {
@@ -203,15 +203,15 @@
 			 // if so, see if the requested language is available
 			 $languages = array_keys($_whomp_accept_headers['languages']);
 			 $language = $languages[0];
-			 if (in_array($language, $this->_cached_files)) {
+			 if (array_key_exists($language, $this->_cached_files)) {
 				 // if so, see if the page is available
 				 $page = $requested['page'];
-				 if (in_array($page, $this->_cached_files[$language])) {
+				 if (array_key_exists($page, $this->_cached_files[$language])) {
 					 // if so, see if the requested content type is available
 					 $content_type = $requested['content_type'];
-					 if (in_array($content_type, $this->_cached_files[$language][$page])) {
+					 if (array_key_exists($content_type, $this->_cached_files[$language][$page])) {
 						 // if so, check if the file exists
-						 $filename = $this->_cache_dir . $this->_cached_files[$language][$page][$content_type]['filename'];
+						 $filename = $this->_cache_dir . '/' . $this->_cached_files[$language][$page][$content_type]['filename'];
 						 if (is_file($filename)) {
 							 // if so, see if the file has expired
 							 if ((time() - $this->_cached_files[$language][$page][$content_type]['lifetime']) < (filemtime($filename))) {
@@ -220,6 +220,10 @@
 									 // if so, set the status, content-type and charset
 									 header('Status: 304 Not Modified');
 									 header('Content-Type: ' . $content_type . '; charset=' . $this->_cached_files[$language][$page][$content_type]['charset']);
+									 header('Expires: ' . gmdate('D, d M Y H:i:s', filemtime($filename) + $this->_cached_files[$language][$page][$content_type]['lifetime']) . ' GMT');
+									 header('Last-Modified: ' . gmdate('D, d M Y H:i:s', filemtime($filename)) . ' GMT');
+									 header('Content-Length: ' . filesize($filename));
+									 header('Cache-Control: max-age=' . $this->_cached_files[$language][$page][$content_type]['lifetime'] . ', must-revalidate');
 									 // output the page
 									 echo file_get_contents($filename);
 									 // set return to true
@@ -247,6 +251,19 @@
 		 ob_start();
 		 // return return
 		 return $return;
+	 } // end function
+	 
+	 /**
+	  * Turns off caching for the rest of the script
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  */
+	 public function noCache() {
+		 
+		 $this->_enable_caching = false;
 	 } // end function
 	 
 	 /**

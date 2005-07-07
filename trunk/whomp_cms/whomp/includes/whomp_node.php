@@ -131,7 +131,7 @@
 	  * For example:
 	  * <pre>
 	  * Array (
-	  * 	'html' => Array ( 
+	  * 	'text/html' => Array ( 
 	  * 		'template' => the template to use
 	  * 		'layout' => the layout to use
 	  * )
@@ -273,8 +273,15 @@
 	  * @return array information about the page suitable for sending to Whomp_Cache::end()
 	  */
 	 public function renderPage() {
-		 global $_whomp_storage_path;
+		 global $_whomp_storage_path, $_whomp_accept_headers;
 		 
+		 // check if content type was supplied
+		 if ($this->_content_type == '') {
+			 // if not, find the most acceptable content type
+			 $content_types = array_intersect_key($_whomp_accept_headers['formats'], $this->layouts);
+			 $content_types = array_keys($content_types);
+			 $this->_content_type = $content_types[0];
+		 } // end if
 		 // check if the format is available
 		 if (array_key_exists($this->_content_type, $this->layouts)) {
 			 // if so, check if the template file exists
@@ -298,6 +305,7 @@
 			 // if not, throw exception
 			 throw new Exception('The specified file format does not exist.');
 		 } // end if
+			 
 		 // add more information to the options array
 		 $options['language'] = $this->language;
 		 $options['page'] = $this->_page;

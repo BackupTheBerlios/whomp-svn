@@ -248,7 +248,8 @@
 	 public $known_content_types = array('html' => 'text/html',
 	 									 'xhtml+xml' => 'application/xhtml+xml',
 										 'xhtml' => 'application/xhtml+xml',
-										 'txt' => 'text/plain');
+										 'txt' => 'text/plain',
+										 '' => '');
 	 
 	 /* -- NODE -- */
 	 
