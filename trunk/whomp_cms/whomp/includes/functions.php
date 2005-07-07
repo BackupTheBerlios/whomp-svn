@@ -437,9 +437,10 @@
   * @version 0.0.0
   * @since 0.0.0
   * @param string $file the file to include
+  * @param array $options array of options for the included file to have access
   * @return string the contents of the file after it is evaluated
   */
- function whomp_include_file_string($file) {
+ function whomp_include_file_string($file, $options) {
 	 
 	 // start output buffering to capture output
 	 ob_start();

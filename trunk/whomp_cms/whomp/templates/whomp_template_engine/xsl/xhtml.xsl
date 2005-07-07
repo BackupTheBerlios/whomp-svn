@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<!-- $Id$ -->
+<!-- $Id$ http://localhost/whomp/whomp/node_types/whomp_node_frontpage/xsl/xhtml.xsl-->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:import href="http://localhost/whomp/whomp/node_types/whomp_node_frontpage/xsl/xhtml.xsl" />
+	<xsl:import href="<?php echo $options['node_xsl_path']; ?>" />
 	<xsl:output omit-xml-declaration="no" method="xml" doctype-public="-//W3C//DTD XHTML 1.0 Strict//EN" doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd" indent="yes" encoding="utf-8"/>
 	<xsl:template match="/layout">
 		<html>
@@ -30,5 +30,11 @@
 	</xsl:template>
 	<xsl:template match="footer">
 		<p><xsl:value-of select="copyright" /></p>
+	</xsl:template>
+	<xsl:template match="whomp_node_frontpage">
+		<div class="whomp_node_frontpage">
+			<h3><xsl:value-of select="title" />: Overridden.</h3>
+			<p><xsl:value-of select="content" /></p>
+		</div>
 	</xsl:template>
 </xsl:stylesheet>

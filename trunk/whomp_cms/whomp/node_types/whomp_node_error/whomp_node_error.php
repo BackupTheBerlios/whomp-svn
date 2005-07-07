@@ -76,12 +76,12 @@
 		 
 		 $xml = <<<XML
 <?xml version="1.0" encoding="utf-8" ?>
-<whomp_test_node name="{$this->name}">
+<whomp_node_error name="{$this->name}">
 	<title>404 Error</title>
 	<content>
 		{$this->error_message}
 	</content>
-</whomp_test_node>
+</whomp_node_error>
 XML;
 		 $dom = new DOMDocument();
 		 $dom->loadXml($xml);
@@ -97,7 +97,7 @@ XML;
 	  * @access public
 	  */
 	 public function getNodeXslPath() {
-		 global $_whomp_storage_path;
+		 global $_whomp_storage_url;
 		 
 		 // xhtml+xml is the only supported format
 		 return $_whomp_storage_url . '/node_types/whomp_node_error/xsl/xhtml.xsl';

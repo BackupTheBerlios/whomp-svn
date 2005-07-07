@@ -94,10 +94,10 @@ XML;
 	  * @access public
 	  */
 	 public function getNodeXslPath() {
-		 global $_whomp_storage_path;
+		 global $_whomp_storage_url;
 		 
 		 // xhtml+xml is the only supported format
-		 return $_whomp_storage_path . '/node_types/whomp_test_node/xsl/xhtml.xsl';
+		 return $_whomp_storage_url . '/node_types/whomp_test_node/xsl/xhtml.xsl';
 	 } // end function 
  } // end class
 ?>

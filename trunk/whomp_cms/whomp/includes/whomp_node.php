@@ -283,13 +283,11 @@
 				 require_once($_whomp_storage_path . '/templates/' . strtolower($this->layouts[$this->_content_type]['template']) . '/' . strtolower($this->layouts[$this->_content_type]['template']) . '.php');
 				 // create the template class
 				 $class_string = $this->layouts[$this->_content_type]['template'];
-				 $this->_template_class = new $class_string($this->layouts[$this->_content_type]['layout'], $this->_content_type, $this->formats);
+				 $this->_template_class = new $class_string($this->layouts[$this->_content_type]['layout'], $this->_content_type, $this->formats, $this->getNodeXslPath());
 				 // place the node xml in the template xml
 				 $this->_template_class->insertNodeXml($this->getNodeXml());
-				 // place the node xsl in the template xsl
-				 //$this->_template_class->insertXslImport($this->getNodeXslPath());
 				 // transform the xml to the desired format with xsl
-				 $this->_template_class->transform();
+				 $this->_template_class->transform($this->getNodeXslPath());
 				 // output the page
 				 $options = $this->_template_class->render();
 			 } else {

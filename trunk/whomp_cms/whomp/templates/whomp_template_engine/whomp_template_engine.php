@@ -49,9 +49,10 @@
 	  * @param string $layout the layout to use
 	  * @param string $content_type the output content type
 	  * @param array $node_formats the formats that the node supports
+	  * @param string $node_xsl_path the path to the node xsl file
 	  * @todo implement other output formats
 	  */
-	 public function __construct($layout, $content_type, $node_formats) {
+	 public function __construct($layout, $content_type, $node_formats, $node_xsl_path) {
 		 global $_whomp_storage_path;
 		 
 		 // currently only xhtml+xml supported
@@ -59,8 +60,12 @@
 		 // currently only the default layout is supported
 		 $this->_template_xml = new DOMDocument('1.0', $this->_charset);
 		 $this->_template_xml->load($_whomp_storage_path . '/templates/whomp_template_engine/layouts/default.xml');
+		 // turn short open tags off
+		 print_r(ini_get('short_open_tag'));
+		 // load the xsl
 		 $this->_template_xsl = new DOMDocument('1.0', $this->_charset);
-		 $this->_template_xsl->load($_whomp_storage_path . '/templates/whomp_template_engine/xsl/xhtml.xsl');
+		 $this->_template_xsl->loadXML(whomp_include_file_string($_whomp_storage_path . '/templates/whomp_template_engine/xsl/xhtml.xsl', array('node_xsl_path' => $node_xsl_path)));
 	 } // end function
+	 
  } // end class
 ?>

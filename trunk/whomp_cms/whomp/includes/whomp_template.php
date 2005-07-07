@@ -128,14 +128,17 @@
 	  */
 	 public function insertNodeXml(DOMDocument $node_xml, $node_name = '') {
 		 
+
 		 // find the specified node
+		 $importNode = $this->_template_xml->importNode($node_xml->documentElement, true);
+		 $this->_template_xml->saveXML();
 		 $xpath = new DOMXpath($this->_template_xml);
-		 $node_list = $xpath->query('//node[@name = \'' . $node_name . '\']');
+		 $node_list = $xpath->query('//node');
 		 // check if the node was found
 		 if (count($node_list) != 0) {
 			 // if so, append the node XML
 			 foreach ($node_list as $node) {
-				 $node->appendChild($node_xml->documentElement);
+				 $node->appendChild($importNode);
 			 } // end foreach
 		 } else {
 			 // if not, throw exception
@@ -151,14 +154,16 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @param string $xsl_path the path to the XSL file
+	  * @deprecated
 	  */
 	 public function insertXslImport($xsl_path) {
 		 
 		 // create the XML element to append
-		 $import = $this->_template_xsl->createElement('xsl:import');
-		 $import->setAttribute('href', $xsl_path);
+		 //$import = $this->_template_xsl->createElement('xsl:import');
+		 //$import->setAttribute('href', $xsl_path);
 		 // append the element
-		 $this->_template_xsl->documentElement->appendChild($import);
+		 //$this->_template_xsl->documentElement->appendChild($import);
+		 $this->_node_xsl_path = $xsl_path;
 	 } // end function
 	 
 	 /**
@@ -170,7 +175,7 @@
 	  * @access public
 	  * @throws Exception
 	  */
-	 public function transform() {
+	 public function transform($xsl_path) {
 		 
 		 // create the XSLT processor and import the stylesheet
 		 $processor = new XSLTProcessor();

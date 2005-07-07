@@ -76,12 +76,12 @@
 		 
 		 $xml = <<<XML
 <?xml version="1.0" encoding="utf-8" ?>
-<whomp_test_node name="{$this->name}">
+<whomp_node_frontpage name="{$this->name}">
 	<title>Test frontpage</title>
 	<content>
 		{$this->content}
 	</content>
-</whomp_test_node>
+</whomp_node_frontpage>
 XML;
 		 $dom = new DOMDocument();
 		 $dom->loadXml($xml);
@@ -100,7 +100,7 @@ XML;
 		 global $_whomp_storage_url;
 		 
 		 // xhtml+xml is the only supported format
-		 return 'http://' . $_SERVER['SERVER_NAME'] . $_whomp_storage_url . '/node_types/whomp_node_frontpage/xsl/xhtml.xsl';
+		 return $_whomp_storage_url . '/node_types/whomp_node_frontpage/xsl/xhtml.xsl';
 	 } // end function 
  } // end class
 ?>

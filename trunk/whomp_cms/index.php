@@ -52,33 +52,37 @@
   * 
   * @global string $_whomp_base_path
   */
- $_whomp_base_path = preg_replace('/\/$/', '', str_replace('/index.php', '', $_SERVER['SCRIPT_FILENAME']));
+ $_whomp_base_path = $_whomp_configuration->site_path;
+ //$_whomp_base_path = preg_replace('/\/$/', '', str_replace('/index.php', '', $_SERVER['SCRIPT_FILENAME']));
  
  /**
   * The Whomp storage directory
   * 
   * @global string $_whomp_storage_path
   */
- $_whomp_storage_path = $_whomp_base_path . $_whomp_configuration->storage_dir;
+ $_whomp_storage_path = $_whomp_configuration->site_path . $_whomp_configuration->storage_dir;
+ //$_whomp_storage_path = $_whomp_base_path . $_whomp_configuration->storage_dir;
  
  /**
   * The Whomp base url
   * 
   * @global string $_whomp_base_url
   */
- $_whomp_base_url = preg_replace('/\/$/', '', str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']));
+ $_whomp_base_url = $_whomp_configuration->site_url;
+ //$_whomp_base_url = preg_replace('/\/$/', '', str_replace('/index.php', '', $_SERVER['SCRIPT_NAME']));
  
  /**
   * The Whomp storage url
   * 
   * @global string $_whomp_storage_url
   */
- $_whomp_storage_url = $_whomp_base_url . $_whomp_configuration->storage_dir;
+ $_whomp_storage_url = $_whomp_configuration->site_url . $_whomp_configuration->storage_dir;
+ //$_whomp_storage_url = $_whomp_base_url . $_whomp_configuration->storage_dir;
  
  // Check if we need to install
  if (!$_whomp_configuration->installed) {
 	 // if so, redirect to the installation file
-	 header('Location: ' . $_whomp_storage_url . '/installation/index.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_base_url . '&storage_path=' . $_whomp_storage_path . '&storage_url=' . $_whomp_storage_url);
+	 header('Location: ' . preg_replace('/\/$/', '', str_replace('/index.php', '', $_SERVER['SCRIPT_NAME'])) . $_whomp_configuration->storage_dir . '/installation/index.php?base_path=' . dirname(__FILE__) . '&base_url=' . preg_replace('/\/$/', '', str_replace('/index.php', '', $_SERVER['SCRIPT_NAME'])) . '&storage_path=' . dirname(__FILE__) . $_whomp_configuration->storage_dir . '&storage_url=' . preg_replace('/\/$/', '', str_replace('/index.php', '', $_SERVER['SCRIPT_NAME'])) . $_whomp_configuration->storage_dir);
  } // end if
  
  /**

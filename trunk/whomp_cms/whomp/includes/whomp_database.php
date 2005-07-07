@@ -179,7 +179,11 @@
 		 if ($queryValues !== null) {
 			 // if so, escape each string
 			 foreach ($queryValues as $key => $value) {
-				 $queryValues[$key] = $this->escapeString($value);
+				 // check if the string is numeric
+				 if (!is_numeric($value)) {
+					 // if not, escape it
+					 $queryValues[$key] = $this->escapeString($value);
+				 } // end if
 			 } // end foreach
 			 // then update the query
 			 $this->_query = vsprintf($this->_query, $queryValues);

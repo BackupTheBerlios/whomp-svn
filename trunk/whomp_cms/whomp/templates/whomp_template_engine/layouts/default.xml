@@ -6,9 +6,9 @@
 		<description>XML and XSL Fun</description>
 	</header>
 	<content>
-		<node />
+		<node/>
 	</content>
 	<footer>
-		<copyright>&#169; 2005 Schmalls / Joshua Thompson &lt;schmalls@gmail.com&gt; All Rights Reserved.</copyright>
+		<copyright>&#xA9; 2005 Schmalls / Joshua Thompson &lt;schmalls@gmail.com&gt; All Rights Reserved.</copyright>
 	</footer>
 </layout>
