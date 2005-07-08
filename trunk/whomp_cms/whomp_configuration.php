@@ -251,6 +251,15 @@
 										 'txt' => 'text/plain',
 										 '' => '');
 	 
+	 /**
+	  * The template engine to use
+	  * 
+	  * @var string $template_engine
+	  * @access public
+	  */
+	 public $template_engine = 'Whomp_Template_Engine';
+	 						 
+										 
 	 /* -- NODE -- */
 	 
 	 /**

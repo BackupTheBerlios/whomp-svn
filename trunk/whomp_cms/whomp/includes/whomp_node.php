@@ -131,9 +131,8 @@
 	  * For example:
 	  * <pre>
 	  * Array (
-	  * 	'text/html' => Array ( 
-	  * 		'template' => the template to use
-	  * 		'layout' => the layout to use
+	  * 	'text/html' => the layout to use
+	  * 	'application/xhtml+xml' => the layout to use
 	  * )
 	  * </pre>
 	  * This information should be in the database.</p>
@@ -220,7 +219,7 @@
 			 $this->layouts = array();
 			 foreach ($layouts as $layout) {
 				 $layout = explode(',', $layout);
-				 $this->layouts[$layout[0]] = array('template' => $layout[1], 'layout' => $layout[2]);
+				 $this->layouts[trim($layout[0])] = trim($layout[1]);
 			 } // end foreach
 		 } else {
 			 $this->layouts = array();
@@ -270,10 +269,12 @@
 	  * @access public
 	  * @throws Exception
 	  * @global string the whomp storage path
+	  * @global array the user's accept headers
+	  * @global class access to the configuration options
 	  * @return array information about the page suitable for sending to Whomp_Cache::end()
 	  */
 	 public function renderPage() {
-		 global $_whomp_storage_path, $_whomp_accept_headers;
+		 global $_whomp_storage_path, $_whomp_accept_headers, $_whomp_configuration;
 		 
 		 // check if content type was supplied
 		 if ($this->_content_type == '') {
@@ -285,12 +286,12 @@
 		 // check if the format is available
 		 if (array_key_exists($this->_content_type, $this->layouts)) {
 			 // if so, check if the template file exists
-			 if (is_file($_whomp_storage_path . '/templates/' . strtolower($this->layouts[$this->_content_type]['template']) . '/' . strtolower($this->layouts[$this->_content_type]['template']) . '.php')) {
+			 if (is_file($_whomp_storage_path . '/templates/' . strtolower($_whomp_configuration->template_engine) . '/' . strtolower($_whomp_configuration->template_engine) . '.php')) {
 				 // if so, require it
-				 require_once($_whomp_storage_path . '/templates/' . strtolower($this->layouts[$this->_content_type]['template']) . '/' . strtolower($this->layouts[$this->_content_type]['template']) . '.php');
+				 require_once($_whomp_storage_path . '/templates/' . strtolower($_whomp_configuration->template_engine) . '/' . strtolower($_whomp_configuration->template_engine) . '.php');
 				 // create the template class
-				 $class_string = $this->layouts[$this->_content_type]['template'];
-				 $this->_template_class = new $class_string($this->layouts[$this->_content_type]['layout'], $this->_content_type, $this->formats, $this->getNodeXslPath());
+				 $class_string = $_whomp_configuration->template_engine;
+				 $this->_template_class = new $class_string($this->layouts[$this->_content_type], $this->_content_type, $this->formats, $this->getNodeXslPath());
 				 // place the node xml in the template xml
 				 $this->_template_class->insertNodeXml($this->getNodeXml());
 				 // transform the xml to the desired format with xsl

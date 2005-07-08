@@ -64,7 +64,7 @@
 		 global $_whomp_storage_path;
 		 
 		 // all output is xml
-		 $this->_content_type = 'text/xml';
+		 $this->_content_type = 'application/xml';
 		 // currently only the default layout is supported
 		 $this->_template_xml = new DOMDocument('1.0', $this->_charset);
 		 $this->_template_xml->load($_whomp_storage_path . '/layouts/' . $layout . '.xml');
@@ -82,13 +82,14 @@
 	  * @throws Exception
 	  */
 	 public function transform($xsl_path) {
+		 global $_whomp_storage_url;
 		 
-		 // create the tamplate transformed dom document
-		 $this->_template_transformed =& $this->_template_xml;
 		 // append the template xsl stylesheet	 
-		 $this->_template_transformed->appendChild($this->_template_transformed->createProcessingInstruction('xml-stylesheet', 'href="' . $_whomp_storage_url . '/templates/whomp_template_stylesheet/xsl/xhtml.xsl" type="text/xsl"'));
+		 $this->_template_xml->appendChild($this->_template_xml->createProcessingInstruction('xml-stylesheet', 'href="' . $_whomp_storage_url . '/templates/whomp_template_stylesheet/xsl/xhtml.xsl" type="text/xsl"'));
 		 // append the node xsl stylesheet
-		 $this->_template_transformed->appendChild($this->_template_transformed->createProcessingInstruction('xml-stylesheet', 'href="' . $this->_node_xsl_path . '" type="text/xsl"'));
+		 $this->_template_xml->appendChild($this->_template_xml->createProcessingInstruction('xml-stylesheet', 'href="' . $this->_node_xsl_path . '" type="text/xsl"'));
+		 // create the transformed xml
+		 $this->_template_transformed = $this->_template_xml->saveXML();
 	 } // end function
 	 
  } // end class
