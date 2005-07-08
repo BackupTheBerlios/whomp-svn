@@ -62,7 +62,7 @@
 		 $this->_content_type = $content_type;
 		 // currently only the default layout is supported
 		 $this->_template_xml = new DOMDocument('1.0', $this->_charset);
-		 $this->_template_xml->load($_whomp_storage_path . '/templates/whomp_template_engine/layouts/default.xml');
+		 $this->_template_xml->load($_whomp_storage_path . '/layouts/' . $layout . '.xml');
 		 // load the xsl
 		 $this->_template_xsl = new DOMDocument('1.0', $this->_charset);
 		 $this->_template_xsl->loadXML(whomp_include_file_string($_whomp_storage_path . '/templates/whomp_template_engine/xsl/xhtml.xsl', array('node_xsl_path' => $node_xsl_path)));

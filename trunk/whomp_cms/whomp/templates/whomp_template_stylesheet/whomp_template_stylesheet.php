@@ -39,6 +39,14 @@
  class Whomp_Template_Stylesheet extends Whomp_Template {
 	 
 	 /**
+	  * The path to the nodes xsl stylesheet
+	  * 
+	  * @var string $_node_xsl_path
+	  * @access protected
+	  */
+	 protected $_node_xsl_path;
+	 
+	 /**
 	  * Whomp_Template_Engine constructor
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -55,17 +63,32 @@
 	 public function __construct($layout, $content_type, $node_formats, $node_xsl_path) {
 		 global $_whomp_storage_path;
 		 
-		 // set the content type
-		 if ($content_type == '*/*') {
-			 $content_type = 'text/html';
-		 } // end if
-		 $this->_content_type = $content_type;
+		 // all output is xml
+		 $this->_content_type = 'text/xml';
 		 // currently only the default layout is supported
 		 $this->_template_xml = new DOMDocument('1.0', $this->_charset);
-		 $this->_template_xml->load($_whomp_storage_path . '/templates/whomp_template_engine/layouts/default.xml');
-		 // load the xsl
-		 $this->_template_xsl = new DOMDocument('1.0', $this->_charset);
-		 $this->_template_xsl->loadXML(whomp_include_file_string($_whomp_storage_path . '/templates/whomp_template_engine/xsl/xhtml.xsl', array('node_xsl_path' => $node_xsl_path)));
+		 $this->_template_xml->load($_whomp_storage_path . '/layouts/' . $layout . '.xml');
+		 // set the node xsl path
+		 $this->_node_xsl_path = $node_xsl_path;
+	 } // end function
+	 
+	 /**
+	  * Transforms the XML document with XSL
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @throws Exception
+	  */
+	 public function transform($xsl_path) {
+		 
+		 // create the tamplate transformed dom document
+		 $this->_template_transformed =& $this->_template_xml;
+		 // append the template xsl stylesheet	 
+		 $this->_template_transformed->appendChild($this->_template_transformed->createProcessingInstruction('xml-stylesheet', 'href="' . $_whomp_storage_url . '/templates/whomp_template_stylesheet/xsl/xhtml.xsl" type="text/xsl"'));
+		 // append the node xsl stylesheet
+		 $this->_template_transformed->appendChild($this->_template_transformed->createProcessingInstruction('xml-stylesheet', 'href="' . $this->_node_xsl_path . '" type="text/xsl"'));
 	 } // end function
 	 
  } // end class
