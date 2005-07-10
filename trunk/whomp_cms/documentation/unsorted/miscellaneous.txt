@@ -1,0 +1,34 @@
+$Id$
+
+taxonomy:
+
+nodes can also be tags or only tags.
+tags are nodes which have children.
+tags should not recursively include sub tags (possible infinite loops)
+pathway should be /tag/tag/node.type where the tags and type are not required.
+when urls contain more than one tag and no node, only children that are members of both tags are displayed (like filters).
+however, there should be an option to display only results for one or more of the tags (like checkboxes or something).
+root is ONLY a tag.
+make tag node type that is easily included into other node types.
+path ending with slash (/) is a tag (e.g. tag/tag/).
+
+version control:
+
+need to implement some type of node version control.
+also an authoring and workflow system (later).
+
+notes:
+
+use post to send information to another node or itself to keep the url clean.
+
+terminology:
+
+node -> a content item that is in the taxonomy (nodes database table).
+tag -> a parent of a content item. a node can become a tag if another node declares it as a parent. unlimited tags are possible.
+type -> this tells what type the content item is. classes can be added to add new types for different types of content. do not confuse with format.
+format -> the output format of the content. it is possible for types and templates to ouput in many different formats (xml, html, pdf, etc). this is accomplished with xsl.
+template -> an engine that takes an xml layout, adds the node content, transforms it using xsl, and outputs it.
+layout -> an xml file containing the information for a specific layout. this should be editable by the site administrator. each node can have its own layout and also different layouts for different output formats.
+include -> functionality supplied / required by the core distribution.
+extension -> adds or extends functionality. an example would be a search extension for a specific content type or an extension that modifies the text of a content item to contain links to other nodes.
+plugin -> provides features for the frontend. an example would be a user login plugin.
