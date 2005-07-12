@@ -361,9 +361,9 @@
 	 global $_whomp_storage_path;
 	 
 	 // check if the node type class file exists
-	 if (is_file($_whomp_storage_path . '/node_types/' . strtolower($options['type']) . '/' . strtolower($options['type']) . '.php')) {
+	 if (is_file($_whomp_storage_path . '/types/' . strtolower($options['type']) . '/' . strtolower($options['type']) . '.php')) {
 		 // if so, require it
-		 require_once($_whomp_storage_path . '/node_types/' . strtolower($options['type']) . '/' . strtolower($options['type']) . '.php');
+		 require_once($_whomp_storage_path . '/types/' . strtolower($options['type']) . '/' . strtolower($options['type']) . '.php');
 		 // create the node class
 		 $class_string = $options['type'];
 		 $node_class = new $class_string($options);
@@ -404,9 +404,9 @@
 	 // get the node information
 	 $options = whomp_get_node_array($options);
 	 // check if the node type class file exists
-	 if (is_file($_whomp_storage_path . '/node_types/' . $options['type'] . '/' . $options['type'] . '.php')) {
+	 if (is_file($_whomp_storage_path . '/types/' . $options['type'] . '/' . $options['type'] . '.php')) {
 		 // if so, require it
-		 require_once($_whomp_storage_path . '/node_types/' . $options['type'] . '/' . $options['type'] . '.php');
+		 require_once($_whomp_storage_path . '/types/' . $options['type'] . '/' . $options['type'] . '.php');
 		 // create the node class
 		 $class_string = $options['type'];
 		 $node_class = new $class_string($options);

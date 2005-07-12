@@ -695,7 +695,7 @@ HTML;
 							 'register_date' => date('Y-m-d H:i:s'));
 			 $database->insert('#__users', $record);
 		 } catch (Exception $e) {
-			 whomp_output_exception($e);
+			 whomp_output_exception($e, true);
 		 } // end try
 		 return true;
 	 } // end function

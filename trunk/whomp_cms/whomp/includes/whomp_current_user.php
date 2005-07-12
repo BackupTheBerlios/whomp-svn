@@ -36,7 +36,7 @@
   * @version 0.0.0
   * @since 0.0.0
   * @access public
-  * @todo implement login functions, etc
+  * @todo implement user deletion functions
   */
  class Whomp_Current_User extends Whomp_User {
 	 
@@ -101,9 +101,127 @@
 	  * @access public
 	  * @return boolean whether the user is logged in or not
 	  */
-	 function isLoggedIn() {
+	 public function isLoggedIn() {
 		 
 		 return $this->_logged_in;
 	 } // end function
+	 
+	 /**
+	  * Logs the user in
+	  * 
+	  * First it checks if it has the correct user information or not. If it 
+	  * doesn't then it gets the correct information from the database and 
+	  * adds it to the current user option and sets the user id cookie. Then 
+	  * it checks if the supplied password was correct.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @throws Exception if the password is incorrect
+	  * @param int $username the username the user supplied
+	  * @param string $password the password the user supplied
+	  * @global class access to the database
+	  * @return boolean whether it was successful or not
+	  */
+	 public function login($username, $password) {
+		 global $_whomp_database;
+		 
+		 // check if we already have the user's information
+		 if ($username != $this->username) {
+			 // if not, get the information from the database
+			 try {
+				 $queryValues = array($username);
+				 $query = 'SELECT * FROM `#__users` WHERE `username` = %s;';
+				 $_whomp_database->setQuery($query, $queryValues);
+				 $_whomp_database->query();
+				 $current_user_options = $_whomp_database->loadRow();
+				 // call the parent constructor with the new options
+				 parent::__construct($current_user_options);
+				 // set the user id cookie
+				 setcookie('whomp_id', md5($this->id));
+			 } catch (Exception $e) {
+				 whomp_ouput_exception($e, true);
+			 } // end try
+		 } // end if	 
+		 // check if the password supplied is correct
+		 if (md5($password) == $this->_password) {
+			 // if so, set user to logged in
+			 $this->_logged_in = true;
+		 } else {
+			 // if not, throw an exception
+			 throw new Exception('The supplied password was incorrect.');
+		 } // end if
+	 } // end function
+	 
+	 /**
+	  * Logs the user out
+	  * 
+	  * The user id cookie is unset and then all current user options are reset.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  */
+	 public function logout() {
+		 
+		 // remove the user id cookie
+		 setcookie('whomp_id', false);
+		 unset($_COOKIE['whomp_id']);
+		 // reconstruct the current user
+		 $this = new Whomp_Current_User();
+	 } // end function
+	 
+	 /**
+	  * Creates a new user
+	  * 
+	  * The options array should be in the following format:
+	  * <pre>
+	  * Array (
+	  * 	'username' => the username
+	  * 	'password' => the supplied password
+	  * 	'confirm_password' => the confirm password
+	  * 	'name' => the user's name
+	  * 	'usertype' => the user's type
+	  * 	'email' => the user's email address
+	  * )
+	  * </pre>
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @throws Exception if the passwords do not match
+	  * @param array $options the user options
+	  * @global class access to the database
+	  * @todo add confirmation functionality
+	  */
+	 public function create($options) {
+		 global $_whomp_database;
+		 
+		 // check if the passwords match
+		 if ($options['password'] == $options['confimr_password']) {
+			 // if so, insert the user
+			 try {
+				 $insert = array('username' => $options['username'],
+			 					 'password' => md5($options['password']),
+								 'name' => $options['name'],
+								 'usertype' => $options['usertype'],
+								 'email' => $options['email'],
+								 'last_visit_date' => date('Y-m-d H:i:s'),
+								 'register_date' => date('Y-m-d H:i:s'));
+				 $_whomp_database->insert('#__users', $insert);
+				 // set the user id cookie
+				 setcookie('whomp_id', $_whomp_database->insertId());
+			 } catch (Exception $e) {
+				 whomp_output_exception($e, true);
+			 } // end try
+		 } else {
+			 // if not, throw an exception
+			 throw new Exception('The supplied passwords do not match.');
+		 } // end if
+	 } // end function
+	 
  } // end class
 ?>

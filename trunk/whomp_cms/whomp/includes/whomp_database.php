@@ -42,7 +42,7 @@
   * @version 0.0.0
   * @since 0.0.0
   * @access public
-  * @todo add table deletion and backup functions using AXMLS
+  * @todo add table deletion and backup functions
   * @todo add date handling functions
   * @todo add blob and/or clob functions
   */
