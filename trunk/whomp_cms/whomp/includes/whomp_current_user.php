@@ -170,7 +170,7 @@
 		 setcookie('whomp_id', false);
 		 unset($_COOKIE['whomp_id']);
 		 // reconstruct the current user
-		 $this = new Whomp_Current_User();
+		 //$this = new Whomp_Current_User();
 	 } // end function
 	 
 	 /**

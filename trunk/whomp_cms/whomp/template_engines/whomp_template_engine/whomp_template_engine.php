@@ -50,10 +50,12 @@
 	  * @param string $content_type the output content type
 	  * @param array $node_formats the formats that the node supports
 	  * @param string $node_xsl_path the path to the node xsl file
+	  * @global string the whomp storage path
+	  * @global string the whomp storage url
 	  * @todo implement other output formats
 	  */
 	 public function __construct($layout, $content_type, $node_formats, $node_xsl_path) {
-		 global $_whomp_storage_path;
+		 global $_whomp_storage_path, $_whomp_storage_url;
 		 
 		 // set the content type
 		 if ($content_type == '*/*') {
@@ -68,10 +70,11 @@
 		 $xsl = <<<XSL
 <?xml version="1.0" encoding="utf-8" ?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:import href="{$_whomp_storage_path}/templates/{$layout['template']}/{$layout['format']}.xsl" />
+	<xsl:import href="{$_whomp_storage_url}/templates/{$layout['template']}/{$layout['format']}.xsl" />
 	<xsl:import href="{$node_xsl_path}" />
 </xsl:stylesheet>
 XSL;
+		 echo $xsl;
 		 $this->_template_xsl->loadXML($xsl);
 	 } // end function
 	 

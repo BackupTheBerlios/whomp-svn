@@ -296,9 +296,9 @@
 		 // check if the format is available
 		 if (array_key_exists($this->_content_type, $this->layouts)) {
 			 // if so, check if the template file exists
-			 if (is_file($_whomp_storage_path . '/templates/' . strtolower($_whomp_configuration->template_engine) . '/' . strtolower($_whomp_configuration->template_engine) . '.php')) {
+			 if (is_file($_whomp_storage_path . '/template_engines/' . strtolower($_whomp_configuration->template_engine) . '/' . strtolower($_whomp_configuration->template_engine) . '.php')) {
 				 // if so, require it
-				 require_once($_whomp_storage_path . '/templates/' . strtolower($_whomp_configuration->template_engine) . '/' . strtolower($_whomp_configuration->template_engine) . '.php');
+				 require_once($_whomp_storage_path . '/template_engines/' . strtolower($_whomp_configuration->template_engine) . '/' . strtolower($_whomp_configuration->template_engine) . '.php');
 				 // create the template class
 				 $class_string = $_whomp_configuration->template_engine;
 				 $this->_template_class = new $class_string($this->layouts[$this->_content_type], $this->_content_type, $this->formats, $this->getNodeXslPath());
