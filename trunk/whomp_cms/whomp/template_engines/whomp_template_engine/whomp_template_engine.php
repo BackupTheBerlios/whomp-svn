@@ -46,7 +46,7 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @throws Exception
-	  * @param string $layout the layout to use
+	  * @param array $layout the layout information
 	  * @param string $content_type the output content type
 	  * @param array $node_formats the formats that the node supports
 	  * @param string $node_xsl_path the path to the node xsl file
@@ -62,10 +62,17 @@
 		 $this->_content_type = $content_type;
 		 // currently only the default layout is supported
 		 $this->_template_xml = new DOMDocument('1.0', $this->_charset);
-		 $this->_template_xml->load($_whomp_storage_path . '/layouts/' . $layout . '.xml');
+		 $this->_template_xml->load($_whomp_storage_path . '/layouts/' . $layout['layout'] . '.xml');
 		 // load the xsl
 		 $this->_template_xsl = new DOMDocument('1.0', $this->_charset);
-		 $this->_template_xsl->loadXML(whomp_include_file_string($_whomp_storage_path . '/templates/whomp_template_engine/xsl/xhtml.xsl', array('node_xsl_path' => $node_xsl_path)));
+		 $xsl = <<<XSL
+<?xml version="1.0" encoding="utf-8" ?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<xsl:import href="{$_whomp_storage_path}/templates/{$layout['template']}/{$layout['format']}.xsl" />
+	<xsl:import href="{$node_xsl_path}" />
+</xsl:stylesheet>
+XSL;
+		 $this->_template_xsl->loadXML($xsl);
 	 } // end function
 	 
  } // end class

@@ -131,11 +131,19 @@
 	  * For example:
 	  * <pre>
 	  * Array (
-	  * 	'text/html' => the layout to use
-	  * 	'application/xhtml+xml' => the layout to use
+	  * 	'text/html' => 
+	  * 		Array (
+	  * 			'layout' => the layout to use
+	  * 			'template' => the template to use
+	  * 			'format' => the format to use
+	  * 		)
+	  * 	'application/xhtml+xml' => 
+	  * 		Array (
+	  * 			...
+	  * 		)
 	  * )
 	  * </pre>
-	  * This information should be in the database.</p>
+	  * This information should be in the database.
 	  * 
 	  * @var array $layouts
 	  * @access public
@@ -218,8 +226,10 @@
 			 $layouts = explode("\n", $this->layouts);
 			 $this->layouts = array();
 			 foreach ($layouts as $layout) {
-				 $layout = explode(',', $layout);
-				 $this->layouts[trim($layout[0])] = trim($layout[1]);
+				 $layout = explode(',', $layout . ',,,');
+				 $this->layouts[trim($layout[0])] = array('layout' => trim($layout[1]),
+				 										  'template' => trim($layout[2]),
+														  'format' => trim($layout[3]));
 			 } // end foreach
 		 } else {
 			 $this->layouts = array();

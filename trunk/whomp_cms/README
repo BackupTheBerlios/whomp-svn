@@ -14,5 +14,6 @@ Directory information:
 /whomp/languages/ add multilingual support
 /whomp/layouts/ contain different content layouts
 /whomp/plugins/ provide features for the site
-/whomp/template/ different template engines
+/whomp/template_engines/ different template engines
+/whomp/templates/ output templates
 /whomp/types/ add different media types

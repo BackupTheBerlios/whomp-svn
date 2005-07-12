@@ -12,6 +12,7 @@
  * @version 0.0.0
  * @since 0.0.0
  * @link http://www.schmalls.com
+ * @todo fix the way that formats, templates, and layout information is passed from node to template
  */
 
  /**
