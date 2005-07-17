@@ -1,10 +1,10 @@
 <?php
 /* $Id: whomp_current_user.php 52 2005-07-12 17:27:30Z schmalls $ */
 /**
- * /whomp/includes/whomp_current_user.php
+ * /whomp/extensions/whomp/user/current.php
  * 
  * Whomp current user file. Includes the 
- * {@link Whomp_Current_User Whomp_Current_User} class.
+ * {@link Whomp_User_Current Whomp_User_Current} class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -33,7 +33,7 @@
   * @access public
   * @todo implement user deletion functions
   */
- class Whomp_Current_User extends Whomp_User {
+ class Whomp_User_Current extends Whomp_User {
 	 
 	 /**
 	  * md5 of the password

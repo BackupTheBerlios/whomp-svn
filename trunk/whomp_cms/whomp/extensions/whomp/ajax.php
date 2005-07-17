@@ -1,7 +1,7 @@
 <?php
 /* $Id$ */
 /**
- * /whomp/includes/whomp_ajax.php
+ * /whomp/extensions/whomp/ajax.php
  * 
  * Whomp ajax file. Includes the {@link Whomp_Ajax Whomp_Ajax} class.
  * 

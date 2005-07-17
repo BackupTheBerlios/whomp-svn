@@ -1,7 +1,7 @@
 <?php
 /* $Id: whomp_cache.php 38 2005-07-07 18:07:37Z schmalls $ */
 /**
- * /whomp/includes/whomp_cache.php
+ * /whomp/extensions/whomp/cache.php
  * 
  * Whomp cache file. Includes the {@link Whomp_Cache Whomp_Cache} class.
  * 

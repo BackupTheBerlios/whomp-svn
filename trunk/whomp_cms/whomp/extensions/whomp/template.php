@@ -1,7 +1,7 @@
 <?php
 /* $Id: whomp_template.php 37 2005-07-07 06:10:30Z schmalls $ */
 /**
- * /whomp/includes/whomp_template.php
+ * /whomp/extensions/whomp/template.php
  * 
  * Whomp template file. Includes the 
  * {@link Whomp_Template Whomp_Template} class.

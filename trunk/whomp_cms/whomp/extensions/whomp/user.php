@@ -1,7 +1,7 @@
 <?php
 /* $Id: whomp_user.php 37 2005-07-07 06:10:30Z schmalls $ */
 /**
- * /whomp/includes/whomp_user.php
+ * /whomp/extensions/whomp/user.php
  * 
  * Whomp user file. Includes the {@link Whomp_User Whomp_User} class.
  * 

@@ -1,7 +1,7 @@
 <?php
 /* $Id: whomp_database.php 46 2005-07-12 05:17:52Z schmalls $ */
 /**
- * /whomp/includes/whomp_database.php
+ * /whomp/extensions/whomp/database.php
  * 
  * Whomp database file. Includes the {@link Whomp_Database Whomp_Database} 
  * class.

@@ -1,7 +1,7 @@
 <?php
 /* $Id: whomp_node_frontpage.php 52 2005-07-12 17:27:30Z schmalls $ */
 /**
- * /whomp/node_types/whomp_node_frontpage.php
+ * /whomp/extensions/whomp/node/frontpage.php
  * 
  * Whomp test node file. Includes the {@link Whomp_Node_Frontpage Whomp_Node_Frontpage} 
  * class.

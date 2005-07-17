@@ -1,7 +1,7 @@
 <?php
 /* $Id: whomp_node.php 52 2005-07-12 17:27:30Z schmalls $ */
 /**
- * /whomp/includes/whomp_node.php
+ * /whomp/extensions/whomp/node.php
  * 
  * Whomp node file. Includes the {@link Whomp_Node Whomp_Node} class.
  * 

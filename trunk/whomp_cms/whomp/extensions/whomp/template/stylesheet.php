@@ -1,7 +1,7 @@
 <?php
-/* $Id$ */
+/* $Id: whomp_template_stylesheet.php 47 2005-07-12 05:22:02Z schmalls $ */
 /**
- * /whomp/templates/whomp_template_stylesheet.php
+ * /whomp/extensions/whomp/template/stylesheet.php
  * 
  * Whomp template engine file. Includes the 
  * {@link Whomp_Template_Stylesheet Whomp_Template_Stylesheet} class.
@@ -19,11 +19,6 @@
   * Make sure this file is being included by a parent file
   */
  defined('_VALID_WHOMP') or exit('Direct access to this location is not allowed!');
- 
- /**
-  * Require the {@link /whomp/includes/whomp_template.php Whomp_Template} class file
-  */
- require_once($_whomp_storage_path . '/includes/whomp_template.php');
  
  /**
   * The Whomp template stylesheet class

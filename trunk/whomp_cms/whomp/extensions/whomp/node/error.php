@@ -1,7 +1,7 @@
 <?php
 /* $Id: whomp_node_error.php 52 2005-07-12 17:27:30Z schmalls $ */
 /**
- * /whomp/node_types/whomp_node_error.php
+ * /whomp/extensions/whomp/node/error.php
  * 
  * Whomp error node file. Includes the {@link Whomp_Node_Error Whomp_Node_Error} 
  * class.

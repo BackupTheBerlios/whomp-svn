@@ -1,10 +1,10 @@
 <?php
-/* $Id$ */
+/* $Id: whomp_template_engine.php 53 2005-07-12 18:23:54Z schmalls $ */
 /**
- * /whomp/templates/whomp_template_engine.php
+ * /whomp/extensions/whomp/template/xslt.php
  * 
  * Whomp template engine file. Includes the 
- * {@link Whomp_Template_Engine Whomp_Template_Engine} class.
+ * {@link Whomp_Template_Xslt Whomp_Template_Xslt} class.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -21,14 +21,9 @@
  defined('_VALID_WHOMP') or exit('Direct access to this location is not allowed!');
  
  /**
-  * Require the {@link /whomp/includes/whomp_template.php Whomp_Template} class file
-  */
- require_once($_whomp_storage_path . '/includes/whomp_template.php');
- 
- /**
-  * The Whomp template engine class
+  * The Whomp template xslt class
   * 
-  * Template engine that expands the abstact Whomp_Template class.
+  * Template engine that expands the abstact Whomp_Template class with php xslt.
   * 
   * @package Whomp
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -36,7 +31,7 @@
   * @since 0.0.0
   * @access public
   */
- class Whomp_Template_Engine extends Whomp_Template {
+ class Whomp_Template_Xslt extends Whomp_Template {
 	 
 	 /**
 	  * Whomp_Template_Engine constructor

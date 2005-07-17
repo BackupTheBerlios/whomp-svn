@@ -1,7 +1,7 @@
 <?php
 /* $Id: whomp_language.php 37 2005-07-07 06:10:30Z schmalls $ */
 /**
- * /whomp/includes/whomp_language.php
+ * /whomp/extensions/whomp/language.php
  * 
  * Whomp language file. Includes the 
  * {@link Whomp_Language Whomp_Language} class.
