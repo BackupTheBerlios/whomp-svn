@@ -1,5 +1,5 @@
 <?php
-/* $Id$ */
+/* $Id: whomp_node_error.php 52 2005-07-12 17:27:30Z schmalls $ */
 /**
  * /whomp/node_types/whomp_node_error.php
  * 
@@ -19,11 +19,6 @@
   * Make sure this file is being included by a parent file
   */
  defined('_VALID_WHOMP') or exit('Direct access to this location is not allowed!');
- 
- /**
-  * Require the {@link /whomp/includes/whomp_node.php Whomp_Node} class file
-  */
- require_once($_whomp_storage_path . '/includes/whomp_node.php');
  
  /**
   * The Whomp error node class

@@ -21,11 +21,6 @@
  defined('_VALID_WHOMP') or exit('Direct access to this location is not allowed!');
  
  /**
-  * Require the {@link /whomp/includes/whomp_language.php Whomp_Language} class file
-  */
- require_once($_whomp_storage_path . '/includes/whomp_language.php');
- 
- /**
   * The Whomp en language class
   * 
   * This class can be intialized to use the English language for output. 

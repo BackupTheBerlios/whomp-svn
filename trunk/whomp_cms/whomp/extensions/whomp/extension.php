@@ -33,7 +33,7 @@
   * @access public
   * @todo finish implementing this
   */
- abstract class Whomp_Extension {
+ interface Whomp_Extension {
 	 
 	 /**
 	  * Whomp extension constructor
@@ -46,6 +46,6 @@
 	  * @access public
 	  * @param array $options configuration options
 	  */
-	 abstract public function __construct($options); // end function
+	 public function __construct($options); // end function
 	 
  } // end class

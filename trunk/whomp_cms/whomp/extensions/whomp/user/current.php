@@ -21,11 +21,6 @@
  defined('_VALID_WHOMP') or exit('Direct access to this location is not allowed!');
  
  /**
-  * Require the {@link /whomp/includes/whomp_user.php Whomp_User} class file
-  */
- require_once($_whomp_storage_path . '/includes/whomp_user.php');
- 
- /**
   * The Whomp current user class
   * 
   * Implements methods for the current Whomp user. It extends the 

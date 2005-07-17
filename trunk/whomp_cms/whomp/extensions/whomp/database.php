@@ -23,12 +23,12 @@
  /**
   * Require the ADOdb exceptions file
   */
- require_once($_whomp_storage_path . '/includes/adodb/adodb-exceptions.inc.php');
+ require_once($_whomp_storage_path . '/extensions/adodb/adodb-exceptions.inc.php');
  
  /**
   * Require the ADOdb include file
   */
- require_once($_whomp_storage_path . '/includes/adodb/adodb.inc.php');
+ require_once($_whomp_storage_path . '/extensions/adodb/adodb.inc.php');
  
  /**
   * The Whomp database class
