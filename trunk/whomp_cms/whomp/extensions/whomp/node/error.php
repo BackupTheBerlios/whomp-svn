@@ -1,5 +1,5 @@
 <?php
-/* $Id: whomp_node_error.php 52 2005-07-12 17:27:30Z schmalls $ */
+/* $Id$ */
 /**
  * /whomp/extensions/whomp/node/error.php
  * 
@@ -97,7 +97,7 @@ XML;
 		 global $_whomp_storage_url;
 		 
 		 // xhtml+xml is the only supported format
-		 return $_whomp_storage_url . '/types/whomp_node_error/xsl/xhtml.xsl';
+		 return $_whomp_storage_url . '/repository/whomp/node/error/xsl/xhtml.xsl';
 	 } // end function 
  } // end class
 ?>

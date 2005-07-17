@@ -1,5 +1,5 @@
 <?php
-/* $Id: whomp_node_frontpage.php 52 2005-07-12 17:27:30Z schmalls $ */
+/* $Id$ */
 /**
  * /whomp/extensions/whomp/node/frontpage.php
  * 
@@ -95,7 +95,7 @@ XML;
 		 global $_whomp_storage_url;
 		 
 		 // xhtml+xml is the only supported format
-		 return $_whomp_storage_url . '/types/whomp_node_frontpage/xsl/xhtml.xsl';
+		 return $_whomp_storage_url . '/repository/whomp/node/frontpage/xsl/xhtml.xsl';
 	 } // end function 
  } // end class
 ?>
