@@ -29,12 +29,12 @@
   * @global string the whomp storage directory
   */
  function __autoload($class) {
-	 global $_whomp_storage_directory;
+	 global $_whomp_storage_path;
 	 
 	 // check if it is in the extension directory
-	 if (is_file($_whomp_storage_directory . '/extensions/' . str_replace('_', '/', str_to_lower($class)) . '.php')) {
+	 if (is_file($_whomp_storage_path . '/extensions/' . str_replace('_', '/', strtolower($class)) . '.php')) {
 		 // include extension
-		 require_once($_whomp_storage_directory . '/extensions/' . str_replace('_', '/', str_to_lower($class)) . '.php');
+		 require_once($_whomp_storage_path . '/extensions/' . str_replace('_', '/', strtolower($class)) . '.php');
 	 } // end if
  } // end function
  

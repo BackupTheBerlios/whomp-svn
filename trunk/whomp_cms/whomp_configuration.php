@@ -257,7 +257,7 @@
 	  * @var string $template_engine
 	  * @access public
 	  */
-	 public $template_engine = 'Whomp_Template_Engine';
+	 public $template_engine = 'Whomp_Template_Xslt';
 	 						 
 										 
 	 /* -- NODE -- */
