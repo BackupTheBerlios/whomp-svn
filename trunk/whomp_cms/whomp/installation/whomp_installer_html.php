@@ -574,10 +574,6 @@ HTML;
 	 public static function addDatabaseTables($post_array) {
 		 global $_whomp_storage_path;
 		 
-		 /**
-		  * Require the Whomp_Database class file
-		  */
-		 require_once($_whomp_storage_path . '/includes/whomp_database.php');
 		 // create the database options array
 		 $database_options = array('type' => $post_array['database_type'],
  								   'host' => $post_array['database_host'],
@@ -672,10 +668,6 @@ HTML;
 	 public static function addAdmin($post_array) {
 		 global $_whomp_storage_path;
 		 
-		 /**
-		  * Require the Whomp_Database class file
-		  */
-		 require_once($_whomp_storage_path . '/includes/whomp_database.php');
 		 // create the database options array
 		 $database_options = array('type' => $post_array['database_type'],
  								   'host' => $post_array['database_host'],

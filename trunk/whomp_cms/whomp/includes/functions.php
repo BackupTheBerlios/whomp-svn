@@ -19,6 +19,25 @@
   */
  defined('_VALID_WHOMP') or exit('Direct access to this location is not allowed!');
  
+ /**
+  * Autoloads class and interface extensions as necessary
+  * 
+  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+  * @version 0.0.0
+  * @since 0.0.0
+  * @param string $class the class name
+  * @global string the whomp storage directory
+  */
+ function __autoload($class) {
+	 global $_whomp_storage_directory;
+	 
+	 // check if it is in the extension directory
+	 if (is_file($_whomp_storage_directory . '/extensions/' . str_replace('_', '/', str_to_lower($class)) . '.php')) {
+		 // include extension
+		 require_once($_whomp_storage_directory . '/extensions/' . str_replace('_', '/', str_to_lower($class)) . '.php');
+	 } // end if
+ } // end function
+ 
  /* ++ COMPATIBILITY FUNCTIONS ++ */
  
  if (!function_exists('array_intersect_key')) {
@@ -360,18 +379,16 @@
  function whomp_render_page($options) {
 	 global $_whomp_storage_path;
 	 
-	 // check if the node type class file exists
-	 if (is_file($_whomp_storage_path . '/types/' . strtolower($options['type']) . '/' . strtolower($options['type']) . '.php')) {
-		 // if so, require it
-		 require_once($_whomp_storage_path . '/types/' . strtolower($options['type']) . '/' . strtolower($options['type']) . '.php');
-		 // create the node class
-		 $class_string = $options['type'];
+	 // check if the node class exists
+	 $class_string = $options['type'];
+	 if (class_exists($class_string)) {
+		 // if so, create the node class
 		 $node_class = new $class_string($options);
 		 // render the page
 		 return $node_class->renderPage();
 	 } else {
 		 // if not, throw exception
-		 throw new Exception('The ' . $options['type'] . ' class file does not exist.');
+		 throw new Exception('The ' . $class_string . ' class does not exist.');
 	 } // end if
  } // end function
  
@@ -404,11 +421,9 @@
 	 // get the node information
 	 $options = whomp_get_node_array($options);
 	 // check if the node type class file exists
-	 if (is_file($_whomp_storage_path . '/types/' . $options['type'] . '/' . $options['type'] . '.php')) {
-		 // if so, require it
-		 require_once($_whomp_storage_path . '/types/' . $options['type'] . '/' . $options['type'] . '.php');
-		 // create the node class
-		 $class_string = $options['type'];
+	 $class_string = $options['type'];
+	 if (class_exists($class_string)) {
+		 // if so, create the node class
 		 $node_class = new $class_string($options);
 		 // get the XML data
 		 $return['xml'] = $node_class->getNodeXml();
@@ -416,7 +431,7 @@
 		 $return['xsl'] = $node_class->getNodeXslPath();
 	 } else {
 		 // if not, throw exception
-		 throw new Exception('The ' . $options['type'] . ' class file does not exist.');
+		 throw new Exception('The ' . $class_string . ' class file does not exist.');
 	 } // end if
 	 // return the information
 	 return $return;

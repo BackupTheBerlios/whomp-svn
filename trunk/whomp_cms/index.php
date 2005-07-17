@@ -91,11 +91,6 @@
   */
  require_once($_whomp_storage_path . '/includes/functions.php');
  
- /**
-  * Require the {@link whomp/includes/whomp_cache.php Whomp_Cache} class file
-  */
- require_once($_whomp_storage_path . '/includes/whomp_cache.php');
- 
  // create the options array to pass to the Whomp_Cache class
  $whomp_cache_options = array('_cache_dir' => $_whomp_storage_path . $_whomp_configuration->cache_dir,
  							  '_enable_caching' => (boolean)$_whomp_configuration->cache_enable_caching,
@@ -126,27 +121,26 @@
  // starts caching or outputs page and quits if it is available
  $_whomp_cache->start($_whomp_requested_page, true);
  
- /**
-  * Require the {@link /whomp/includes/whomp_database.php Whomp_Database} class file
-  */
- require_once($_whomp_storage_path . '/includes/whomp_database.php');
- 
  // try to get the user's preferred language
  try {
-	 $whomp_language = '';
 	 $language_included = false;
 	 foreach ($_whomp_accept_headers['languages'] as $language => $qvalue) {
 		 if ($language == '*') {
 			 $language = 'en';
 		 } // end if
-		 // check if the file exists
-		 if (is_file($_whomp_storage_path . '/languages/whomp_language_' . $language . '.php')) {
+		 // check if the class exists
+		 if (class_exists('Whomp_Language_' . $language)) {
+			 // create the language class string
+			 $whomp_language_class_string = 'Whomp_Language_' . $language;
 			 /**
-			  * Require the Whomp_Language's child class file
+			  * Access to the {@link Whomp_Language Whomp_Language's} child class
+			  * 
+			  * @global class $_whomp_language
 			  */
-			 require_once($_whomp_storage_path . '/languages/whomp_language_' . $language . '.php');
+			 $_whomp_language = new $whomp_language_class_string();
+			 // set language included to true and break
 			 $language_included = true;
-			 $whomp_language = $language;
+			 break;
 		 } // end if
 	 } // end foreach
 	 if ($language_included === false) {
@@ -155,11 +149,6 @@
  } catch (Exception $e) {
 	 whomp_output_exception($e, true);
  } // end try
- 
- /**
-  * Require the {@link /whomp/includes/whomp_current_user.php Whomp_Current_User} class file
-  */
- require_once($_whomp_storage_path . '/includes/whomp_current_user.php');
  
  // create the options array to pass to the Whomp_Database class
  $whomp_database_options = array('type' => $_whomp_configuration->database_type,
@@ -177,22 +166,12 @@
   */
  $_whomp_database = new Whomp_Database($whomp_database_options);
  
- // create the language class string
- $whomp_language_class_string = 'Whomp_Language_' . $whomp_language;
- 
  /**
-  * Access to the {@link Whomp_Language Whomp_Language's} child class
-  * 
-  * @global class $_whomp_language
-  */
- $_whomp_language = new $whomp_language_class_string();
- 
- /**
-  * Access to the {@link Whomp_Current_User Whomp_Current_User} class
+  * Access to the {@link Whomp_User_Current Whomp_User_Current} class
   * 
   * @global class $_whomp_current_user
   */
- $_whomp_current_user = new Whomp_Current_User();
+ $_whomp_current_user = new Whomp_User_Current();
  
  /**
   * Information to be included in the head of a document

@@ -97,11 +97,6 @@ HTML;
   */
  require_once($_whomp_storage_path . '/installation/whomp_installer_html.php');
  
- /**
-  * Require the {@link Whomp_Ajax Whomp_Ajax} class file
-  */
- require_once($_whomp_storage_path . '/includes/whomp_ajax.php');
- 
  // create the ajax options
  $whomp_ajax_options = array('_callback' => $_whomp_storage_url . '/installation/index.php?base_path=' . $_whomp_base_path . '&base_url=' . $_whomp_base_url . '&storage_path=' . $_whomp_storage_path .'&storage_url=' . $_whomp_storage_url,
  							 '_method' => 'POST',

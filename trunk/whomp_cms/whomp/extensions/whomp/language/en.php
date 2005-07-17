@@ -1,5 +1,5 @@
 <?php
-/* $Id$ */
+/* $Id: whomp_language_en.php 61 2005-07-17 20:30:24Z schmalls $ */
 /**
  * /whomp/languages/whomp_language_en.php
  * 
