@@ -1,5 +1,5 @@
 <?php
-/* $Id: whomp_database.php 46 2005-07-12 05:17:52Z schmalls $ */
+/* $Id$ */
 /**
  * /whomp/extensions/whomp/database.php
  * 
@@ -419,7 +419,7 @@
 	  * 					'fields' => '`id` I KEY AUTO, `name` C(50) NOTNULL DEFAULT \'example\'',
 	  * 					'table_options' => array('mysql' => 'TYPE=MyISAM'),
 	  * 					'index' => 'name',
-	  * 					'index_fields' => '`name`',
+	  * 					'index_fields' => array('`name`'),
 	  * 					'index_options' => array('UNIQUE')),
 	  * 	tablename2 => array (
 	  * 		...

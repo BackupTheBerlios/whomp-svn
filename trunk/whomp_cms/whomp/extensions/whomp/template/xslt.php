@@ -1,5 +1,5 @@
 <?php
-/* $Id: whomp_template_engine.php 53 2005-07-12 18:23:54Z schmalls $ */
+/* $Id$ */
 /**
  * /whomp/extensions/whomp/template/xslt.php
  * 
@@ -31,7 +31,65 @@
   * @since 0.0.0
   * @access public
   */
- class Whomp_Template_Xslt extends Whomp_Template {
+ class Whomp_Template_Xslt implements Whomp_Template {
+	 
+	 /**
+	  * The template XML DOMDocument
+	  * 
+	  * @var DOMDocument $_template_xml
+	  * @access protected
+	  */
+	 protected $_template_xml;
+	 
+	 /**
+	  * The template XSL DOMDocument
+	  * 
+	  * @var DOMDocument $_template_xsl
+	  * @access protected
+	  */
+	 protected $_template_xsl;
+	 
+	 /**
+	  * The transformed document
+	  * 
+	  * @var string $_template_transformed
+	  * @access protected
+	  */
+	 protected $_template_transformed;
+	 
+	 /**
+	  * The acceptable output formats
+	  * 
+	  * This should be an array with formats as keys and content-types as 
+	  * values. For example:
+	  * <pre>
+	  * Array (
+	  * 	'html' => 'text/html'
+	  * 	'xhtml+xml' => 'application/xhtml+xml'
+	  * 	'xhtml' => 'application/xhtml+xml'
+	  * )
+	  * </pre>
+	  * 
+	  * @var array $_formats
+	  * @access protected
+	  */
+	 protected $_formats;
+	 
+	 /**
+	  * The document's content type
+	  * 
+	  * @var string $_content_type
+	  * @access protected
+	  */
+	 protected $_content_type;
+	 
+	 /**
+	  * The document's charset
+	  * 
+	  * @var string $_charset
+	  * @access protected
+	  */
+	 protected $_charset = 'utf-8';
 	 
 	 /**
 	  * Whomp_Template_Engine constructor
@@ -71,6 +129,97 @@
 </xsl:stylesheet>
 XSL;
 		 $this->_template_xsl->loadXML($xsl);
+	 } // end function
+	 
+	 /**
+	  * Inserts the node XML into the correct location(s)
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @throws Exception
+	  * @param DOMDocument $node_xml the node XML to be inserted
+	  * @param string $node_name the name of the node that needs to be inserted
+	  */
+	 public function insertNodeXml(DOMDocument $node_xml, $node_name = '') {
+		 
+
+		 // find the specified node
+		 $importNode = $this->_template_xml->importNode($node_xml->documentElement, true);
+		 $this->_template_xml->saveXML();
+		 $xpath = new DOMXpath($this->_template_xml);
+		 $node_list = $xpath->query('//node');
+		 // check if the node was found
+		 if (count($node_list) != 0) {
+			 // if so, append the node XML
+			 foreach ($node_list as $node) {
+				 $node->appendChild($importNode);
+			 } // end foreach
+		 } else {
+			 // if not, throw exception
+			 throw new Exception('The node was not found in the XML document.');
+		 } // end if
+	 } // end function
+	 
+	 /**
+	  * Inserts XSL import into the xsl file
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param string $xsl_path the path to the XSL file
+	  * @deprecated
+	  */
+	 public function insertXslImport($xsl_path) {
+		 
+		 $this->_node_xsl_path = $xsl_path;
+	 } // end function
+	 
+	 /**
+	  * Transforms the XML document with XSL
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @throws Exception
+	  */
+	 public function transform($xsl_path) {
+		 
+		 // create the XSLT processor and import the stylesheet
+		 $processor = new XSLTProcessor();
+		 $processor->importStyleSheet($this->_template_xsl);
+		 // transform the XML file
+		 $this->_template_transformed = $processor->transformToXML($this->_template_xml);
+		 // check if the transformation went alright
+		 if ($this->_template_transformed === false) {
+			 // if not, throw exception
+			 throw new Exception('Error transforming XML document with XSL.');
+		 } // end if
+	 } // end function
+	 
+	 /**
+	  * Outputs the transformed XML file to the screen
+	  * 
+	  * It also sets the correct header information.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @return array information about the page suitable for sending to Whomp_Cache::end()
+	  */
+	 public function render() {
+		 
+		 // set the content type and charset
+		 header('Content-Type: ' . $this->_content_type . '; charset=' . $this->_charset);
+		 // display the document
+		 echo $this->_template_transformed;
+		 // return unique identifier
+		 return array('content_type' => $this->_content_type,
+		 			  'charset' => $this->_charset);
 	 } // end function
 	 
  } // end class

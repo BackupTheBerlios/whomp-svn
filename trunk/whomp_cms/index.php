@@ -184,32 +184,60 @@
 						   'script' => array(),
 						   'style' => array(),
 						   'title' => '');
+						   
+ /**
+  * The requested node information from the database
+  * 
+  * @global array $_whomp_node_array
+  */
+ $_whomp_node_array = whomp_get_node_array($_whomp_requested_page);
  
- // check if this is a node or a script
- if (preg_match('/^_/', $_whomp_requested_page['node']) == 1) {
-	 // if so, require the script
-	 require_once($_whomp_storage_path . '/scripts/' . preg_replace('/^_/', '', $_whomp_requested_page['node']));
- } else {
-	 // if not, get the node information 
+ // check if the node class exists
+ try {
 	 /**
-	  * The requested node information from the database
+	  * The whomp node class
 	  * 
-	  * @global array $_whomp_node_array
+	  * @global class $_whomp_node_class
 	  */
-	 $_whomp_node_array = whomp_get_node_array($_whomp_requested_page);
-	 // try to render the page
-	 try {
-		 $whomp_end_cache_options = whomp_render_page($_whomp_node_array);
-	 } catch (Exception $e) {
-		 whomp_output_exception($e, true);
-	 } // end try
- } // end if
+	 $_whomp_node_class = whomp_get_node_class($_whomp_node_array);
+ } catch (Exception $e) {
+	 whomp_output_exception($e, true);
+ } // end try
  
- // enable caching of this page
- $whomp_end_cache_options['cache'] = true;
- $whomp_end_cache_options['lifetime'] = 3600;
- $whomp_end_cache_options['show_logged'] = true;
- $whomp_end_cache_options['headers'] = '';
- // end caching
- $_whomp_cache->end($whomp_end_cache_options);
+ // perform the desired operation
+ $whomp_operation = whomp_get_param('whomp_operation', null);
+ switch ($whomp_operation) {
+	 case 'xml' :
+	 	 // print the node xml
+	 	 $_whomp_node_class->printXml();
+		 break;
+	 case 'xsl' :
+	 	 // print the node xsl
+	 	 $_whomp_node_class->printXsl();
+	 case 'schema' :
+	 	 // print the node schema
+	 	 $_whomp_node_class->printSchema();
+	 case 'config' :
+	 	 // print the editor config file
+	 	 $_whomp_node_class->printConfig();
+	 case 'preview' :
+	 	 // render the preview
+	 	 $_whomp_node_class->renderPreview();
+	 case 'edit' :
+	 	 // render the editable version of the node
+	 	 $_whomp_node_class->renderEditable();
+	 case 'save' :
+	 	 // save the edited node
+	 	 $_whomp_node_class->save();
+	 default :
+	 	 // render the page with the template and everything
+	 	 $whomp_end_cache_options = $_whomp_node_class->renderPage();
+		 $whomp_end_cache_options['cache'] = true;
+		 $whomp_end_cache_options['lifetime'] = 3600;
+		 $whomp_end_cache_options['show_logged'] = true;
+		 $whomp_end_cache_options['headers'] = '';
+		 // end caching
+		 $_whomp_cache->end($whomp_end_cache_options);
+		 break;
+ } // end switch 
 ?> 

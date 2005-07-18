@@ -96,6 +96,7 @@
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
+  * @throws Exception if there is an unknown format
   * @return array the requested node and format
   * @global class access to the configuration options
   */
@@ -140,7 +141,6 @@
 		 } else {
 			 throw new Exception('Unknown format: ' . $format);
 		 } // end if
-		 //$content_type = whomp_get_content_type($format, $_whomp_configuration->known_content_types);
 	 } catch (Exception $e) {
 		 whomp_output_exception($e, true);
 	 } // end try
@@ -235,7 +235,7 @@
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
-  * @throws Exception
+  * @throws Exception if no acceptable format is found
   * @param string $format the requested format
   * @param array $formats the formats as keys and the content type as values
   * @global array the user's accept headers
@@ -278,6 +278,27 @@
 		 // if it is not found, throw an exception
 		 throw new Exception('No acceptable format was found.');
 	 } // end if
+ } // end function
+ 
+ /**
+  * Gets the requested parameter or returns the default value
+  * 
+  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+  * @version 0.0.0
+  * @since 0.0.0
+  * @param string $param the parameter for which to get the value
+  * @param string $default the default return value
+  * @param array $array the array from which to get the parameter
+  * @return string the parameter value
+  */
+ function whomp_get_param($param, $default, $array = null) {
+	 
+	 // check if an array was supplied
+	 if ($array === null) {
+		 // if not, set it to request global
+		 $array = $_REQUEST;
+	 } // end if
+	 return array_key_exists($param, $array) ? $array[$param] : $default;
  } // end function
  
  /* -- REQUEST FUNCTIONS -- */
@@ -361,31 +382,24 @@
  } // end function
  
  /**
-  * Renders the page with the specified node
+  * Returns the specified node class
   * 
-  * This function finds the correct node type class file and loads the 
-  * node type class with the node's parameters. Then it calls the node's 
-  * renderPage function to render the page. It throws an Exception if there 
-  * are any errors.
+  * Checks if the node class exists and returns a new instance of it if it does 
+  * exist.
   * 
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
-  * @throws Exception
+  * @throws Exception if the node class does not exist
   * @param array $options the node information
-  * @global string the whomp storage path
-  * @return array information about the page suitable for sending to Whomp_Cache::end()
+  * @return class an instance of the node class
   */
- function whomp_render_page($options) {
-	 global $_whomp_storage_path;
+ function whomp_get_node_class($options) {
 	 
-	 // check if the node class exists
 	 $class_string = $options['type'];
 	 if (class_exists($class_string)) {
 		 // if so, create the node class
-		 $node_class = new $class_string($options);
-		 // render the page
-		 return $node_class->renderPage();
+		 return new $class_string($options);
 	 } else {
 		 // if not, throw exception
 		 throw new Exception('The ' . $class_string . ' class does not exist.');
@@ -410,13 +424,12 @@
   * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
   * @version 0.0.0
   * @since 0.0.0
-  * @throws Exception
+  * @throws Exception if the class file does not exist
   * @param array $options the node information
-  * @global string the whomp storage path
   * @return array the XML data and XSL path
+  * @deprecated I think
   */
  function whomp_get_node_xml_xsl($options) {
-	 global $_whomp_storage_path;
 	 
 	 // get the node information
 	 $options = whomp_get_node_array($options);

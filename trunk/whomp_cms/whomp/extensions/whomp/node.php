@@ -1,5 +1,5 @@
 <?php
-/* $Id: whomp_node.php 52 2005-07-12 17:27:30Z schmalls $ */
+/* $Id$ */
 /**
  * /whomp/extensions/whomp/node.php
  * 
@@ -295,12 +295,10 @@
 		 } // end if
 		 // check if the format is available
 		 if (array_key_exists($this->_content_type, $this->layouts)) {
-			 // if so, check if the template file exists
-			 if (is_file($_whomp_storage_path . '/template_engines/' . strtolower($_whomp_configuration->template_engine) . '/' . strtolower($_whomp_configuration->template_engine) . '.php')) {
-				 // if so, require it
-				 require_once($_whomp_storage_path . '/template_engines/' . strtolower($_whomp_configuration->template_engine) . '/' . strtolower($_whomp_configuration->template_engine) . '.php');
-				 // create the template class
-				 $class_string = $_whomp_configuration->template_engine;
+			 // if so, check if the template class exists
+			 $class_string = $_whomp_configuration->template_engine;
+			 if (class_exists($class_string)) {
+				 // if so, create the template class
 				 $this->_template_class = new $class_string($this->layouts[$this->_content_type], $this->_content_type, $this->formats, $this->getNodeXslPath());
 				 // place the node xml in the template xml
 				 $this->_template_class->insertNodeXml($this->getNodeXml());
@@ -310,7 +308,7 @@
 				 $options = $this->_template_class->render();
 			 } else {
 				 // if not, throw exception
-				 throw new Exception('The specified template could not be found. The file does not exist.');
+				 throw new Exception('The ' . $class_string . ' template class could not be found.');
 			 } // end if
 		 } else {
 			 // if not, throw exception
