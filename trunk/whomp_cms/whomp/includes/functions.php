@@ -434,7 +434,7 @@
   * @throws Exception if the node class does not exist
   * @return class an instance of the node class
   */
- function whomp_get_node_class() {
+ function whomp_get_node_class($options) {
 	 
 	 $class_string = $options['type'];
 	 if (class_exists($class_string)) {

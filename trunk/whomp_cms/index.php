@@ -199,7 +199,7 @@
 	  * 
 	  * @global class $_whomp_node_class
 	  */
-	 $_whomp_node_class = whomp_get_node_class();
+	 $_whomp_node_class = whomp_get_node_class($_whomp_node_array);
 	 // load the node information into the node class
 	 $_whomp_node_class->loadNode($_whomp_node_array);
  } catch (Exception $e) {
