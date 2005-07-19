@@ -4,7 +4,7 @@
  * /whomp/extensions/whomp/template.php
  * 
  * Whomp template file. Includes the 
- * {@link Whomp_Template Whomp_Template} class.
+ * {@link Whomp_Template Whomp_Template} interface.
  * 
  * @package Whomp
  * @copyright © 2005 Schmalls / Joshua Thompson / All Rights Reserved
@@ -35,27 +35,19 @@
  interface Whomp_Template {
 	 
 	 /**
-	  * Abstract Whomp_Template constructor
+	  * Loads the node information into the template
 	  * 
-	  * The constructor should take the $layout and $format as parameters 
-	  * and then initialize the $_template_xml and $_template_xsl variables.
-	  * It should throw an exception if the layout or ouput format does not 
-	  * exist. However, if the output format is an empty string, it should 
-	  * use the user's {@link $_whomp_accept_headers accept headers} to 
-	  * determine the most appropriate output format. This can be made 
-	  * easier using the 
-	  * {@link whomp_get_content_type whomp_get_content_type} function.
+	  * The options array contains information about the node. It should be in 
+	  * a format compatible with that returned from the whomp_get_node_array 
+	  * function.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @throws Exception
-	  * @param string $layout the layout to use
-	  * @param string $content_type the output content type
-	  * @param array $node_formats the formats that the node supports
+	  * @param array $options the node options
 	  */
-	 public function __construct($layout, $content_type, $node_formats);
+	 public function loadTemplate($options); // end function
 	 
 	 /**
 	  * Inserts the node XML into the correct location(s)
@@ -64,11 +56,11 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @throws Exception
 	  * @param DOMDocument $node_xml the node XML to be inserted
+	  * @param string $layout the layout to use
 	  * @param string $node_name the name of the node that needs to be inserted
 	  */
-	 public function insertNodeXml(DOMDocument $node_xml, $node_name = ''); // end function
+	 public function insertNodeXml(DOMDocument $node_xml, $layout, $node_name = ''); // end function
 	 
 	 /**
 	  * Inserts XSL import into the xsl file
@@ -78,9 +70,10 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @param string $xsl_path the path to the XSL file
-	  * @deprecated
+	  * @param string $template the template to use
+	  * @param string $format the format to use
 	  */
-	 public function insertXslImport($xsl_path); // end function
+	 public function insertNodeXsl($xsl_path, $template, $format); // end function
 	 
 	 /**
 	  * Transforms the XML document with XSL
@@ -91,7 +84,7 @@
 	  * @access public
 	  * @throws Exception
 	  */
-	 public function transform($xsl_path); // end function
+	 public function transform(); // end function
 	 
 	 /**
 	  * Outputs the transformed XML file to the screen

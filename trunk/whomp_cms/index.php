@@ -199,9 +199,25 @@
 	  * 
 	  * @global class $_whomp_node_class
 	  */
-	 $_whomp_node_class = whomp_get_node_class($_whomp_node_array);
+	 $_whomp_node_class = whomp_get_node_class();
+	 // load the node information into the node class
+	 $_whomp_node_class->loadNode($_whomp_node_array);
  } catch (Exception $e) {
 	 whomp_output_exception($e, true);
+ } // end try
+ 
+ // check if the template class exists
+ try {
+	 /**
+	  * The whomp template class
+	  * 
+	  * @global class $_whomp_template_class
+	  */
+	 $_whomp_template_class = whomp_get_template_class();
+	 // load the node information into the template class
+	 $_whomp_template_class->loadTemplate($_whomp_node_array);
+ } catch (Exception $e) {
+	 whomp_output_exception($e);
  } // end try
  
  // perform the desired operation

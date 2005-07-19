@@ -92,43 +92,18 @@
 	 protected $_charset = 'utf-8';
 	 
 	 /**
-	  * Whomp_Template_Engine constructor
+	  * Loads the template
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @throws Exception
-	  * @param array $layout the layout information
-	  * @param string $content_type the output content type
-	  * @param array $node_formats the formats that the node supports
-	  * @param string $node_xsl_path the path to the node xsl file
-	  * @global string the whomp storage path
-	  * @global string the whomp storage url
-	  * @todo implement other output formats
+	  * @param array $options the node information
 	  */
-	 public function __construct($layout, $content_type, $node_formats, $node_xsl_path) {
-		 global $_whomp_storage_path, $_whomp_storage_url;
+	 public function loadTemplate($options) {
 		 
-		 // set the content type
-		 if ($content_type == '*/*') {
-			 $content_type = 'text/html';
-		 } // end if
-		 $this->_content_type = $content_type;
-		 // currently only the default layout is supported
-		 $this->_template_xml = new DOMDocument('1.0', $this->_charset);
-		 $this->_template_xml->load($_whomp_storage_path . '/layouts/' . $layout['layout'] . '.xml');
-		 // load the xsl
-		 $this->_template_xsl = new DOMDocument('1.0', $this->_charset);
-		 $xsl = <<<XSL
-<?xml version="1.0" encoding="utf-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:import href="{$node_xsl_path}" />
-	<xsl:import href="{$_whomp_storage_url}/templates/{$layout['template']}/{$layout['format']}.xsl" />
-	<xsl:variable name="_whomp_storage_url">{$_whomp_storage_url}</xsl:variable>
-</xsl:stylesheet>
-XSL;
-		 $this->_template_xsl->loadXML($xsl);
+		 $this->_template_xml = new DomDocument('1.0', $this->_charset);
+		 $this->_template_xsl = new DomDocument('1.0', $this->_charset);
 	 } // end function
 	 
 	 /**
@@ -138,13 +113,17 @@ XSL;
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @throws Exception
+	  * @throws Exception if the node is not found in the xml
 	  * @param DOMDocument $node_xml the node XML to be inserted
+	  * @param string $layout the layout to use
 	  * @param string $node_name the name of the node that needs to be inserted
+	  * @global string the whomp storage path
 	  */
-	 public function insertNodeXml(DOMDocument $node_xml, $node_name = '') {
+	 public function insertNodeXml(DOMDocument $node_xml, $layout, $node_name = '') {
+		 global $_whomp_storage_path;
 		 
-
+		 // initialize the template xml
+		 $this->_template_xml->load($_whomp_storage_path . '/layouts/' . $layout . '.xml');
 		 // find the specified node
 		 $importNode = $this->_template_xml->importNode($node_xml->documentElement, true);
 		 $this->_template_xml->saveXML();
@@ -163,18 +142,29 @@ XSL;
 	 } // end function
 	 
 	 /**
-	  * Inserts XSL import into the xsl file
+	  * Inserts XSL path as an import into the template XSL file
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @param string $xsl_path the path to the XSL file
-	  * @deprecated
+	  * @param string $node_xsl_path the path to the XSL file
+	  * @param string $template the template to use
+	  * @param string $format the format to use
+	  * @global string the whomp storage url
 	  */
-	 public function insertXslImport($xsl_path) {
+	 public function insertNodeXsl($node_xsl_path, $template, $format) {
+		 global $_whomp_storage_url;
 		 
-		 $this->_node_xsl_path = $xsl_path;
+		 $xsl = <<<XSL
+<?xml version="1.0" encoding="utf-8" ?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<xsl:import href="{$node_xsl_path}" />
+	<xsl:import href="{$_whomp_storage_url}/templates/{$template}/{$format}.xsl" />
+	<xsl:variable name="_whomp_storage_url">{$_whomp_storage_url}</xsl:variable>
+</xsl:stylesheet>
+XSL;
+		 $this->_template_xsl->loadXML($xsl);
 	 } // end function
 	 
 	 /**
@@ -184,9 +174,9 @@ XSL;
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @throws Exception
+	  * @throws Exception if there is an error transforming the document
 	  */
-	 public function transform($xsl_path) {
+	 public function transform() {
 		 
 		 // create the XSLT processor and import the stylesheet
 		 $processor = new XSLTProcessor();

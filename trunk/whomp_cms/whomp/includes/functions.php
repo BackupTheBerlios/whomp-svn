@@ -306,7 +306,7 @@
  /* ++ NODE FUNCTIONS ++ */
  
  /**
-  * Gets the requested node object
+  * Gets the requested node array
   * 
   * Retrieves the node information from the database as an array.
   * 
@@ -378,6 +378,47 @@
 	 $node_array['_page'] = $options['page'];
 	 $node_array['_content_type'] = $options['content_type'];
 	 $node_array['language'] = $node_language;
+	 // create layout array
+	 if ($node_array['layouts'] != '') {
+		 $layouts = explode("\n", $node_array['layouts']);
+		 $node_array['layouts'] = array();
+		 foreach ($layouts as $layout) {
+			 $layout = explode(',', $layout . ',,,');
+			 $node_array['layouts'][trim($layout[0])] = array('layout' => trim($layout[1]),
+				 											  'template' => trim($layout[2]),
+															  'format' => trim($layout[3]));
+		 } // end foreach
+	 } else {
+		 $node_array['layouts'] = array();
+	 } // end if
+	 // create parents array
+	 $node_array['parents'] = explode(',', $node_array['parents']);
+	 // create children array
+	 $node_array['children'] = explode(',', $node_array['children']);
+	 // create relatives array
+	 $node_array['relatives'] = explode(',', $node_array['relatives']);
+	 // create the group permissions array
+	 if ($node_array['_group'] != '') {
+		 $group_permissions = explode("\n", $node_array['_group']);
+		 $node_array['_group'] = array();
+		 foreach ($group_permissions as $group_permission) {
+			 $group_permission = explode(',', $group_permission);
+			 $node_array['_group'][trim($group_permission[0])] = trim($group_permission[1]);
+		 } // end foreach
+	 } else {
+		 $node_array['_group'] = array();
+	 } // end if
+	 // create the user permissions array
+	 if ($node_array['_user'] != '') {
+		 $user_permissions = explode("\n", $node_array['_user']);
+		 $node_array['_user'] = array();
+		 foreach ($user_permissions as $user_permission) {
+			 $user_permission = explode(',', $user_permission);
+			 $node_array['_user'][trim($user_permission[0])] = trim($user_permission[1]);
+		 } // end foreach
+	 } else {
+		 $node_array['_user'] = array();
+	 } // end if
 	 return $node_array;
  } // end function
  
@@ -391,18 +432,40 @@
   * @version 0.0.0
   * @since 0.0.0
   * @throws Exception if the node class does not exist
-  * @param array $options the node information
   * @return class an instance of the node class
   */
- function whomp_get_node_class($options) {
+ function whomp_get_node_class() {
 	 
 	 $class_string = $options['type'];
 	 if (class_exists($class_string)) {
 		 // if so, create the node class
-		 return new $class_string($options);
+		 return new $class_string();
 	 } else {
 		 // if not, throw exception
 		 throw new Exception('The ' . $class_string . ' class does not exist.');
+	 } // end if
+ } // end function
+ 
+ /**
+  * Returns the template engine class
+  * 
+  * @author Schmalls / Joshua Thomspon <schmalls@gmail.com>
+  * @version 0.0.0
+  * @since 0.0.0
+  * @throws Exception if the template class does not exist
+  * @global class the whomp configuration options
+  */
+ function whomp_get_template_class() {
+	 global $_whomp_configuration;
+	 
+	 // check if the template class exists
+	 $class_string = $_whomp_configuration->template_engine;
+	 if (class_exists($class_string)) {
+		 // if so, return the template class
+		 return new $class_string();
+	 } else {
+		 // if not throw an exception
+		 throw new Exception('The ' . $class_string . ' template class could not be found.');
 	 } // end if
  } // end function
  
@@ -427,7 +490,7 @@
   * @throws Exception if the class file does not exist
   * @param array $options the node information
   * @return array the XML data and XSL path
-  * @deprecated I think
+  * @deprecated
   */
  function whomp_get_node_xml_xsl($options) {
 	 
