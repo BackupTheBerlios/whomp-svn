@@ -55,8 +55,9 @@
 	  * @param string $xsl_path the path to the XSL file
 	  * @param string $template the template to use
 	  * @param string $format the format to use
+	  * @param string $config_url url of the config file
 	  */
-	 public function insertEditableNodeXsl($xsl_path, $template, $format); // end function
+	 public function insertEditableNodeXsl($xsl_path, $template, $format, $config_url); // end function
 	 
 	 /**
 	  * Transforms the XML document with XSL in an editable form

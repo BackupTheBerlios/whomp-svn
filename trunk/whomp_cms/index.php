@@ -183,7 +183,7 @@
 						   'meta' => array('generator' => '<meta name="generator" content="' . $_whomp_configuration->version_information . '" />'),
 						   'script' => array(),
 						   'style' => array(),
-						   'title' => '');
+						   'title' => '<title>Whomp CMS!</title>');
 						   
  /**
   * The requested node information from the database
@@ -231,6 +231,8 @@
 		  * @global class $_whomp_editor_class
 		  */
 		 $_whomp_editor_class = whomp_get_editor_class();
+		 // load the node information into the editor class
+		 $_whomp_editor_class->loadEditor($_whomp_node_array);
 	 } catch (Exception $e) {
 		 whomp_output_exception($e);
 	 } // end try

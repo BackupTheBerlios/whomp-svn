@@ -1,5 +1,5 @@
 <?php
-/* $Id: whomp_cache.php 38 2005-07-07 18:07:37Z schmalls $ */
+/* $Id$ */
 /**
  * /whomp/extensions/whomp/cache.php
  * 
@@ -199,7 +199,7 @@
 		 
 		 // check if caching is enabled
 		 $return = false;
-		 if ($this->_enable_caching) {
+		 if ($this->_enable_caching && !array_key_exists('whomp_operation', $_REQUEST)) {
 			 // if so, see if the requested language is available
 			 $languages = array_keys($_whomp_accept_headers['languages']);
 			 $language = $languages[0];

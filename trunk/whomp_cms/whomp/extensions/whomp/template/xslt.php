@@ -158,13 +158,16 @@
 	 public function insertNodeXsl($node_xsl_path, $template, $format) {
 		 global $_whomp_storage_url;
 		 
+		 $whomp_head = whomp_get_head_data_string();
 		 $xsl = <<<XSL
 <?xml version="1.0" encoding="utf-8" ?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:import href="{$node_xsl_path}" />
 	<xsl:import href="{$_whomp_storage_url}/templates/{$template}/{$format}.xsl" />
 	<xsl:variable name="_whomp_storage_url">{$_whomp_storage_url}</xsl:variable>
-	<xsl:variable name="edit" select="boolean(0)" />
+	<xsl:variable name="whomp_edit" select="boolean(0)" />
+	<xsl:variable name="whomp_head">{$whomp_head}</xsl:variable>
+	<xsl:variable name="whomp_onload"></xsl:variable>
 </xsl:stylesheet>
 XSL;
 		 $this->_template_xsl->loadXML($xsl);
@@ -245,18 +248,22 @@ XSL;
 	  * @param string $xsl_path the path to the XSL file
 	  * @param string $template the template to use
 	  * @param string $format the format to use
+	  * @param string $config_url url of the config file
 	  */
-	 public function insertEditableNodeXsl($xsl_path, $template, $format) {
+	 public function insertEditableNodeXsl($xsl_path, $template, $format, $config_url) {
 		 global $_whomp_storage_url;
 		 
+		 $whomp_head = whomp_get_head_data_string();
 		 $xsl = <<<XSL
 <?xml version="1.0" encoding="utf-8" ?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:import href="{$xsl_path}" />
 	<xsl:import href="{$_whomp_storage_url}/templates/{$template}/{$format}.xsl" />
 	<xsl:variable name="_whomp_storage_url">{$_whomp_storage_url}</xsl:variable>
-	<xsl:variable name="edit" select="boolean(1)" />
-	<xsl:variable name="editid">bxe_area</xsl:variable>
+	<xsl:variable name="whomp_edit" select="boolean(1)" />
+	<xsl:variable name="whomp_editid">bxe_area</xsl:variable>
+	<xsl:variable name="whomp_head">{$whomp_head}</xsl:variable>
+	<xsl:variable name="whomp_onload">bxe_start('{$config_url}');</xsl:variable>
 </xsl:stylesheet>
 XSL;
 		 $this->_template_xsl->loadXML($xsl);

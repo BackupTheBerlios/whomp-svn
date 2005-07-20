@@ -33,6 +33,19 @@
  interface Whomp_Editor {
 	 
 	 /**
+	  * Loads the editor
+	  * 
+	  * Inserts all of the required head data into the head data array.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param array $options options for the node
+	  */
+	 public function loadEditor($options); // end function
+	 
+	 /**
 	  * Creates a configuration file and returns it
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>

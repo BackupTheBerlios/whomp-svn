@@ -17,7 +17,7 @@
 // | Author: Christian Stocker <chregu@bitflux.ch>                            |
 // +--------------------------------------------------------------------------+
 //
-// $Id: bxeLoader.js 1346 2005-06-17 01:30:21Z chregu $
+// $Id$
 
 var BXE_VERSION = "2.0-dev";
 var BXE_BUILD = "200506170330"
@@ -97,7 +97,7 @@ function bxe_start(config_file,fromUrl, configArray) {
 			for(var i=0; i<head.childNodes.length; i++)
 			{
 				var mozileLoaderRE = /(.*)bxeLoader.js$/;
-				if(head.childNodes[i].localName == "SCRIPT")
+				if(head.childNodes[i].nodeName == "script")
 				{
 					var src = head.childNodes[i].src;
 					var result = mozileLoaderRE.exec(src);

@@ -5,11 +5,10 @@
 	<xsl:template match="/layout">
 		<html>
 			<head>
-				<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-				<title>LL Schmalls</title>
+				<xsl:copy-of select="$whomp_head" />
 				<link rel="stylesheet" href="{$_whomp_storage_url}/templates/default/files/blueheaven.css" type="text/css" />
 			</head>
-			<body>
+			<body onload="{$whomp_onload}">
 				<h1 class="header" style="height:76px;">LL Schmalls</h1>
 				<div style="float:left;">
 					<xsl:apply-templates select="header" />
@@ -34,12 +33,12 @@
 		<h3><xsl:value-of select="description" /></h3>
 	</xsl:template>
 	<xsl:template match="content">
-		<xsl:if test="$edit">
-			<div id="{$editid}">
+		<xsl:if test="$whomp_edit">
+			<div id="{$whomp_editid}">
 				<xsl:apply-templates />
 			</div>
 		</xsl:if>
-		<xsl:if test="not($edit)">
+		<xsl:if test="not($whomp_edit)">
 			<xsl:apply-templates />
 		</xsl:if>
 	</xsl:template>

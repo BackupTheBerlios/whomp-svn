@@ -304,10 +304,11 @@
 	  * @access public
 	  * @global class access to the whomp editor class
 	  * @global string the whomp storage url
+	  * @global string the whomp base url
 	  * @global array the user's accept headers
 	  */
 	 public function renderEditable() {
-		 global $_whomp_template_class, $_whomp_storage_url, $_whomp_accept_headers;
+		 global $_whomp_template_class, $_whomp_storage_url, $_whomp_base_url, $_whomp_accept_headers;
 		 
 		 // check if content type was supplied
 		 if ($this->_content_type == '') {
@@ -319,7 +320,7 @@
 		 // place the node xml in the template xml
 		 $_whomp_template_class->insertEditableNodeXml($this->getNodeXml(), $this->layouts[$this->_content_type]['layout']);
 		 // insert the node xsl
-		 $_whomp_template_class->insertEditableNodeXsl($_whomp_storage_url . $this->getNodeXslPath(), $this->layouts[$this->_content_type]['template'], $this->layouts[$this->_content_type]['format']);
+		 $_whomp_template_class->insertEditableNodeXsl($_whomp_storage_url . $this->getNodeXslPath(), $this->layouts[$this->_content_type]['template'], $this->layouts[$this->_content_type]['format'], $_whomp_base_url . '/' . $this->_page . '?whomp_operation=config');
 		 // transform the editable xml to the desired format with xsl
 		 $_whomp_template_class->transformEditable();
 		 // output the page
@@ -415,6 +416,7 @@
 		 global $_whomp_editor_class, $_whomp_base_url, $_whomp_storage_url;
 		 
 		 // send the whomp editor the required information
+		 header('Content-type: text/xml');
 		 echo $_whomp_editor_class->getConfig($_whomp_base_url . $this->_page . '?whomp_operation=xml', $_whomp_storage_url . $this->getNodeXslPath(), $_whomp_storage_url . $this->getNodeSchemaPath());
 	 } // end function
 	 
