@@ -262,6 +262,18 @@
 										 
 	 /* -- NODE -- */
 	 
+	 /* ++ EDITOR ++ */
+	 
+	 /**
+	  * The default editor
+	  * 
+	  * @var string $editor_default
+	  * @access public
+	  */
+	 public $editor_default = 'Whomp_Editor_Bxe';
+	 
+	 /* -- EDITOR -- */
+	 
 	 /**
 	  * The configuration file contents
 	  * 

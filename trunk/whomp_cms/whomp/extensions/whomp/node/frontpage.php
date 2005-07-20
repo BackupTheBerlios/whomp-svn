@@ -31,7 +31,7 @@
   * @since 0.0.0
   * @access public
   */
- class Whomp_Node_Frontpage implements Whomp_Node {
+ class Whomp_Node_Frontpage implements Whomp_Node, Whomp_Editable {
 	 
 	 /**
 	  * The specified content type
@@ -207,6 +207,8 @@
 	  */
 	 public $content;
 	 
+	 /* ++ Whomp_Node Methods ++ */
+	 
 	 /**
 	  * Whomp_Node_Frontpage constructor
 	  * 
@@ -249,13 +251,13 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @throws Exception if the specified format does not exist
-	  * @global string the whomp storage path
+	  * @global string the whomp storage url
 	  * @global array the user's accept headers
 	  * @global class access to the configuration options
 	  * @return array information about the page suitable for sending to Whomp_Cache::end()
 	  */
 	 public function renderPage() {
-		 global $_whomp_storage_path, $_whomp_accept_headers, $_whomp_template_class;
+		 global $_whomp_storage_url, $_whomp_accept_headers, $_whomp_template_class;
 		 
 		 // check if content type was supplied
 		 if ($this->_content_type == '') {
@@ -269,7 +271,7 @@
 			 // if so, place the node xml in the template xml
 			 $_whomp_template_class->insertNodeXml($this->getNodeXml(), $this->layouts[$this->_content_type]['layout']);
 			 // insert the node xsl
-			 $_whomp_template_class->insertNodeXsl($this->getNodeXslPath(), $this->layouts[$this->_content_type]['template'], $this->layouts[$this->_content_type]['format']);
+			 $_whomp_template_class->insertNodeXsl($_whomp_storage_url . $this->getNodeXslPath(), $this->layouts[$this->_content_type]['template'], $this->layouts[$this->_content_type]['format']);
 			 // transform the xml to the desired format with xsl
 			 $_whomp_template_class->transform();
 			 // output the page
@@ -284,6 +286,131 @@
 		 $options['page'] = $this->_page;
 		 return $options;	 
 	 } // end function
+	 
+	 /* -- Whomp_Node methods -- */
+	 
+	 /* ++ Whomp_Editable methods ++ */
+	 
+	 /**
+	  * Renders the node in an editable form
+	  * 
+	  * This function should use the configured editor to determine what is 
+	  * required to make the node editable or a custom interface may be used.
+	  * Also should check for adequate permissions to edit.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @global class access to the whomp editor class
+	  * @global string the whomp storage url
+	  */
+	 public function renderEditable() {
+		 global $_whomp_template_class, $_whomp_storage_url;
+		 
+		 // place the node xml in the template xml
+		 $_whomp_template_class->insertEditableNodeXml($this->getNodeXml(), $this->layouts[$this->_content_type]['layout']);
+		 // insert the node xsl
+		 $_whomp_template_class->insertEditableNodeXsl($_whomp_storage_url . $this->getNodeXslPath(), $this->layouts[$this->_content_type]['template'], $this->layouts[$this->_content_type]['format']);
+		 // transform the editable xml to the desired format with xsl
+		 $_whomp_template_class->transformEditable();
+		 // output the page
+		 $options = $_whomp_template_class->render();
+	 } // end function
+	 
+	 /**
+	  * Saves the edited node
+	  * 
+	  * This function should communicate with the configured editor to determine
+	  * what information is returned so that it can be handled properly. Or if 
+	  * a custom interface was used for editing this is not required. Also 
+	  * should check for adequate permissions to save.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @todo Implement this
+	  */
+	 public function save() {
+	 } // end function
+	 
+	 /**
+	  * Prints the node xml
+	  * 
+	  * Outputs only the node xml file. The type should be set to 'text/xml' for
+	  * compatibility.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  */
+	 public function printXml() {
+		 
+		 header('Content-type: text/xml');
+		 echo $this->getNodeXml()->saveXml();
+	 } // end function
+	 
+	 /**
+	  * Prints the node xsl
+	  * 
+	  * Outputs only the node xsl file. The type should be set to 'text/xml' for
+	  * compatibility.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @global string the whomp storage path
+	  */
+	 public function printXsl() {
+		 global $_whomp_storage_path;
+		 
+		 header('Content-type: text/xml');
+		 readfile($_whomp_storage_path . $this->getNodeXslPath());
+	 } // end function
+	 
+	 /**
+	  * Prints the node schema validation information
+	  * 
+	  * Outputs only the node schema validation file. Should communicate with
+	  * the configured editor to determine which schema type to print. The type
+	  * should be set to 'text/xml' for compatibility.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @global string the whomp storage path
+	  */
+	 public function printSchema() {
+		 global $_whomp_storage_path;
+		 
+		 header('Content-type: text/xml');
+		 readfile($_whomp_storage_path . $this->getNodeSchemaPath());
+	 } // end function
+	 
+	 /**
+	  * Prints the editor configuration file
+	  * 
+	  * Outputs the editor configuration file. Should communicate with the 
+	  * configured editor to detemrine the correct format for output.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @global class access to the whomp editor class
+	  */
+	 public function printConfig() {
+		 global $_whomp_editor_class, $_whomp_base_url, $_whomp_storage_url;
+		 
+		 // send the whomp editor the required information
+		 echo $_whomp_editor_class->getConfig($_whomp_base_url . $this->_page . '?whomp_operation=xml', $_whomp_storage_url . $this->getNodeXslPath(), $_whomp_storage_url . $this->getNodeSchemaPath());
+	 } // end function
+	 
+	 /* -- Whomp_Editable methods -- */
 	 
 	 /**
 	  * Gets the node's XML representation
@@ -316,12 +443,25 @@ XML;
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
+	  * @todo add more output formats
 	  */
 	 protected function getNodeXslPath() {
-		 global $_whomp_storage_url;
 		 
-		 // xhtml+xml is the only supported format
-		 return $_whomp_storage_url . '/repository/whomp/node/frontpage/xsl/xhtml.xsl';
-	 } // end function 
+		 // xhtml+xml is the only currently supported format
+		 return '/repository/whomp/node/frontpage/xsl/xhtml.xsl';
+	 } // end function
+	 
+	 /**
+	  * Gets the path to the node's Schema file
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  */
+	 protected function getNodeSchemaPath() {
+		 
+		 return '/repository/whomp/node/frontpage/schema.rng.xml';
+	 } // end function
  } // end class
 ?>

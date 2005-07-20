@@ -34,7 +34,13 @@
 		<h3><xsl:value-of select="description" /></h3>
 	</xsl:template>
 	<xsl:template match="content">
+		<xsl:if test="{$edit}">
+			<div id="{$editid}">
+		</xsl:if>
 		<xsl:apply-templates />
+		<xsl:if test="{$edit}">
+			</div>
+		</xsl:if>
 	</xsl:template>
 	<xsl:template match="footer">
 		<p id="copyright"><xsl:value-of select="copyright" /></p>

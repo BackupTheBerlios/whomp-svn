@@ -31,7 +31,7 @@
   * @since 0.0.0
   * @access public
   */
- class Whomp_Template_Xslt implements Whomp_Template {
+ class Whomp_Template_Xslt implements Whomp_Template, Whomp_Template_Editable {
 	 
 	 /**
 	  * The template XML DOMDocument
@@ -90,6 +90,8 @@
 	  * @access protected
 	  */
 	 protected $_charset = 'utf-8';
+	 
+	 /* ++ Whomp_Template methods ++ */
 	 
 	 /**
 	  * Loads the template
@@ -211,6 +213,69 @@ XSL;
 		 return array('content_type' => $this->_content_type,
 		 			  'charset' => $this->_charset);
 	 } // end function
+	 
+	 /* -- Whomp_Template methods -- */
+	 
+	 /* ++ Whomp_Template_Editable methods ++ */
+	 
+	 /**
+	  * Inserts the node xml in an editable form
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param DOMDocument $node_xml the node XML to be inserted
+	  * @param string $layout the layout to use
+	  * @param string $node_name the name of the node that needs to be inserted
+	  */
+	 public function insertEditableNodeXml(DOMDocument $node_xml, $layout, $node_name = '') {
+		 
+		 $this->insertXml($node_xml, $layout, $node_name);
+	 } // end function
+	 
+	 /**
+	  * Inserts XSL import into the xsl file in an editable form
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param string $xsl_path the path to the XSL file
+	  * @param string $template the template to use
+	  * @param string $format the format to use
+	  */
+	 public function insertEditableNodeXsl($xsl_path, $template, $format) {
+		 global $_whomp_storage_url;
+		 
+		 $xsl = <<<XSL
+<?xml version="1.0" encoding="utf-8" ?>
+<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+	<xsl:import href="{$node_xsl_path}" />
+	<xsl:import href="{$_whomp_storage_url}/templates/{$template}/{$format}.xsl" />
+	<xsl:variable name="_whomp_storage_url">{$_whomp_storage_url}</xsl:variable>
+	<xsl:variable name="edit" select="boolean(1)" />
+	<xsl:variable name="editid">bxe_area</xsl:variable>
+</xsl:stylesheet>
+XSL;
+		 $this->_template_xsl->loadXML($xsl);
+	 } // end function
+	 
+	 /**
+	  * Transforms the XML document with XSL in an editable form
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @throws Exception
+	  */
+	 public function transformEditable() {
+		 
+		 $this->transform();
+	 } // end function
+	 
+	 /* -- Whomp_Template_Editable methods -- */
 	 
  } // end class
 ?>

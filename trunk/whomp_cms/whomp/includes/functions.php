@@ -470,6 +470,29 @@
  } // end function
  
  /**
+  * Returns the editor class
+  * 
+  * @author Schmalls / Joshua Thomspon <schmalls@gmail.com>
+  * @version 0.0.0
+  * @since 0.0.0
+  * @throws Exception if the template class does not exist
+  * @global class the whomp configuration options
+  */
+ function whomp_get_template_class() {
+	 global $_whomp_configuration;
+	 
+	 // check if the template class exists
+	 $class_string = $_whomp_configuration->editor_default;
+	 if (class_exists($class_string)) {
+		 // if so, return the template class
+		 return new $class_string();
+	 } else {
+		 // if not, throw an exception
+		 throw new Exception('The ' . $class_string . ' editor class could not be found.');
+	 } // end if
+ } // end function
+ 
+ /**
   * Gets a node's XML data and XSL path and returns it in an array
   * 
   * First the node's information is retrieved from the database. Then the 
