@@ -105,6 +105,8 @@
 	 
 	 // create requested file and format string
 	 $requested = $_SERVER['REQUEST_URI'];
+	 // remove the query string from the string
+	 $requested = str_replace('?' . $_SERVER['QUERY_STRING'], '', $requested);
 	 // remove index.php from the string
 	 $requested = str_replace('index.php', '', $requested);
 	 // remove directories from the string
@@ -478,7 +480,7 @@
   * @throws Exception if the template class does not exist
   * @global class the whomp configuration options
   */
- function whomp_get_template_class() {
+ function whomp_get_editor_class() {
 	 global $_whomp_configuration;
 	 
 	 // check if the template class exists

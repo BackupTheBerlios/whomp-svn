@@ -164,6 +164,7 @@
 	<xsl:import href="{$node_xsl_path}" />
 	<xsl:import href="{$_whomp_storage_url}/templates/{$template}/{$format}.xsl" />
 	<xsl:variable name="_whomp_storage_url">{$_whomp_storage_url}</xsl:variable>
+	<xsl:variable name="edit" select="boolean(0)" />
 </xsl:stylesheet>
 XSL;
 		 $this->_template_xsl->loadXML($xsl);
@@ -231,7 +232,7 @@ XSL;
 	  */
 	 public function insertEditableNodeXml(DOMDocument $node_xml, $layout, $node_name = '') {
 		 
-		 $this->insertXml($node_xml, $layout, $node_name);
+		 $this->insertNodeXml($node_xml, $layout, $node_name);
 	 } // end function
 	 
 	 /**
@@ -251,7 +252,7 @@ XSL;
 		 $xsl = <<<XSL
 <?xml version="1.0" encoding="utf-8" ?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:import href="{$node_xsl_path}" />
+	<xsl:import href="{$xsl_path}" />
 	<xsl:import href="{$_whomp_storage_url}/templates/{$template}/{$format}.xsl" />
 	<xsl:variable name="_whomp_storage_url">{$_whomp_storage_url}</xsl:variable>
 	<xsl:variable name="edit" select="boolean(1)" />

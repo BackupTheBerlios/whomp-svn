@@ -304,10 +304,18 @@
 	  * @access public
 	  * @global class access to the whomp editor class
 	  * @global string the whomp storage url
+	  * @global array the user's accept headers
 	  */
 	 public function renderEditable() {
-		 global $_whomp_template_class, $_whomp_storage_url;
+		 global $_whomp_template_class, $_whomp_storage_url, $_whomp_accept_headers;
 		 
+		 // check if content type was supplied
+		 if ($this->_content_type == '') {
+			 // if not, find the most acceptable content type
+			 $content_types = array_intersect_key($_whomp_accept_headers['formats'], $this->layouts);
+			 $content_types = array_keys($content_types);
+			 $this->_content_type = $content_types[0];
+		 } // end if
 		 // place the node xml in the template xml
 		 $_whomp_template_class->insertEditableNodeXml($this->getNodeXml(), $this->layouts[$this->_content_type]['layout']);
 		 // insert the node xsl
@@ -461,7 +469,7 @@ XML;
 	  */
 	 protected function getNodeSchemaPath() {
 		 
-		 return '/repository/whomp/node/frontpage/schema.rng.xml';
+		 return '/repository/whomp/node/frontpage/schema/relaxng.xml';
 	 } // end function
  } // end class
 ?>
