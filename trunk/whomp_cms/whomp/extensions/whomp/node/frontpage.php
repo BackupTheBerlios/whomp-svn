@@ -325,6 +325,7 @@
 		 $_whomp_template_class->transformEditable();
 		 // output the page
 		 $options = $_whomp_template_class->render();
+		 header('Content-type: text/html');
 	 } // end function
 	 
 	 /**
@@ -417,7 +418,7 @@
 		 
 		 // send the whomp editor the required information
 		 header('Content-type: text/xml');
-		 echo $_whomp_editor_class->getConfig($_whomp_base_url . $this->_page . '?whomp_operation=xml', $_whomp_storage_url . $this->getNodeXslPath(), $_whomp_storage_url . $this->getNodeSchemaPath());
+		 echo $_whomp_editor_class->getConfig($_whomp_base_url . '/' . $this->_page . '?whomp_operation=xml', $_whomp_storage_url . '/' . $this->_page . '?whomp_operation=xsl', $_whomp_storage_url . '/' . $this->_page . '?whomp_operation=schema');
 	 } // end function
 	 
 	 /* -- Whomp_Editable methods -- */

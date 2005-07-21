@@ -1,4 +1,3 @@
-/* $Id$ */
 // +--------------------------------------------------------------------------+
 // | BXE                                                                      |
 // +--------------------------------------------------------------------------+
@@ -21,7 +20,7 @@
 
 var BXE_VERSION = "2.0-dev";
 var BXE_BUILD = "200506170330"
-var BXE_REVISION = "$Rev: 1346 $".replace(/\$Rev: ([0-9]+) \$/,"r$1");
+var BXE_REVISION = "$Rev$".replace(/\$Rev: ([0-9]+) \$/,"r$1");
 
 var bxe_notSupportedText = "Bitflux Editor only works with Mozilla >= 1.4 / Firefox on any platform. \nCurrently we recommend Mozilla 1.6 or Firefox 1.0.";
 
@@ -97,7 +96,7 @@ function bxe_start(config_file,fromUrl, configArray) {
 			for(var i=0; i<head.childNodes.length; i++)
 			{
 				var mozileLoaderRE = /(.*)bxeLoader.js$/;
-				if(head.childNodes[i].nodeName == "script")
+				if(head.childNodes[i].localName == "SCRIPT")
 				{
 					var src = head.childNodes[i].src;
 					var result = mozileLoaderRE.exec(src);
@@ -531,5 +530,3 @@ function bxe_getCaller( fn )
 	}
 	return undefined;
 }
-
-

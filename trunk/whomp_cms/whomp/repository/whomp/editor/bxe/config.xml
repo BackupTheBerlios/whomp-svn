@@ -15,7 +15,7 @@
             <file name="BX_validationfile">{{schemafile}}</file>
         </input>
         <output>
-            <file name="BX_exitdestination">{{exitfile}}</file>
+            <file name="BX_exitdestination">http://localhost/whomp/index.php</file>
 		</output>
         <!-- You can't provide a different "method" than http.get for the following files -->
         <css>

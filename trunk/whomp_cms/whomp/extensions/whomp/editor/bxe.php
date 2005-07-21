@@ -47,6 +47,12 @@
 		 global $_whomp_head_data, $_whomp_storage_url;
 		 
 		 $_whomp_head_data['script'][] = '<script src="' . $_whomp_storage_url . '/extensions/whomp/editor/bxe/bxeLoader.js" type="text/javascript"></script>';
+		 $_whomp_head_data['meta'][] = '<meta name="bxeNS" content="xhtml=http://www.w3.org/1999/xhtml"/>';
+		 $_whomp_head_data['meta'][] = '<meta name="bxeNS" content="lenya=http://apache.org/cocoon/lenya/page-envelope/1.0"/>';
+		 $_whomp_head_data['meta'][] = '<meta name="bxeNS" content="dc=http://purl.org/dc/elements/1.1/" />';
+		 $_whomp_head_data['meta'][] = '<meta name="bxeNS" content="unzih=http://unizh.ch/doctypes/elements/1.0" />';
+		 $_whomp_head_data['meta'][] = '<meta name="bxeNS" content="dcterms=http://purl.org/dc/terms/" />';
+		 $_whomp_head_data['meta'][] = '<meta http-equiv="content-type" content="text/html; charset=UTF-8" />';
 	 } // end function
 	 
 	 /**
