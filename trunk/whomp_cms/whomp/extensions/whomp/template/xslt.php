@@ -31,7 +31,7 @@
   * @since 0.0.0
   * @access public
   */
- class Whomp_Template_Xslt implements Whomp_Template, Whomp_Template_Editable {
+ class Whomp_Template_Xslt implements Whomp_Template, Whomp_Editable {
 	 
 	 /**
 	  * The template XML DOMDocument
@@ -50,6 +50,14 @@
 	 protected $_template_xsl;
 	 
 	 /**
+	  * The template Schema DOMDocument
+	  * 
+	  * @var DOMDocument $_template_schema
+	  * @access protected
+	  */
+	 protected $_template_schema;
+	 
+	 /**
 	  * The transformed document
 	  * 
 	  * @var string $_template_transformed
@@ -58,30 +66,36 @@
 	 protected $_template_transformed;
 	 
 	 /**
-	  * The acceptable output formats
-	  * 
-	  * This should be an array with formats as keys and content-types as 
-	  * values. For example:
-	  * <pre>
-	  * Array (
-	  * 	'html' => 'text/html'
-	  * 	'xhtml+xml' => 'application/xhtml+xml'
-	  * 	'xhtml' => 'application/xhtml+xml'
-	  * )
-	  * </pre>
-	  * 
-	  * @var array $_formats
-	  * @access protected
-	  */
-	 protected $_formats;
-	 
-	 /**
 	  * The document's content type
 	  * 
 	  * @var string $_content_type
 	  * @access protected
 	  */
 	 protected $_content_type;
+	 
+	 /**
+	  * The document's layout
+	  * 
+	  * @var string $_layout
+	  * @access protected
+	  */
+	 protected $_layout;
+	 
+	 /**
+	  * The document's format
+	  * 
+	  * @var string $_format
+	  * @access protected
+	  */
+	 protected $_format;
+	 
+	 /**
+	  * The document's template
+	  * 
+	  * @var string $_template
+	  * @access protected
+	  */
+	 protected $_template;
 	 
 	 /**
 	  * The document's charset
@@ -104,33 +118,38 @@
 	  */
 	 public function loadTemplate($options) {
 		 
+		 $this->_content_type = $options['content_type'];
+		 $this->_layout = $options['layout'];
+		 $this->_format = $options['format'];
+		 $this->_template = $options['template'];
 		 $this->_template_xml = new DomDocument('1.0', $this->_charset);
 		 $this->_template_xsl = new DomDocument('1.0', $this->_charset);
+		 $this->_template_schema = new DomDocument('1.0', $this->_charset);
 	 } // end function
 	 
 	 /**
-	  * Inserts the node XML into the correct location(s)
+	  * Inserts the XML into the correct location(s)
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
 	  * @throws Exception if the node is not found in the xml
-	  * @param DOMDocument $node_xml the node XML to be inserted
-	  * @param string $layout the layout to use
-	  * @param string $node_name the name of the node that needs to be inserted
-	  * @global string the whomp storage path
+	  * @param string $xml_path path to the xml file
+	  * @param string $xpath_query query which returns the xml node(s) to insert the xml
 	  */
-	 public function insertNodeXml(DOMDocument $node_xml, $layout, $node_name = '') {
+	 public function insertXml($xml_path, $xpath_query = '//node') {
 		 global $_whomp_storage_path;
 		 
 		 // initialize the template xml
-		 $this->_template_xml->load($_whomp_storage_path . '/layouts/' . $layout . '.xml');
+		 $this->_template_xml->load($_whomp_storage_path . '/layouts/' . $this->_layout . '.xml');
 		 // find the specified node
+		 $node_xml = new DOMDocument();
+		 $node_xml->load($xml_path);
 		 $importNode = $this->_template_xml->importNode($node_xml->documentElement, true);
 		 $this->_template_xml->saveXML();
 		 $xpath = new DOMXpath($this->_template_xml);
-		 $node_list = $xpath->query('//node');
+		 $node_list = $xpath->query($xpath_query);
 		 // check if the node was found
 		 if (count($node_list) != 0) {
 			 // if so, append the node XML
@@ -144,32 +163,53 @@
 	 } // end function
 	 
 	 /**
-	  * Inserts XSL path as an import into the template XSL file
+	  * Inserts XSL import into the xsl file
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @param string $node_xsl_path the path to the XSL file
-	  * @param string $template the template to use
-	  * @param string $format the format to use
+	  * @param string $xsl_path the path to the XSL file
 	  * @global string the whomp storage url
 	  */
-	 public function insertNodeXsl($node_xsl_path, $template, $format) {
+	 public function insertXsl($xsl_path) {
 		 global $_whomp_storage_url;
 		 
 		 $whomp_head = whomp_get_head_data_string();
 		 $xsl = <<<XSL
 <?xml version="1.0" encoding="utf-8" ?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:import href="{$node_xsl_path}" />
-	<xsl:import href="{$_whomp_storage_url}/templates/{$template}/{$format}.xsl" />
+	<xsl:import href="{$xsl_path}" />
+	<xsl:import href="{$_whomp_storage_url}/templates/{$this->_template}/{$this->_format}.xsl" />
 	<xsl:variable name="_whomp_storage_url">{$_whomp_storage_url}</xsl:variable>
 	<xsl:variable name="whomp_edit" select="boolean(0)" />
 	<xsl:variable name="whomp_head">{$whomp_head}</xsl:variable>
 	<xsl:variable name="whomp_onload"></xsl:variable>
 </xsl:stylesheet>
 XSL;
+		 $this->_template_xsl->loadXML($xsl);
+	 } // end function
+	 
+	 /**
+	  * Inserts schema into the template schema
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmall@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param string $schema_path the path to the node schema
+	  * @global string the whomp storage url
+	  */
+	 public function insertSchema($schema_path) {
+		 global $_whomp_storage_url;
+		 
+		 $schema = <<<SCHEMA
+<?xml version="1.0" encoding="utf-8" ?>
+<grammar ns="" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+	<include href="{$schema_path}"/>
+	<include href="{$_whomp_storage_url}/layouts/schema.xml"/>
+</grammar>	
+SCHEMA;
 		 $this->_template_xsl->loadXML($xsl);
 	 } // end function
 	 
@@ -182,7 +222,7 @@ XSL;
 	  * @access public
 	  * @throws Exception if there is an error transforming the document
 	  */
-	 public function transform() {
+	 public function transformTemplate() {
 		 
 		 // create the XSLT processor and import the stylesheet
 		 $processor = new XSLTProcessor();
@@ -207,7 +247,7 @@ XSL;
 	  * @access public
 	  * @return array information about the page suitable for sending to Whomp_Cache::end()
 	  */
-	 public function render() {
+	 public function renderTemplate() {
 		 
 		 // set the content type and charset
 		 header('Content-Type: ' . $this->_content_type . '; charset=' . $this->_charset);
@@ -220,70 +260,72 @@ XSL;
 	 
 	 /* -- Whomp_Template methods -- */
 	 
-	 /* ++ Whomp_Template_Editable methods ++ */
+	 /* ++ Whomp_Editable methods ++ */
 	 
 	 /**
-	  * Inserts the node xml in an editable form
+	  * Makes editable
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @param DOMDocument $node_xml the node XML to be inserted
-	  * @param string $layout the layout to use
-	  * @param string $node_name the name of the node that needs to be inserted
 	  */
-	 public function insertEditableNodeXml(DOMDocument $node_xml, $layout, $node_name = '') {
-		 
-		 $this->insertNodeXml($node_xml, $layout, $node_name);
-	 } // end function
+	 public function makeEditable(); // end function
 	 
 	 /**
-	  * Inserts XSL import into the xsl file in an editable form
+	  * Prints the xml
+	  * 
+	  * Outputs only the xml file. The type should be set to 'text/xml' for
+	  * compatibility.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @param string $xsl_path the path to the XSL file
-	  * @param string $template the template to use
-	  * @param string $format the format to use
-	  * @param string $config_url url of the config file
 	  */
-	 public function insertEditableNodeXsl($xsl_path, $template, $format, $config_url) {
-		 global $_whomp_storage_url;
-		 
-		 $whomp_head = whomp_get_head_data_string();
-		 $xsl = <<<XSL
-<?xml version="1.0" encoding="utf-8" ?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
-	<xsl:import href="{$xsl_path}" />
-	<xsl:import href="{$_whomp_storage_url}/templates/{$template}/{$format}.xsl" />
-	<xsl:variable name="_whomp_storage_url">{$_whomp_storage_url}</xsl:variable>
-	<xsl:variable name="whomp_edit" select="boolean(1)" />
-	<xsl:variable name="whomp_editid">bxe_area</xsl:variable>
-	<xsl:variable name="whomp_head">{$whomp_head}</xsl:variable>
-	<xsl:variable name="whomp_onload">bxe_start('{$config_url}');</xsl:variable>
-</xsl:stylesheet>
-XSL;
-		 $this->_template_xsl->loadXML($xsl);
-	 } // end function
+	 public function printXml(); // end function
 	 
 	 /**
-	  * Transforms the XML document with XSL in an editable form
+	  * Prints the xsl
+	  * 
+	  * Outputs only the xsl file. The type should be set to 'text/xml' for
+	  * compatibility.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @throws Exception
 	  */
-	 public function transformEditable() {
-		 
-		 $this->transform();
-	 } // end function
+	 public function printXsl(); // end function
 	 
-	 /* -- Whomp_Template_Editable methods -- */
+	 /**
+	  * Prints the schema validation information
+	  * 
+	  * Outputs only the schema validation file. Should communicate with
+	  * the configured editor to determine which schema type to print. The type
+	  * should be set to 'text/xml' for compatibility.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  */
+	 public function printSchema(); // end function
+	 
+	 /**
+	  * Prints the editor configuration file
+	  * 
+	  * Outputs the editor configuration file. Should communicate with the 
+	  * configured editor to determine the correct format for output.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  */
+	 public function printConfig(); // end function
+	 
+	 /* -- Whomp_Editable Methods -- */
 	 
  } // end class
 ?>

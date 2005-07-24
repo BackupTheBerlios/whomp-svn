@@ -32,7 +32,7 @@
   * @since 0.0.0
   * @access public
   */
- interface Whomp_Template {
+ interface Whomp_Template extends Whomp_Editable {
 	 
 	 /**
 	  * Loads the node information into the template
@@ -50,17 +50,16 @@
 	 public function loadTemplate($options); // end function
 	 
 	 /**
-	  * Inserts the node XML into the correct location(s)
+	  * Inserts the XML into the correct location(s)
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @param DOMDocument $node_xml the node XML to be inserted
-	  * @param string $layout the layout to use
-	  * @param string $node_name the name of the node that needs to be inserted
+	  * @param string $xml_path path to the xml file
+	  * @param string $xpath_query query which returns the xml node(s) to insert the xml
 	  */
-	 public function insertNodeXml(DOMDocument $node_xml, $layout, $node_name = ''); // end function
+	 public function insertXml($xml_path, $xpath_query = '//node'); // end function
 	 
 	 /**
 	  * Inserts XSL import into the xsl file
@@ -70,10 +69,19 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @param string $xsl_path the path to the XSL file
-	  * @param string $template the template to use
-	  * @param string $format the format to use
 	  */
-	 public function insertNodeXsl($xsl_path, $template, $format); // end function
+	 public function insertXsl($xsl_path); // end function
+	 
+	 /**
+	  * Inserts schema into the template schema
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmall@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @param string $schema_path the path to the node schema
+	  */
+	 public function insertSchema($schema_path); // end function
 	 
 	 /**
 	  * Transforms the XML document with XSL
@@ -84,7 +92,7 @@
 	  * @access public
 	  * @throws Exception
 	  */
-	 public function transform(); // end function
+	 public function transformTemplate(); // end function
 	 
 	 /**
 	  * Outputs the transformed XML file to the screen
@@ -97,7 +105,7 @@
 	  * @access public
 	  * @return array information about the page suitable for sending to Whomp_Cache::end()
 	  */
-	 public function render(); // end function
+	 public function renderTemplate(); // end function
 	 
  } // end class
 ?>

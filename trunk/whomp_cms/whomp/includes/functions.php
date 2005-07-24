@@ -196,9 +196,9 @@
 	 
 	 // create the accepted formats array
 	 if (array_key_exists('HTTP_ACCEPT', $_SERVER)) {
-		 $formats = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT']);
+		 $content_types = whomp_get_accept_header_array($_SERVER['HTTP_ACCEPT']);
 	 } else {
-		 $formats = array('*/*' => (float)1.0);
+		 $content_types = array('*/*' => (float)1.0);
 	 } // end if
 	 
 	 // create the accepted languages array
@@ -225,7 +225,7 @@
 	 } // end if
 	 
 	 // return the array
-	 return array('formats' => $formats, 
+	 return array('content_types' => $content_types, 
 	 			  'languages' => $languages, 
 				  'charsets' => $charsets, 
 				  'encodings' => $encodings);
@@ -238,42 +238,35 @@
   * @version 0.0.0
   * @since 0.0.0
   * @throws Exception if no acceptable format is found
-  * @param string $format the requested format
-  * @param array $formats the formats as keys and the content type as values
+  * @param string $content_type the requested content type
+  * @param array $layouts an array with content types as keys
   * @global array the user's accept headers
   * @return string the selected content type
-  * @deprecated
   */
- function whomp_get_content_type($format, $formats) {
+ function whomp_get_content_type($content_type, $layouts) {
 	 global $_whomp_accept_headers;
 	 
 	 // check if format was supplied
-	 if ($format != '') {
+	 if ($content_type != '') {
 		 // if so, see if it is a known format
-		 if (array_key_exists($format, $formats)) {
+		 if (array_key_exists($content_type, $layouts)) {
 			 // if so, set the content type accordingly
-			 return $formats[$format]; 
+			 return $content_type; 
 		 } else {
-			 // if not, check if it is a known content type
-			 if (in_array($format, $formats)) {
-				 // if so, set it to the content type
-				 return $format;
-			 } else {
-				 // if not, throw exception
-				 throw new Exception('Unknown content type: ' . $format);
-			 } // end if
+			 // if not, throw exception
+			 throw new Exception('Unknown content type: ' . $content_type);
 		 } // end if
 	 } else {
 		 // if not, use the user's accept headers
-		 foreach ($_whomp_accept_headers['formats'] as $format => $qvalue) {
+		 foreach ($_whomp_accept_headers['content_types'] as $content_type => $qvalue) {
 			 // see if it is */*
-			 if ($format == '*/*') {
-				 return reset($formats);
+			 if ($content_type == '*/*') {
+				 return $content_type;
 			 } else {
 				 // see if it is a known format
-				 if (in_array($format, $formats)) {
-					 // if so, set the content type accordingly
-					 return $format; 
+				 if (array_key_exists($content_type, $layouts)) {
+					 // if so, return the content type
+					 return $content_type; 
 				 } // end if
 			 } // end if
 		 } // end foreach
@@ -377,8 +370,7 @@
 		 } // end try
 	 } // end if
 	 // add page and format information to the node array
-	 $node_array['_page'] = $options['page'];
-	 $node_array['_content_type'] = $options['content_type'];
+	 $node_array['page'] = $options['page'];
 	 $node_array['language'] = $node_language;
 	 // create layout array
 	 if ($node_array['layouts'] != '') {
@@ -421,6 +413,11 @@
 	 } else {
 		 $node_array['_user'] = array();
 	 } // end if
+	 // get the most acceptable content type
+	 $node_array['content_type'] = whomp_get_content_type(,$node_array['formats']);
+	 $node_array['layout'] = $node_array['layouts'][$node_array['content_type']]['layout'];
+	 $node_array['template'] = $node_array['layouts'][$node_array['content_type']]['template'];
+	 $node_array['format'] = $node_array['layouts'][$node_array['content_type']]['format'];
 	 return $node_array;
  } // end function
  

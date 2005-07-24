@@ -39,7 +39,7 @@
 	  * @var string $_content_type
 	  * @access protected
 	  */
-	 protected $_content_type;
+	 public $content_type;
 	 
 	 /**
 	  * The requested page
@@ -47,7 +47,7 @@
 	  * @var string $_page
 	  * @access protected
 	  */
-	 protected $_page;
+	 public $page;
 	 
 	 /**
 	  * The node's language
@@ -56,25 +56,6 @@
 	  * @access public
 	  */
 	 public $language;
-	 
-	 /**
-	  * The available layouts for the node type
-	  * 
-	  * This should be an array with formats as keys and content-types as 
-	  * values. For example:
-	  * <pre>
-	  * Array (
-	  * 	'html' => 'text/html'
-	  * 	'xhtml+xml' => 'application/xhtml+xml'
-	  * 	'xhtml' => 'application/xhtml+xml'
-	  * )
-	  * </pre>
-	  * 
-	  * @var array $layouts
-	  * @access public
-	  * @deprecated
-	  */
-	 public $formats;
 	 
 	 /**
 	  * The node's id
@@ -119,7 +100,7 @@
 	 /**
 	  * The node's preferred layouts
 	  * 
-	  * This should be an array with formats and/or content types as the 
+	  * This should be an array with content types as the 
 	  * keys and an array containing the template and layout information. 
 	  * For example:
 	  * <pre>
@@ -200,12 +181,28 @@
 	 protected $_show_logged;
 	 
 	 /**
-	  * The node content
+	  * The xml path
 	  * 
-	  * @var string $content
-	  * @access public
+	  * @var string $_xml_path
+	  * @access protected
 	  */
-	 public $content;
+	 protected $_xml_path;
+	 
+	 /**
+	  * The xsl path
+	  * 
+	  * @var string $_xsl_path
+	  * @access protected
+	  */
+	 protected $_xsl_path;
+	 
+	 /**
+	  * The schema path
+	  * 
+	  * @var string $_schema_path
+	  * @access protected
+	  */
+	 protected $_schema_path;
 	 
 	 /* ++ Whomp_Node Methods ++ */
 	 
@@ -217,24 +214,20 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @param array $options options for the node
-	  * @global class access to the database
-	  * @todo finish this
+	  * @global string the whomp storage url
+	  * @todo redo this
 	  */
 	 public function loadNode($options) {
-		 global $_whomp_database;
+		 global $_whomp_storage_url;
 		 
 		 // set the node information
 		 foreach ($options as $key => $value) {
 			 $this->$key = $value;
 		 } // end foreach
-		 // get the node information from the database
-		 $queryValues = array($this->id);
-		 $query = 'SELECT * FROM `#__' . $this->language . '_node_types_whomp_node_frontpage` WHERE `id` = %d;';
-		 $_whomp_database->setQuery($query, $queryValues);
-		 $_whomp_database->query();
-		 $result = $_whomp_database->loadRow();
-		 // set the content
-		 $this->content = $result['content'];
+		 // set the paths
+		 $this->_xml_path = $_whomp_storage_url . '/repository/whomp/node/frontpage/nodes/' . $options['name'] . '.xml';
+		 $this->_xsl_path = $_whomp_storage_url . '/repository/whomp/node/frontpage/xsl/xhtml.xml';
+		 $this->_schema_path = $_whomp_storage_url . '/repository/whomp/node/frontpage/schema/relaxng.xml';
 	 } // end function
 	 
 	 /**
@@ -250,37 +243,20 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @throws Exception if the specified format does not exist
-	  * @global string the whomp storage url
-	  * @global array the user's accept headers
-	  * @global class access to the configuration options
+	  * @global class access to the template class
 	  * @return array information about the page suitable for sending to Whomp_Cache::end()
 	  */
-	 public function renderPage() {
-		 global $_whomp_storage_url, $_whomp_accept_headers, $_whomp_template_class;
-		 
-		 // check if content type was supplied
-		 if ($this->_content_type == '') {
-			 // if not, find the most acceptable content type
-			 $content_types = array_intersect_key($_whomp_accept_headers['formats'], $this->layouts);
-			 $content_types = array_keys($content_types);
-			 $this->_content_type = $content_types[0];
-		 } // end if
-		 // check if the format is available
-		 if (array_key_exists($this->_content_type, $this->layouts)) {
-			 // if so, place the node xml in the template xml
-			 $_whomp_template_class->insertNodeXml($this->getNodeXml(), $this->layouts[$this->_content_type]['layout']);
-			 // insert the node xsl
-			 $_whomp_template_class->insertNodeXsl($_whomp_storage_url . $this->getNodeXslPath(), $this->layouts[$this->_content_type]['template'], $this->layouts[$this->_content_type]['format']);
-			 // transform the xml to the desired format with xsl
-			 $_whomp_template_class->transform();
-			 // output the page
-			 $options = $_whomp_template_class->render();
-		 } else {
-			 // if not, throw exception
-			 throw new Exception('The specified file format does not exist.');
-		 } // end if
-			 
+	 public function renderNode() {
+		 global $_whomp_template_class;
+		
+		 // insert the node xml	 
+		 $_whomp_template_class->insertXml($this->_xml_path);
+		 // insert the node xsl
+		 $_whomp_template_class->insertXsl($this->_xsl_path);
+		 // transform the document
+		 $_whomp_template_class->transformTemplate();
+		 // render the document and get options
+		 $options = $_whomp_template_class->renderTemplate();
 		 // add more information to the options array
 		 $options['language'] = $this->language;
 		 $options['page'] = $this->_page;
@@ -292,11 +268,7 @@
 	 /* ++ Whomp_Editable methods ++ */
 	 
 	 /**
-	  * Renders the node in an editable form
-	  * 
-	  * This function should use the configured editor to determine what is 
-	  * required to make the node editable or a custom interface may be used.
-	  * Also should check for adequate permissions to edit.
+	  * Makes editable
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
 	  * @version 0.0.0
@@ -307,48 +279,19 @@
 	  * @global string the whomp base url
 	  * @global array the user's accept headers
 	  */
-	 public function renderEditable() {
+	 public function makeEditable() {
 		 global $_whomp_template_class, $_whomp_storage_url, $_whomp_base_url, $_whomp_accept_headers;
 		 
-		 // check if content type was supplied
-		 if ($this->_content_type == '') {
-			 // if not, find the most acceptable content type
-			 $content_types = array_intersect_key($_whomp_accept_headers['formats'], $this->layouts);
-			 $content_types = array_keys($content_types);
-			 $this->_content_type = $content_types[0];
-		 } // end if
-		 // place the node xml in the template xml
-		 $_whomp_template_class->insertEditableNodeXml($this->getNodeXml(), $this->layouts[$this->_content_type]['layout']);
-		 // insert the node xsl
-		 $_whomp_template_class->insertEditableNodeXsl($_whomp_storage_url . $this->getNodeXslPath(), $this->layouts[$this->_content_type]['template'], $this->layouts[$this->_content_type]['format'], $_whomp_base_url . '/' . $this->_page . '?whomp_operation=config');
-		 // transform the editable xml to the desired format with xsl
-		 $_whomp_template_class->transformEditable();
-		 // output the page
-		 $options = $_whomp_template_class->render();
+		 // make the template editable
+		 $_whomp_template_class->makeEditable();
+		 // change content type to text/html
 		 header('Content-type: text/html');
 	 } // end function
 	 
 	 /**
-	  * Saves the edited node
+	  * Prints the xml
 	  * 
-	  * This function should communicate with the configured editor to determine
-	  * what information is returned so that it can be handled properly. Or if 
-	  * a custom interface was used for editing this is not required. Also 
-	  * should check for adequate permissions to save.
-	  * 
-	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
-	  * @version 0.0.0
-	  * @since 0.0.0
-	  * @access public
-	  * @todo Implement this
-	  */
-	 public function save() {
-	 } // end function
-	 
-	 /**
-	  * Prints the node xml
-	  * 
-	  * Outputs only the node xml file. The type should be set to 'text/xml' for
+	  * Outputs only the xml file. The type should be set to 'text/xml' for
 	  * compatibility.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -359,13 +302,13 @@
 	 public function printXml() {
 		 
 		 header('Content-type: text/xml');
-		 echo $this->getNodeXml()->saveXml();
+		 readfile($this->_xml_path);
 	 } // end function
 	 
 	 /**
-	  * Prints the node xsl
+	  * Prints the xsl
 	  * 
-	  * Outputs only the node xsl file. The type should be set to 'text/xml' for
+	  * Outputs only the xsl file. The type should be set to 'text/xml' for
 	  * compatibility.
 	  * 
 	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
@@ -378,13 +321,13 @@
 		 global $_whomp_storage_path;
 		 
 		 header('Content-type: text/xml');
-		 readfile($_whomp_storage_path . $this->getNodeXslPath());
+		 readfile($this->_xsl_path);
 	 } // end function
 	 
 	 /**
-	  * Prints the node schema validation information
+	  * Prints the schema validation information
 	  * 
-	  * Outputs only the node schema validation file. Should communicate with
+	  * Outputs only the schema validation file. Should communicate with
 	  * the configured editor to determine which schema type to print. The type
 	  * should be set to 'text/xml' for compatibility.
 	  * 
@@ -398,7 +341,7 @@
 		 global $_whomp_storage_path;
 		 
 		 header('Content-type: text/xml');
-		 readfile($_whomp_storage_path . $this->getNodeSchemaPath());
+		 readfile($this->_schema_path);
 	 } // end function
 	 
 	 /**
@@ -423,56 +366,5 @@
 	 
 	 /* -- Whomp_Editable methods -- */
 	 
-	 /**
-	  * Gets the node's XML representation
-	  * 
-	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
-	  * @version 0.0.0
-	  * @since 0.0.0
-	  * @access public
-	  */
-	 protected function getNodeXml() {
-		 
-		 $xml = <<<XML
-<?xml version="1.0" encoding="utf-8" ?>
-<whomp_node_frontpage name="{$this->name}">
-	<title>Test frontpage</title>
-	<content>
-		{$this->content}
-	</content>
-</whomp_node_frontpage>
-XML;
-		 $dom = new DOMDocument();
-		 $dom->loadXml($xml);
-		 return $dom;
-	 } // end function
-	 
-	 /**
-	  * Gets the path to the node's XSL file
-	  * 
-	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
-	  * @version 0.0.0
-	  * @since 0.0.0
-	  * @access public
-	  * @todo add more output formats
-	  */
-	 protected function getNodeXslPath() {
-		 
-		 // xhtml+xml is the only currently supported format
-		 return '/repository/whomp/node/frontpage/xsl/xhtml.xsl';
-	 } // end function
-	 
-	 /**
-	  * Gets the path to the node's Schema file
-	  * 
-	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
-	  * @version 0.0.0
-	  * @since 0.0.0
-	  * @access public
-	  */
-	 protected function getNodeSchemaPath() {
-		 
-		 return '/repository/whomp/node/frontpage/schema/relaxng.xml';
-	 } // end function
  } // end class
 ?>

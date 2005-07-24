@@ -51,7 +51,7 @@
 	 public function loadNode($options); // end function
 	 
 	 /**
-	  * Renders the page
+	  * Renders the node
 	  * 
 	  * This method finds the template engine class file and initializes 
 	  * the template class. It then uses the template class to insert the 
@@ -73,7 +73,7 @@
 	  * @access public
 	  * @return array information about the page suitable for sending to Whomp_Cache::end()
 	  */
-	 public function renderPage(); // end function
+	 public function renderNode(); // end function
 	 
  } // end class
 ?>
