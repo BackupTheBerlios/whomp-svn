@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<whomp_node_frontpage name="default">
+	<title>Test frontpage</title>
+	<content>
+		A test frontpage.
+	</content>
+</whomp_node_frontpage>

@@ -105,6 +105,10 @@
 	  */
 	 protected $_charset = 'utf-8';
 	 
+	 protected $_edit = 0;
+	 protected $_editid = '';
+	 protected $_onload = '';
+	 
 	 /* ++ Whomp_Template methods ++ */
 	 
 	 /**
@@ -118,6 +122,7 @@
 	  */
 	 public function loadTemplate($options) {
 		 
+		 $this->page = $options['page'];
 		 $this->_content_type = $options['content_type'];
 		 $this->_layout = $options['layout'];
 		 $this->_format = $options['format'];
@@ -147,7 +152,6 @@
 		 $node_xml = new DOMDocument();
 		 $node_xml->load($xml_path);
 		 $importNode = $this->_template_xml->importNode($node_xml->documentElement, true);
-		 $this->_template_xml->saveXML();
 		 $xpath = new DOMXpath($this->_template_xml);
 		 $node_list = $xpath->query($xpath_query);
 		 // check if the node was found
@@ -182,9 +186,10 @@
 	<xsl:import href="{$xsl_path}" />
 	<xsl:import href="{$_whomp_storage_url}/templates/{$this->_template}/{$this->_format}.xsl" />
 	<xsl:variable name="_whomp_storage_url">{$_whomp_storage_url}</xsl:variable>
-	<xsl:variable name="whomp_edit" select="boolean(0)" />
+	<xsl:variable name="whomp_edit" select="boolean({$this->_edit})" />
 	<xsl:variable name="whomp_head">{$whomp_head}</xsl:variable>
-	<xsl:variable name="whomp_onload"></xsl:variable>
+	<xsl:variable name="whomp_onload">{$this->_onload}</xsl:variable>
+	<xsl:variable name="whomp_editid">{$this->_editid}</xsl:variable>
 </xsl:stylesheet>
 XSL;
 		 $this->_template_xsl->loadXML($xsl);
@@ -210,7 +215,7 @@ XSL;
 	<include href="{$_whomp_storage_url}/layouts/schema.xml"/>
 </grammar>	
 SCHEMA;
-		 $this->_template_xsl->loadXML($xsl);
+		 $this->_template_schema->loadXML($schema);
 	 } // end function
 	 
 	 /**
@@ -270,7 +275,13 @@ SCHEMA;
 	  * @since 0.0.0
 	  * @access public
 	  */
-	 public function makeEditable(); // end function
+	 public function makeEditable() {
+		 global $_whomp_base_url;
+		 
+		 $this->_edit = 1;
+		 $this->_onload = 'bxe_start(\'' . $_whomp_base_url . '/' . $this->page . '?whomp_operation=config\')';
+		 $this->_editid = 'bxe_area';
+	 } // end function
 	 
 	 /**
 	  * Prints the xml
@@ -283,7 +294,10 @@ SCHEMA;
 	  * @since 0.0.0
 	  * @access public
 	  */
-	 public function printXml(); // end function
+	 public function printXml() {
+		 
+		 echo $this->_template_xml->saveXML();
+	 } // end function
 	 
 	 /**
 	  * Prints the xsl
@@ -296,7 +310,10 @@ SCHEMA;
 	  * @since 0.0.0
 	  * @access public
 	  */
-	 public function printXsl(); // end function
+	 public function printXsl() {
+		 
+		 echo $this->_template_xsl->saveXML();
+	 } // end function
 	 
 	 /**
 	  * Prints the schema validation information
@@ -310,7 +327,10 @@ SCHEMA;
 	  * @since 0.0.0
 	  * @access public
 	  */
-	 public function printSchema(); // end function
+	 public function printSchema() {
+		 
+		 echo $this->_template_schema->saveXML();
+	 } // end function
 	 
 	 /**
 	  * Prints the editor configuration file
@@ -323,7 +343,8 @@ SCHEMA;
 	  * @since 0.0.0
 	  * @access public
 	  */
-	 public function printConfig(); // end function
+	 public function printConfig() {
+	 } // end function
 	 
 	 /* -- Whomp_Editable Methods -- */
 	 

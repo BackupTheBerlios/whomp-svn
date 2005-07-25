@@ -414,7 +414,7 @@
 		 $node_array['_user'] = array();
 	 } // end if
 	 // get the most acceptable content type
-	 $node_array['content_type'] = whomp_get_content_type(,$node_array['formats']);
+	 $node_array['content_type'] = whomp_get_content_type($options['content_type'],$node_array['layouts']);
 	 $node_array['layout'] = $node_array['layouts'][$node_array['content_type']]['layout'];
 	 $node_array['template'] = $node_array['layouts'][$node_array['content_type']]['template'];
 	 $node_array['format'] = $node_array['layouts'][$node_array['content_type']]['format'];

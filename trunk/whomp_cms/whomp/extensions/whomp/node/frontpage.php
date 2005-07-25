@@ -204,6 +204,14 @@
 	  */
 	 protected $_schema_path;
 	 
+	 /**
+	  * Whether it is being edited or not
+	  * 
+	  * @var boolean $_edit
+	  * @access protected
+	  */
+	 protected $_edit = false;
+	 
 	 /* ++ Whomp_Node Methods ++ */
 	 
 	 /**
@@ -226,7 +234,7 @@
 		 } // end foreach
 		 // set the paths
 		 $this->_xml_path = $_whomp_storage_url . '/repository/whomp/node/frontpage/nodes/' . $options['name'] . '.xml';
-		 $this->_xsl_path = $_whomp_storage_url . '/repository/whomp/node/frontpage/xsl/xhtml.xml';
+		 $this->_xsl_path = $_whomp_storage_url . '/repository/whomp/node/frontpage/xsl/xhtml.xsl';
 		 $this->_schema_path = $_whomp_storage_url . '/repository/whomp/node/frontpage/schema/relaxng.xml';
 	 } // end function
 	 
@@ -259,7 +267,12 @@
 		 $options = $_whomp_template_class->renderTemplate();
 		 // add more information to the options array
 		 $options['language'] = $this->language;
-		 $options['page'] = $this->_page;
+		 $options['page'] = $this->page;
+		 // check if we are editing
+		 if ($this->_edit) {
+			 // if so, set content type to html
+			 header('Content-type: text/html');
+		 } // end if
 		 return $options;	 
 	 } // end function
 	 
@@ -280,12 +293,12 @@
 	  * @global array the user's accept headers
 	  */
 	 public function makeEditable() {
-		 global $_whomp_template_class, $_whomp_storage_url, $_whomp_base_url, $_whomp_accept_headers;
+		 global $_whomp_template_class;
 		 
 		 // make the template editable
 		 $_whomp_template_class->makeEditable();
-		 // change content type to text/html
-		 header('Content-type: text/html');
+		 // set to editable
+		 $this->_edit = true;
 	 } // end function
 	 
 	 /**
@@ -298,11 +311,14 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
+	  * @global class the whomp template class
 	  */
 	 public function printXml() {
+		 global $_whomp_template_class;
 		 
 		 header('Content-type: text/xml');
-		 readfile($this->_xml_path);
+		 $_whomp_template_class->insertXml($this->_xml_path);
+		 $_whomp_template_class->printXml();
 	 } // end function
 	 
 	 /**
@@ -315,13 +331,14 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @global string the whomp storage path
+	  * @global class the whomp template class
 	  */
 	 public function printXsl() {
-		 global $_whomp_storage_path;
+		 global $_whomp_template_class;
 		 
 		 header('Content-type: text/xml');
-		 readfile($this->_xsl_path);
+		 $_whomp_template_class->insertXsl($this->_xsl_path);
+		 $_whomp_template_class->printXsl();
 	 } // end function
 	 
 	 /**
@@ -335,13 +352,59 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @global string the whomp storage path
+	  * @global class the whomp template class
 	  */
 	 public function printSchema() {
-		 global $_whomp_storage_path;
+		 global $_whomp_template_class;
 		 
 		 header('Content-type: text/xml');
-		 readfile($this->_schema_path);
+		 //$_whomp_template_class->insertSchema($this->_schema_path);
+		 //$_whomp_template_class->printSchema();
+		 //readfile($this->_schema_path);
+		 echo <<<SCHEMA
+<?xml version="1.0" encoding="UTF-8"?>
+<grammar ns="" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <start>
+    <element name="layout">
+      <element name="header">
+        <ref name="title"/>
+        <element name="description">
+          <text/>
+        </element>
+      </element>
+      <ref name="content"/>
+      <element name="footer">
+        <element name="copyright">
+          <text/>
+        </element>
+      </element>
+    </element>
+  </start>
+  <define name="title">
+    <element name="title">
+      <text/>
+    </element>
+  </define>
+  <define name="content">
+    <element name="content">
+      <oneOrMore>
+        <choice>
+          <text/>
+          <element name="node">
+            <element name="whomp_node_frontpage">
+              <attribute name="name">
+                <data type="NCName"/>
+              </attribute>
+              <ref name="title"/>
+              <ref name="content"/>
+            </element>
+          </element>
+        </choice>
+      </oneOrMore>
+    </element>
+  </define>
+</grammar>
+SCHEMA;
 	 } // end function
 	 
 	 /**
@@ -357,11 +420,11 @@
 	  * @global class access to the whomp editor class
 	  */
 	 public function printConfig() {
-		 global $_whomp_editor_class, $_whomp_base_url, $_whomp_storage_url;
+		 global $_whomp_editor_class, $_whomp_base_url;
 		 
 		 // send the whomp editor the required information
 		 header('Content-type: text/xml');
-		 echo $_whomp_editor_class->getConfig($_whomp_base_url . '/' . $this->_page . '?whomp_operation=xml', $_whomp_storage_url . '/' . $this->_page . '?whomp_operation=xsl', $_whomp_storage_url . '/' . $this->_page . '?whomp_operation=schema');
+		 echo $_whomp_editor_class->getConfig($_whomp_base_url . '/' . $this->page . '?whomp_operation=xml', $_whomp_base_url . '/' . $this->page . '?whomp_operation=xsl', $_whomp_base_url . '/' . $this->page . '?whomp_operation=schema');
 	 } // end function
 	 
 	 /* -- Whomp_Editable methods -- */

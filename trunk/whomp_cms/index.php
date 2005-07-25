@@ -256,11 +256,13 @@
 			 break;
 		 case 'preview' :
 		 	 // render the preview
-		 	 $_whomp_node_class->renderPreview();
+		 	 $_whomp_node_class->makePreviewable();
+		 	 $_whomp_node_class->render();
 			 break;
 		 case 'edit' :
 		 	 // render the editable version of the node
-		 	 $_whomp_node_class->renderEditable();
+		 	 $_whomp_node_class->makeEditable();
+			 $_whomp_node_class->renderNode();
 			 break;
 		 case 'save' :
 		 	 // save the edited node
@@ -269,7 +271,7 @@
 	 } // end switch
  } else {
  	 // if not, render the page with the template and everything
- 	 $whomp_end_cache_options = $_whomp_node_class->renderPage();
+ 	 $whomp_end_cache_options = $_whomp_node_class->renderNode();
 	 $whomp_end_cache_options['cache'] = true;
 	 $whomp_end_cache_options['lifetime'] = 3600;
 	 $whomp_end_cache_options['show_logged'] = true;
