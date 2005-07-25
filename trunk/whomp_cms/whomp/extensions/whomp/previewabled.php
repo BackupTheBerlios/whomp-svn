@@ -32,7 +32,7 @@
  interface Whomp_Previewable {
 	 
 	 /**
-	  * Renders the node as a preview
+	  * Renders as a preview
 	  * 
 	  * The xml should have been posted to the script and should be added to 
 	  * the user's session variable so it can be saved and previewed. Also 
