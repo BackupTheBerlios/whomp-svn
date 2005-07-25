@@ -4,7 +4,7 @@
     <files>
         <input>
             <!-- The XML-document with the actual data -->
-            <file name="BX_xmlfile" method="http">{{xmlfile}}</file>
+            <file name="BX_xmlfile" method="example">{{xmlfile}}</file>
             <!-- The XSL-document which transforms the xml to the output format -->
             <file name="BX_xslfile">{{xslfile}}</file>
             <!-- The RelaxNG (XML Schema) -->
@@ -26,19 +26,20 @@
         You can also add your own js-files here.
         -->
             <file>js/bxehtmltb.js</file>
-            <file>js/table.js</file>
-            <file>mozile/jsdav.js</file>
-            <file>td/webdav.js</file>
-            <file>td/example.js</file>
-            <file>mozile/mozilekb.js</file>
-            <file>relaxng/AttributeVDOM.js</file>
-            <file>relaxng/NodeVDOM.js</file>
-            <file>relaxng/DocumentVDOM.js</file>
-            <file>relaxng/ElementVDOM.js</file>
-            <file>relaxng/DocumentVAL.js</file>
-            <file>relaxng/NodeVAL.js</file>
-            <file>relaxng/ElementVAL.js</file>
-            <file>relaxng/RelaxNG.js</file>
+			<file>js/table.js</file>
+			<file>mozile/jsdav.js</file>
+			<file>mozile/td/webdav.js</file>
+			<file>mozile/td/example.js</file>
+			<file>mozile/mozilekb.js</file>
+			<file>relaxng/AttributeVDOM.js</file>
+			<file>relaxng/NodeVDOM.js</file>
+			<file>relaxng/DocumentVDOM.js</file>
+			<file>relaxng/ElementVDOM.js</file>
+			<file>relaxng/DocumentVAL.js</file>
+			<file>relaxng/NodeVAL.js</file>
+			<file>relaxng/ElementVAL.js</file>
+			<file>relaxng/RelaxNG.js</file>
+			<file>examples/rss/rss.js</file>
         </scripts>  
     </files>
     <options>

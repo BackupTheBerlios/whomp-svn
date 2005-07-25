@@ -239,8 +239,14 @@
 	 // switch by operation
 	 switch ($whomp_operation) {
 		 case 'xml' :
-		 	 // print the node xml
-		 	 $_whomp_node_class->printXml();
+		 	 // check if we are supposed to save
+		 	 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+				 // if so, save
+				 $_whomp_node_class->save();
+		 	 } else {
+				 // if not, print the node xml
+				 $_whomp_node_class->printXml();
+		 	 } // end if
 			 break;
 		 case 'xsl' :
 		 	 // print the node xsl

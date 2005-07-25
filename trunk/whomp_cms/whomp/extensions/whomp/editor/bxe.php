@@ -53,6 +53,7 @@
 		 $_whomp_head_data['meta'][] = '<meta name="bxeNS" content="unzih=http://unizh.ch/doctypes/elements/1.0" />';
 		 $_whomp_head_data['meta'][] = '<meta name="bxeNS" content="dcterms=http://purl.org/dc/terms/" />';
 		 $_whomp_head_data['meta'][] = '<meta http-equiv="content-type" content="text/html; charset=UTF-8" />';
+		 $_whomp_head_data['style'][] = '<link rel="stylesheet" href="' . $_whomp_storage_url . '/extensions/whomp/editor/bxe/css/editor.css" type="text/css" />';
 	 } // end function
 	 
 	 /**

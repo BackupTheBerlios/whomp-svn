@@ -31,7 +31,7 @@
   * @since 0.0.0
   * @access public
   */
- class Whomp_Node_Frontpage implements Whomp_Node, Whomp_Editable {
+ class Whomp_Node_Frontpage implements Whomp_Node, Whomp_Editable, Whomp_Savable {
 	 
 	 /**
 	  * The specified content type
@@ -222,20 +222,17 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @param array $options options for the node
-	  * @global string the whomp storage url
-	  * @todo redo this
 	  */
 	 public function loadNode($options) {
-		 global $_whomp_storage_url;
 		 
 		 // set the node information
 		 foreach ($options as $key => $value) {
 			 $this->$key = $value;
 		 } // end foreach
 		 // set the paths
-		 $this->_xml_path = $_whomp_storage_url . '/repository/whomp/node/frontpage/nodes/' . $options['name'] . '.xml';
-		 $this->_xsl_path = $_whomp_storage_url . '/repository/whomp/node/frontpage/xsl/xhtml.xsl';
-		 $this->_schema_path = $_whomp_storage_url . '/repository/whomp/node/frontpage/schema/relaxng.xml';
+		 $this->_xml_path = '/repository/whomp/node/frontpage/nodes/' . $options['name'] . '.xml';
+		 $this->_xsl_path = '/repository/whomp/node/frontpage/xsl/xhtml.xsl';
+		 $this->_schema_path = '/repository/whomp/node/frontpage/schema/relaxng.xml';
 	 } // end function
 	 
 	 /**
@@ -252,15 +249,16 @@
 	  * @since 0.0.0
 	  * @access public
 	  * @global class access to the template class
+	  * @global string the whomp storage url
 	  * @return array information about the page suitable for sending to Whomp_Cache::end()
 	  */
 	 public function renderNode() {
-		 global $_whomp_template_class;
+		 global $_whomp_template_class, $_whomp_storage_url;
 		
 		 // insert the node xml	 
-		 $_whomp_template_class->insertXml($this->_xml_path);
+		 $_whomp_template_class->insertXml($_whomp_storage_url . $this->_xml_path);
 		 // insert the node xsl
-		 $_whomp_template_class->insertXsl($this->_xsl_path);
+		 $_whomp_template_class->insertXsl($_whomp_storage_url . $this->_xsl_path);
 		 // transform the document
 		 $_whomp_template_class->transformTemplate();
 		 // render the document and get options
@@ -287,16 +285,12 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @global class access to the whomp editor class
-	  * @global string the whomp storage url
-	  * @global string the whomp base url
-	  * @global array the user's accept headers
 	  */
 	 public function makeEditable() {
 		 global $_whomp_template_class;
 		 
-		 // make the template editable
-		 $_whomp_template_class->makeEditable();
+		 // make template class editable
+		 $_whomp_template_class->makeEditable();		 
 		 // set to editable
 		 $this->_edit = true;
 	 } // end function
@@ -311,14 +305,13 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @global class the whomp template class
+	  * @global string the whomp storage path
 	  */
 	 public function printXml() {
-		 global $_whomp_template_class;
+		 global $_whomp_storage_path;
 		 
 		 header('Content-type: text/xml');
-		 $_whomp_template_class->insertXml($this->_xml_path);
-		 $_whomp_template_class->printXml();
+		 readfile($_whomp_storage_path . $this->_xml_path);
 	 } // end function
 	 
 	 /**
@@ -331,14 +324,13 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @global class the whomp template class
+	  * @global string the whomp storage path
 	  */
 	 public function printXsl() {
-		 global $_whomp_template_class;
+		 global $_whomp_storage_path;
 		 
 		 header('Content-type: text/xml');
-		 $_whomp_template_class->insertXsl($this->_xsl_path);
-		 $_whomp_template_class->printXsl();
+		 readfile($_whomp_storage_path . $this->_xsl_path);
 	 } // end function
 	 
 	 /**
@@ -352,59 +344,13 @@
 	  * @version 0.0.0
 	  * @since 0.0.0
 	  * @access public
-	  * @global class the whomp template class
+	  * @global string the whomp storage path
 	  */
 	 public function printSchema() {
-		 global $_whomp_template_class;
+		 global $_whomp_storage_path;
 		 
 		 header('Content-type: text/xml');
-		 //$_whomp_template_class->insertSchema($this->_schema_path);
-		 //$_whomp_template_class->printSchema();
-		 //readfile($this->_schema_path);
-		 echo <<<SCHEMA
-<?xml version="1.0" encoding="UTF-8"?>
-<grammar ns="" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
-  <start>
-    <element name="layout">
-      <element name="header">
-        <ref name="title"/>
-        <element name="description">
-          <text/>
-        </element>
-      </element>
-      <ref name="content"/>
-      <element name="footer">
-        <element name="copyright">
-          <text/>
-        </element>
-      </element>
-    </element>
-  </start>
-  <define name="title">
-    <element name="title">
-      <text/>
-    </element>
-  </define>
-  <define name="content">
-    <element name="content">
-      <oneOrMore>
-        <choice>
-          <text/>
-          <element name="node">
-            <element name="whomp_node_frontpage">
-              <attribute name="name">
-                <data type="NCName"/>
-              </attribute>
-              <ref name="title"/>
-              <ref name="content"/>
-            </element>
-          </element>
-        </choice>
-      </oneOrMore>
-    </element>
-  </define>
-</grammar>
-SCHEMA;
+		 readfile($_whomp_storage_path . $this->_schema_path);
 	 } // end function
 	 
 	 /**
@@ -428,6 +374,50 @@ SCHEMA;
 	 } // end function
 	 
 	 /* -- Whomp_Editable methods -- */
+	 
+	 /* ++ Whomp_Savable methods ++ */
+	 
+	 /**
+	  * Saves the object
+	  * 
+	  * This function should communicate with the configured editor to determine
+	  * what information is returned so that it can be handled properly. Or if 
+	  * a custom interface was used for editing this is not required. Also 
+	  * should check for adequate permissions to save.
+	  * 
+	  * @author Schmalls / Joshua Thompson <schmalls@gmail.com>
+	  * @version 0.0.0
+	  * @since 0.0.0
+	  * @access public
+	  * @global string the whomp storage path
+	  */
+	 public function save() {
+		 global $_whomp_storage_path;
+		 
+		 // check if magic quotes is enabled
+		 if (get_magic_quotes_gpc() == 1) {
+			 // if so, strip slashes
+			 $content = stripslashes($_POST['content']);
+		 } else {
+			 // if not, get content
+			 $content = $_POST['content'];
+		 } // end if
+		 // write the xml file
+		 $check = file_put_contents($_whomp_storage_path . $this->_xml_path, $content);
+		 // check if we wrote anything
+		 if ($check != 0) {
+			 // if so, set status to 204
+			 header('HTTP/1.x 204 No Content');
+		 } else {
+			 // if not, set status to 403 and print error message
+			 header("HTTP/1.x 403 Forbidden");
+			 echo '<parsererror xmlns="http://www.mozilla.org/newlayout/xml/parsererror.xml">';
+			 echo 'Could not write to ' . $this->_xml_path;
+			 echo '</parsererror>';
+		 } // end if
+	 } // end function
+	 
+	 /* -- Whomp_Savable methods -- */
 	 
  } // end class
 ?>
