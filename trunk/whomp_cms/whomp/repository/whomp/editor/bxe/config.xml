@@ -16,7 +16,7 @@
         <!-- You can't provide a different "method" than http.get for the following files -->
         <css>
 			<!-- Document specific css, which you should adjust.  -->
-			<file>{{_whomp_storage_url}}/extensions/whomp/editor/bxe/css/main.css</file>
+			<file>{{_whomp_storage_url}}/repository/whomp/editor/bxe/css/test.css</file>
 		</css>
         
         <scripts>
@@ -39,7 +39,6 @@
 			<file>relaxng/NodeVAL.js</file>
 			<file>relaxng/ElementVAL.js</file>
 			<file>relaxng/RelaxNG.js</file>
-			<file>examples/rss/rss.js</file>
         </scripts>  
     </files>
     <options>
