@@ -5,7 +5,7 @@ body {
 	margin: 0;
 	background-color: #336699;
 	text-align: center;
-	min-width:760px;
+	min-width:600px;
 	font-family: Georgia, Times, "Times New Roman", serif;
 	color: #ffffff;
 	}
@@ -99,6 +99,7 @@ a:hover {
 	margin: auto;
 	width: 100%;
 	cursor: pointer;
+	text-decoration: none;
 	}
 	
 #footer {

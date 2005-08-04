@@ -5,7 +5,7 @@ body {
 	margin: 0;
 	background-color: #336699;
 	text-align: center;
-	min-width:760px;
+	min-width:600px;
 	font-family: Georgia, Times, "Times New Roman", serif;
 	color: #ffffff;
 	}
@@ -19,11 +19,16 @@ body {
 
 a {
 	text-decoration: none;
+	font-style: italic;
 	color: #ffffff;
 	}
 	
 a:hover {
 	text-decoration: underline;
+	}
+	
+p {
+	text-indent: 20px;
 	}
 	
 #header {
@@ -40,6 +45,18 @@ a:hover {
 	text-align: center;
 	font-weight: bolder;
 	font-stretch: condensed;
+	}
+	
+h2 {
+	background-color: #336699;
+	color: #6699cc;
+	padding: 4px;
+	}
+	
+h3 {
+	background-color: #ffffff;
+	color: #336699;
+	padding: 1px 4px;
 	}
 	
 #txt-xa {
@@ -74,14 +91,17 @@ a:hover {
 	float: left;
 	padding: 0;
 	border: 0;
-	margin: 0 auto;
+	margin: 0;
 	background-color: #6699cc;
 	position: relative;
 	}
 	
 .img {
-	padding: 0;
-	margin: 0;
+	padding: 0 !important;
+	margin: 0 !important;
+	margin-right: -4px;
+	margin-bottom: -3px;
+	padding: -4px;
 	border: 0;
 	width: 100px;
 	min-width: 100px;
@@ -95,16 +115,14 @@ a:hover {
 	margin: auto;
 	width: 100%;
 	cursor: pointer;
-	}
-	
-.txt-over:hover {
-	text-decoration: underline;
+	text-decoration: none;
 	}
 	
 #content {
 	padding: 0;
 	border: 0;
 	margin: 0;
+	margin-top: 10px;
 	text-align: center;
 	width: 600px;
 	clear: both;
@@ -113,6 +131,8 @@ a:hover {
 #contentcenter {
 	padding-left: 6px;
 	padding-right: 6px;
+	padding-top: 1px;
+	padding-bottom: 1px;
 	width: auto;
 	margin-right: auto;
 	margin-left: auto;
